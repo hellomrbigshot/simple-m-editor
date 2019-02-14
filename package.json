@@ -1,7 +1,7 @@
 {
   "name": "simple-m-editor",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -47,5 +47,6 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "main": "./dist/simpleMEditor.common.js"
 }
