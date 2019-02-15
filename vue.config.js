@@ -1,6 +1,6 @@
 module.exports = {
   lintOnSave: false,
-  publicPath: '/dist/',
+  publicPath: '../dist/',
   css: {
     extract: false
   }
