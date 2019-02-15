@@ -5,11 +5,10 @@
 </template>
 
 <script>
-import mEditor from './markdownEditor'
 export default {
   name: 'HelloWorld',
   components: {
-    editor: mEditor
+    editor: () => import('./markdownEditor.vue')
   },
   data () {
     return {
