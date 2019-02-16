@@ -23,5 +23,3 @@ export default {
 ```
 ### 预览
 [点我预览](https://hellomrbigshot.github.io/simple-m-editor/dist/index.html)
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
