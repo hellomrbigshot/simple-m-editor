@@ -1,29 +1,25 @@
 # simple-m-editor
-
-## Project setup
+一个基于 Vue.js 的简单的 markdown 编辑器。
+### 安装
+npm i -S simple-m-editor
+### 使用
 ```
-npm install
+<template>
+<div>
+  <m-editor v-model="text"></m-editor>
+</div>
+</template>
+import mEditor from 'simple-m-editor'
+export default {
+  component: {
+    mEditor
+  },
+  data () {
+    return {
+      text: ''
+    }
+  }
+}
 ```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### 预览
+[点我预览](https://hellomrbigshot.github.io/simple-m-editor/dist/index.html)
