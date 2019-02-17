@@ -1,0 +1,40 @@
+.editor-preview {
+  background: #000 !important;
+  blockquote {
+    border-left: 2px solid #009a61;
+    color: #555;
+    font-size: 1em;
+    padding: 0.5em 1em;
+    margin: 1.5em 0;
+  }
+  table {
+    width: 100%;
+    border: 1px solid #dddee1;
+    border-bottom: 0;
+    background: #fff;
+    border-spacing: 0;
+    border-collapse: collapse;
+    margin: 1.5em 0;
+    tr {
+      td, th {
+        padding: 0 0.5em;
+        line-height: 40px;
+        color: #333;
+        cursor: pointer;
+        border: 1px solid #dddee1;
+      }
+      &:nth-of-type(2n) td {
+        background: #f8f8f9;
+      }
+    }
+  }
+  ul {
+    list-style: none;
+    margin: 1.5em 0;
+    padding: 0 1.5em;
+    li {
+      
+    }
+  }
+}
+
