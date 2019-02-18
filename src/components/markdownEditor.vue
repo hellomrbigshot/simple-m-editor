@@ -63,9 +63,12 @@
 <script>
 import marked from "marked";
 import hljs from "highlight.js";
-import "highlight.js/styles/solarized-light.css";
+import "highlight.js/styles/tomorrow.css";
 marked.setOptions({
   renderer: new marked.Renderer(),
+  highlight: function(code) {
+    return hljs.highlightAuto(code).value;
+  },
   pedantic: false,
   gfm: true,
   tables: true,
@@ -75,16 +78,17 @@ marked.setOptions({
   sanitize: false,
   smartLists: true,
   smartypants: false,
-  xhtml: false
+  xhtml: false,
+  
 })
-hljs.highlightCode = () => {
-  // 自定义 highlightCode 方法，循环执行方法
-  let blocks = document.querySelectorAll("code")
-  let dom = Array.prototype.slice.call(blocks)
-  dom.forEach(ele => {
-    hljs.highlightBlock(ele)
-  })
-}
+// hljs.highlightCode = () => {
+//   // 自定义 highlightCode 方法，循环执行方法
+//   let blocks = document.querySelectorAll("code")
+//   let dom = Array.prototype.slice.call(blocks)
+//   dom.forEach(ele => {
+//     hljs.highlightBlock(ele)
+//   })
+// }
 String.prototype.splice = function (index, str) {
   return `${this.slice(0, index)}${str}${this.slice(index)}`
 }
@@ -111,9 +115,9 @@ export default {
   watch: {
     input(val) {
       this.$emit("input", val);
-      this.$nextTick(() => {
-        hljs.highlightCode();
-      });
+      // this.$nextTick(() => {
+      //   hljs.highlightCode();
+      // });
     },
     value(val) {
       this.input = val;
@@ -153,6 +157,15 @@ export default {
     padding: 0.5em 1em;
     margin: 1.5em 0;
   }
+  pre {
+    background: #f0f0f0;
+    margin: 1em 0;
+    padding: 1em;
+    code {
+      // padding: 0.5em;
+      font-family: Consolas, Monaco, monospace;
+    }
+  }
   table {
     width: 100%;
     border: 1px solid #dddee1;
@@ -174,13 +187,15 @@ export default {
       }
     }
   }
-  ul {
-    list-style: none;
+  ul, ol {
     margin: 1.5em 0;
-    padding: 0 1.5em;
-    li {
-      
-    }
+    padding: 0 2em;
+    // list-style: circle;
   }
+  ol {
+    padding: 0 2em;
+    list-style: decimal;
+  }
+  
 }
 </style>
