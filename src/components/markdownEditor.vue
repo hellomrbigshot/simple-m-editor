@@ -5,7 +5,16 @@
     @keydown="tabDelete"
   >
     <div class="edit-toolbar">
-      <ul class="edit-mode">
+      <ul class="edit-mode pull-left">
+        <li v-for="(item, i) in config" :key="i" v-if="item.showIcon">
+          <a 
+            :class="[item.icon]"
+            :title="item.title"
+            @click="addContent(item.content)"
+          ></a>
+        </li>
+      </ul>
+      <ul class="edit-mode pull-right">
         <li>
           <a
             :class="[fullScreen && 'edit-menu__unzen', !fullScreen && 'edit-menu__zen']"
@@ -64,6 +73,7 @@
 import marked from "marked";
 import hljs from "highlight.js";
 import "highlight.js/styles/tomorrow.css";
+import { config } from "./config.js"
 marked.setOptions({
   renderer: new marked.Renderer(),
   highlight: function(code) {
@@ -96,6 +106,7 @@ export default {
   name: "simpleMEditor",
   data() {
     return {
+      config,
       input: this.value,
       mode: "live",
       fullScreen: false
@@ -141,6 +152,18 @@ export default {
         if (e.preventDefault) {
           e.preventDefault();
         }
+      }
+    },
+    addContent (content) {
+      let pos = this.$refs["mTextarea"].selectionStart;
+      if (pos >= 0) {
+        this.input = this.input.splice(pos, content);
+        this.$refs["mTextarea"].blur();
+        setTimeout(() => {
+          this.$refs["mTextarea"].selectionStart = pos + content.length;
+          this.$refs["mTextarea"].selectionEnd = pos + content.length;
+          this.$refs["mTextarea"].focus();
+        });
       }
     }
   }

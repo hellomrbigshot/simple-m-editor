@@ -22,11 +22,16 @@
     position: absolute;
     background: #fff;
     width: 100%;
+    .pull-left {
+      float: left;
+    }
+    .pull-right {
+      float: right;
+    }
     .edit-mode {
       line-height: 0;
       list-style: none;
       font-size: 0;
-      float: right;
       li {
         display: inline-block;
       }
