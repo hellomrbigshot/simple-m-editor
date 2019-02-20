@@ -5,14 +5,16 @@
     @keydown="tabDelete"
   >
     <div class="edit-toolbar">
-      <ul class="edit-mode pull-left">
-        <li v-for="(item, i) in config" :key="i" v-if="item.showIcon">
-          <a 
-            :class="[item.icon]"
-            :title="item.title"
-            @click="addContent(item.content)"
-          ></a>
-        </li>
+      <ul class="edit-tools pull-left">
+        <template v-for="(item, i) in config">
+          <li  :key="i" v-if="item.showIcon">
+            <a 
+              :class="['iconfont', item.icon]"
+              :title="item.title"
+              @click="addContent(item.content)"
+            ></a>
+          </li>
+        </template>
       </ul>
       <ul class="edit-mode pull-right">
         <li>

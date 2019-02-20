@@ -22,6 +22,30 @@
     position: absolute;
     background: #fff;
     width: 100%;
+    .edit-tools {
+      line-height: 0;
+      font-size: 0;
+      li {
+        font-size: 16px;
+        display: inline-block;
+        overflow: auto;
+        a {
+          display: block;
+          width: 30px;
+          height: 30px;
+          line-height: 20px;
+          border: 5px solid #fff;
+          text-align: center;
+          color: #c00;
+          &:hover {
+            cursor: pointer;
+            border-color: #f6f6f6;
+            background-color: #f6f6f6;
+            color: #64b587;
+          }
+        }
+      }
+    }
     .pull-left {
       float: left;
     }
@@ -50,11 +74,6 @@
           background-position-y: -40px;
           border-color: #f6f6f6;
           background-color: #f6f6f6;
-        }
-        &:hover:after {
-          transition: 0.4s;
-          transform: scale(1);
-          opacity: 1;
         }
       }
       .edit-menu__preview {
