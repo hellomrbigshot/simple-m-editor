@@ -38,25 +38,25 @@ const config = [
   {
     icon: 'icon-zitidaima',
     title: '代码块',
-    content: '\n```\n console.log("hello world");\n```\n',
+    content: '\n\n```\n console.log("hello world");\n```\n',
     showIcon: true
   },
   {
     icon: 'icon-charutupian',
     title: '图片',
-    content: '\n![这是一张图片](https://i.loli.net/2019/02/21/5c6e0dcb3e255.jpg)',
+    content: '\n\n![这是一张图片](https://i.loli.net/2019/02/21/5c6e0dcb3e255.jpg)',
     showIcon: true
   },
   {
     icon: 'icon-youxupailie',
     title: '有序列表',
-    content: '\n1. 列表1 \n2. 列表2 \n3. 列表3',
+    content: '\n\n1. 列表1 \n2. 列表2 \n3. 列表3',
     showIcon: true
   },
   {
     icon: 'icon-wuxupailie',
     title: '无序列表',
-    content: '\n- 列表1 \n- 列表2 \n- 列表3',
+    content: '\n\n- 列表1 \n- 列表2 \n- 列表3',
     showIcon: true
   },
   {
@@ -68,7 +68,7 @@ const config = [
   {
     icon: 'icon-biaodanzujian-biaoge',
     title: '表格',
-    content: '\n标题1 | 标题2 \n---  |---\n第一行第一列 | 第一行第二列\n第二行第一列 | 第二行第二列\n',
+    content: '\n\n标题1 | 标题2 \n---  |---\n第一行第一列 | 第一行第二列\n第二行第一列 | 第二行第二列\n',
     showIcon: true
   },
   {
