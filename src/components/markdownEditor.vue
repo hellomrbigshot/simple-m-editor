@@ -171,7 +171,7 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 @import './markdownEditor.scss';
 @import './editorpreview.scss';
 </style>
