@@ -1,7 +1,7 @@
 <template>
   <div
-    id="editor"
-    :class="['editor', fullScreen && 'editor_fullscreen']"
+    id="m-editor"
+    :class="['m-editor', fullScreen && 'm-editor_fullscreen']"
     @keydown="tabDelete"
   >
     <div class="edit-toolbar">
@@ -19,28 +19,28 @@
       <ul class="edit-mode pull-right">
         <li>
           <a
-            :class="[fullScreen && 'edit-menu__unzen', !fullScreen && 'edit-menu__zen']"
-            title="全屏"
+            :class="['iconfont', !fullScreen && 'icon-quanping' || 'icon-huanyuanhuabu']"
+            :title="!fullScreen && '全屏' || '还原'"
             @click="fullScreen=!fullScreen"
           ></a>
         </li>
         <li>
           <a
-            :class="['edit-menu__edit', mode === 'edit' && 'muted']"
+            :class="['iconfont', 'icon-tianxie', mode === 'edit' && 'muted']"
             title="编辑"
             @click="mode='edit'"
           ></a>
         </li>
         <li>
           <a
-            :class="['edit-menu__live',  mode === 'live' && 'muted']"
-            title="实时"
+            :class="['iconfont', 'icon-fenlan', mode === 'live' && 'muted']"
+            title="分栏"
             @click="mode='live'"
           ></a>
         </li>
         <li>
           <a
-            :class="['edit-menu__preview',  mode === 'preview' && 'muted']"
+            :class="['iconfont', 'icon-zitiyulan', mode === 'preview' && 'muted']"
             title="预览"
             @click="mode='preview'"
           ></a>
@@ -52,7 +52,7 @@
         <transition v-show="mode!=='preview'">
           <div
             v-show="mode!=='preview'"
-            :class="['editor-input', mode === 'edit' && 'edit-full']"
+            :class="['m-editor-input', mode === 'edit' && 'edit-full']"
           >
             <textarea
               v-model="input"
@@ -62,7 +62,7 @@
           </div>
         </transition>
         <transition v-show="mode!=='edit'">
-          <div :class="['editor-preview', mode === 'preview' && 'edit-full']">
+          <div :class="['m-editor-preview', mode === 'preview' && 'edit-full']">
             <div v-html="compiledMarkdown"></div>
           </div>
         </transition>
@@ -171,56 +171,7 @@ export default {
   }
 };
 </script>
-<style lang="scss" src="./markdownEditor.scss"></style>
-<style lang="scss">
-.editor-preview {
-  background: #000 !important;
-  blockquote {
-    border-left: 2px solid #009a61;
-    color: #555;
-    font-size: 1em;
-    padding: 0.5em 1em;
-    margin: 1.5em 0;
-  }
-  pre {
-    background: #f0f0f0;
-    margin: 1em 0;
-    padding: 1em;
-    code {
-      // padding: 0.5em;
-      font-family: Consolas, Monaco, monospace;
-    }
-  }
-  table {
-    width: 100%;
-    border: 1px solid #dddee1;
-    border-bottom: 0;
-    background: #fff;
-    border-spacing: 0;
-    border-collapse: collapse;
-    margin: 1.5em 0;
-    tr {
-      td, th {
-        padding: 0 0.5em;
-        line-height: 40px;
-        color: #333;
-        cursor: pointer;
-        border: 1px solid #dddee1;
-      }
-      &:nth-of-type(2n) td {
-        background: #f8f8f9;
-      }
-    }
-  }
-  ul, ol {
-    margin: 1.5em 0;
-    padding: 0 2em;
-    // list-style: circle;
-  }
-  ol {
-    padding: 0 2em;
-    list-style: decimal;
-  }
-  
-}
+<style lang="scss" scoped>
+@import './markdownEditor.scss';
+@import './editorpreview.scss';
 </style>
