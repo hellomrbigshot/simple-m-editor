@@ -1,4 +1,4 @@
-.editor-preview {
+.m-editor-preview {
   background: #000 !important;
   blockquote {
     border-left: 2px solid #009a61;
@@ -6,6 +6,15 @@
     font-size: 1em;
     padding: 0.5em 1em;
     margin: 1.5em 0;
+  }
+  pre {
+    background: #f0f0f0;
+    margin: 1em 0;
+    padding: 1em;
+    code {
+      // padding: 0.5em;
+      font-family: Consolas, Monaco, monospace;
+    }
   }
   table {
     width: 100%;
@@ -23,18 +32,22 @@
         cursor: pointer;
         border: 1px solid #dddee1;
       }
-      &:nth-of-type(2n) td {
+      &:nth-of-type(2n) td, th {
         background: #f8f8f9;
       }
     }
   }
-  ul {
-    list-style: none;
+  ul, ol {
     margin: 1.5em 0;
-    padding: 0 1.5em;
-    li {
-      
-    }
+    padding: 0 2em;
+    // list-style: circle;
+  }
+  ol {
+    padding: 0 2em;
+    list-style: decimal;
+  }
+  img {
+    max-width: 100%;
+    padding: 1em;
   }
 }
-
