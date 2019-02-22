@@ -7,7 +7,7 @@
     <div class="edit-toolbar">
       <ul class="edit-tools pull-left">
         <template v-for="(item, i) in config">
-          <li  :key="i" v-if="item.showIcon">
+          <li  :key="i" v-if="item.showIcon && i < iconLength">
             <a 
               :class="['iconfont', item.icon]"
               :title="item.title"
@@ -90,17 +90,9 @@ marked.setOptions({
   sanitize: false,
   smartLists: true,
   smartypants: false,
-  xhtml: false,
-  
+  xhtml: false
 })
-// hljs.highlightCode = () => {
-//   // 自定义 highlightCode 方法，循环执行方法
-//   let blocks = document.querySelectorAll("code")
-//   let dom = Array.prototype.slice.call(blocks)
-//   dom.forEach(ele => {
-//     hljs.highlightBlock(ele)
-//   })
-// }
+
 String.prototype.splice = function (index, str) {
   return `${this.slice(0, index)}${str}${this.slice(index)}`
 }
@@ -111,7 +103,8 @@ export default {
       config,
       input: this.value,
       mode: "live",
-      fullScreen: false
+      fullScreen: false,
+      iconLength: config.length
     };
   },
   props: {
@@ -125,12 +118,13 @@ export default {
       return marked(this.input);
     }
   },
+  mounted () {
+    this.resize();
+    window.onresize = this.throttle(this.resize, 150);
+  },
   watch: {
     input(val) {
       this.$emit("input", val);
-      // this.$nextTick(() => {
-      //   hljs.highlightCode();
-      // });
     },
     value(val) {
       this.input = val;
@@ -141,16 +135,7 @@ export default {
       // 自定义默认 tab 事件
       const TABKEY = 9;
       if (e.keyCode === TABKEY) {
-        let pos = this.$refs["mTextarea"].selectionStart;
-        if (pos >= 0) {
-          this.input = this.input.splice(pos, "    ");
-          this.$refs["mTextarea"].blur();
-          setTimeout(() => {
-            this.$refs["mTextarea"].selectionStart = pos + 4;
-            this.$refs["mTextarea"].selectionEnd = pos + 4;
-            this.$refs["mTextarea"].focus();
-          });
-        }
+        this.addContent('    ');
         if (e.preventDefault) {
           e.preventDefault();
         }
@@ -166,6 +151,42 @@ export default {
           this.$refs["mTextarea"].selectionEnd = pos + content.length;
           this.$refs["mTextarea"].focus();
         });
+      }
+    },
+    resize () {
+      let width = document.querySelector('#m-editor').clientWidth;
+      let editTools = document.querySelector('.edit-tools');
+      if (width > 780) {
+        editTools.style.width = '600px';
+      } else if (680 < width) {
+        editTools.style.width = '480px';
+      } else if (640 < width) {
+        editTools.style.width = '400px';
+      } else if (500 < width) {
+        editTools.style.width = '320px';
+      } else if (width < 500) {
+        editTools.style.width = '0';
+      }
+    },
+    debunce (fun, wait) {
+      let time;
+      return function () {
+        const args = arguments;
+        clearTimeout(time);
+        time = setTimeout (() => {
+          fun.apply(this, args);
+        }, wait)
+      }
+    },
+    throttle (fun, wait) { // 节流函数
+      let previous = 0;
+      return function () {
+        let args = arguments;
+        let now = +new Date();
+        if (now - previous > wait) {
+          fun.apply(this, arguments);
+          previous = now;
+        }
       }
     }
   }
