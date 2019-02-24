@@ -75,6 +75,7 @@
 import marked from "marked";
 import hljs from "highlight.js";
 import "highlight.js/styles/tomorrow.css";
+import "../assets/css/icon.css";
 import { config } from "./config.js"
 marked.setOptions({
   renderer: new marked.Renderer(),

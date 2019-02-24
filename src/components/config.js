@@ -38,13 +38,13 @@ const config = [
   {
     icon: 'icon-zitidaima',
     title: '代码块',
-    content: '\n\n```\n console.log("hello world");\n```\n',
+    content: '\n```\n console.log(\'hello world\');\n```\n',
     showIcon: true
   },
   {
     icon: 'icon-charutupian',
     title: '图片',
-    content: '\n\n![这是一张图片](https://i.loli.net/2019/02/21/5c6e0dcb3e255.jpg)',
+    content: '\n![这是一张图片](https://hellomrbigbigshot.xyz/api/file/avatar?filename=1534775389648.png)\n',
     showIcon: true
   },
   {

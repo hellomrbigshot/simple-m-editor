@@ -20290,6 +20290,13 @@ module.exports = function(hljs) {
 
 /***/ }),
 
+/***/ "d21e":
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+
+/***/ }),
+
 /***/ "d292":
 /***/ (function(module, exports) {
 
@@ -23810,12 +23817,12 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-// CONCATENATED MODULE: ./node_modules/_cache-loader@2.0.1@cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"66bcdb1a-vue-loader-template"}!./node_modules/_vue-loader@15.6.4@vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/_cache-loader@2.0.1@cache-loader/dist/cjs.js??ref--0-0!./node_modules/_vue-loader@15.6.4@vue-loader/lib??vue-loader-options!./src/components/markdownEditor.vue?vue&type=template&id=49088277&
+// CONCATENATED MODULE: ./node_modules/_cache-loader@2.0.1@cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"66bcdb1a-vue-loader-template"}!./node_modules/_vue-loader@15.6.4@vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/_cache-loader@2.0.1@cache-loader/dist/cjs.js??ref--0-0!./node_modules/_vue-loader@15.6.4@vue-loader/lib??vue-loader-options!./src/components/markdownEditor.vue?vue&type=template&id=3e27663a&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:['m-editor', _vm.fullScreen && 'm-editor_fullscreen'],attrs:{"id":"m-editor"},on:{"keydown":_vm.tabDelete}},[_c('div',{staticClass:"edit-toolbar"},[_c('ul',{staticClass:"edit-tools pull-left"},[_vm._l((_vm.config),function(item,i){return [(item.showIcon && i < _vm.iconLength)?_c('li',{key:i},[_c('a',{class:['iconfont', item.icon],attrs:{"title":item.title},on:{"click":function($event){return _vm.addContent(item.content)}}})]):_vm._e()]})],2),_c('ul',{staticClass:"edit-mode pull-right"},[_c('li',[_c('a',{class:['iconfont', !_vm.fullScreen && 'icon-quanping' || 'icon-huanyuanhuabu'],attrs:{"title":!_vm.fullScreen && '全屏' || '还原'},on:{"click":function($event){_vm.fullScreen=!_vm.fullScreen}}})]),_c('li',[_c('a',{class:['iconfont', 'icon-tianxie', _vm.mode === 'edit' && 'muted'],attrs:{"title":"编辑"},on:{"click":function($event){_vm.mode='edit'}}})]),_c('li',[_c('a',{class:['iconfont', 'icon-fenlan', _vm.mode === 'live' && 'muted'],attrs:{"title":"分栏"},on:{"click":function($event){_vm.mode='live'}}})]),_c('li',[_c('a',{class:['iconfont', 'icon-zitiyulan', _vm.mode === 'preview' && 'muted'],attrs:{"title":"预览"},on:{"click":function($event){_vm.mode='preview'}}})])])]),_c('div',{class:['edit-content']},[_c('div',{staticClass:"edit-content-scroll"},[_c('transition',{directives:[{name:"show",rawName:"v-show",value:(_vm.mode!=='preview'),expression:"mode!=='preview'"}]},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.mode!=='preview'),expression:"mode!=='preview'"}],class:['m-editor-input', _vm.mode === 'edit' && 'edit-full']},[_c('textarea',{directives:[{name:"model",rawName:"v-model",value:(_vm.input),expression:"input"}],ref:"mTextarea",attrs:{"spellcheck":"false"},domProps:{"value":(_vm.input)},on:{"input":function($event){if($event.target.composing){ return; }_vm.input=$event.target.value}}})])]),_c('transition',{directives:[{name:"show",rawName:"v-show",value:(_vm.mode!=='edit'),expression:"mode!=='edit'"}]},[_c('div',{class:['m-editor-preview', _vm.mode === 'preview' && 'edit-full']},[_c('div',{domProps:{"innerHTML":_vm._s(_vm.compiledMarkdown)}})])])],1)])])}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/markdownEditor.vue?vue&type=template&id=49088277&
+// CONCATENATED MODULE: ./src/components/markdownEditor.vue?vue&type=template&id=3e27663a&
 
 // EXTERNAL MODULE: ./node_modules/_marked@0.6.1@marked/lib/marked.js
 var marked = __webpack_require__("953d");
@@ -23827,6 +23834,9 @@ var lib_default = /*#__PURE__*/__webpack_require__.n(lib);
 
 // EXTERNAL MODULE: ./node_modules/_highlight.js@9.14.2@highlight.js/styles/tomorrow.css
 var tomorrow = __webpack_require__("dddd");
+
+// EXTERNAL MODULE: ./src/assets/css/icon.css
+var icon = __webpack_require__("d21e");
 
 // CONCATENATED MODULE: ./src/components/config.js
 var config = [{
@@ -23862,12 +23872,12 @@ var config = [{
 }, {
   icon: 'icon-zitidaima',
   title: '代码块',
-  content: '\n\n```\n console.log("hello world");\n```\n',
+  content: '\n```\n console.log(\'hello world\');\n```\n',
   showIcon: true
 }, {
   icon: 'icon-charutupian',
   title: '图片',
-  content: '\n\n![这是一张图片](https://i.loli.net/2019/02/21/5c6e0dcb3e255.jpg)',
+  content: '\n![这是一张图片](https://hellomrbigbigshot.xyz/api/file/avatar?filename=1534775389648.png)\n',
   showIcon: true
 }, {
   icon: 'icon-youxupailie',
@@ -23980,6 +23990,7 @@ var config = [{
 //
 //
 //
+
 
 
 
