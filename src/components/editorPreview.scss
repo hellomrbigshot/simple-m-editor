@@ -1,5 +1,4 @@
 .m-editor-preview {
-  background: #000 !important;
   blockquote {
     border-left: 2px solid #009a61;
     color: #555;
@@ -7,13 +6,23 @@
     padding: 0.5em 1em;
     margin: 1.5em 0;
   }
+  code {
+    background: #f0f0f0;
+    padding: 5px;
+    border-radius: 4px;
+    font-family: Consolas, Monaco, monospace;
+  }
   pre {
     background: #f0f0f0;
     margin: 1em 0;
     padding: 1em;
+    overflow-x: auto;
+    width: 100%;
     code {
       // padding: 0.5em;
       font-family: Consolas, Monaco, monospace;
+      padding: 0;
+      border-radius: 0;
     }
   }
   table {
@@ -31,6 +40,7 @@
         color: #333;
         cursor: pointer;
         border: 1px solid #dddee1;
+        min-width: 100px;
       }
       &:nth-of-type(2n) td, th {
         background: #f8f8f9;

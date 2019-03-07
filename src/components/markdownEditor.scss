@@ -25,6 +25,8 @@
     .edit-tools, .edit-mode {
       line-height: 0;
       font-size: 0;
+      white-space: nowrap;
+      overflow: hidden;
       li {
         font-size: 18px;
         display: inline-block;

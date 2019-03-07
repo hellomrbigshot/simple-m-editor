@@ -7,7 +7,7 @@
     <div class="edit-toolbar">
       <ul class="edit-tools pull-left">
         <template v-for="(item, i) in config">
-          <li  :key="i" v-if="item.showIcon">
+          <li  :key="i" v-if="item.showIcon && i < iconLength">
             <a 
               :class="['iconfont', item.icon]"
               :title="item.title"
@@ -72,10 +72,9 @@
   </div>
 </template>
 <script>
-import marked from "marked";
-import hljs from "highlight.js";
-import "highlight.js/styles/tomorrow.css";
-import { config } from "./config.js"
+import marked from 'marked';
+import { config } from './config.js';
+import '../assets/css/icon.css';
 marked.setOptions({
   renderer: new marked.Renderer(),
   highlight: function(code) {
@@ -86,38 +85,41 @@ marked.setOptions({
   tables: true,
   breaks: true,
   headerIds: true,
-  headerPrefix: "m-editor",
+  headerPrefix: 'm-editor',
   sanitize: false,
   smartLists: true,
   smartypants: false,
-  xhtml: false,
-  
+  xhtml: false
 })
-// hljs.highlightCode = () => {
-//   // 自定义 highlightCode 方法，循环执行方法
-//   let blocks = document.querySelectorAll("code")
-//   let dom = Array.prototype.slice.call(blocks)
-//   dom.forEach(ele => {
-//     hljs.highlightBlock(ele)
-//   })
-// }
+
 String.prototype.splice = function (index, str) {
   return `${this.slice(0, index)}${str}${this.slice(index)}`
 }
+
+let script = document.createElement('script'),
+    link = document.createElement('link');
+script.type = 'text/javascript';  
+script.src = 'https://cdn.bootcss.com/highlight.js/9.14.2/highlight.min.js';  
+link.rel = 'stylesheet';
+link.href = 'https://cdn.bootcss.com/highlight.js/9.14.2/styles/tomorrow.min.css'; 
+document.head.appendChild(script);  
+document.head.appendChild(link);
+
 export default {
-  name: "simpleMEditor",
+  name: 'simpleMEditor',
   data() {
     return {
       config,
       input: this.value,
-      mode: "live",
-      fullScreen: false
+      mode: 'live',
+      fullScreen: false,
+      iconLength: config.length
     };
   },
   props: {
     value: {
       type: String,
-      default: "### 用 markdown 写一篇文章"
+      default: '### 用 markdown 写一篇文章'
     }
   },
   computed: {
@@ -125,15 +127,22 @@ export default {
       return marked(this.input);
     }
   },
+  mounted () {
+    this.resize();
+    window.onresize = this.throttle(this.resize, 150);
+  },
   watch: {
     input(val) {
-      this.$emit("input", val);
-      // this.$nextTick(() => {
-      //   hljs.highlightCode();
-      // });
+      this.$emit('input', val);
+      this.$emit('on-change', {content: val, htmlContent: this.compiledMarkdown});
     },
     value(val) {
       this.input = val;
+    },
+    fullScreen() {
+      setTimeout(() => {
+        this.resize();
+      })
     }
   },
   methods: {
@@ -141,31 +150,58 @@ export default {
       // 自定义默认 tab 事件
       const TABKEY = 9;
       if (e.keyCode === TABKEY) {
-        let pos = this.$refs["mTextarea"].selectionStart;
-        if (pos >= 0) {
-          this.input = this.input.splice(pos, "    ");
-          this.$refs["mTextarea"].blur();
-          setTimeout(() => {
-            this.$refs["mTextarea"].selectionStart = pos + 4;
-            this.$refs["mTextarea"].selectionEnd = pos + 4;
-            this.$refs["mTextarea"].focus();
-          });
-        }
+        this.addContent('    ');
         if (e.preventDefault) {
           e.preventDefault();
         }
       }
     },
     addContent (content) {
-      let pos = this.$refs["mTextarea"].selectionStart;
+      let pos = this.$refs['mTextarea'].selectionStart;
       if (pos >= 0) {
         this.input = this.input.splice(pos, content);
-        this.$refs["mTextarea"].blur();
+        this.$refs['mTextarea'].blur();
         setTimeout(() => {
-          this.$refs["mTextarea"].selectionStart = pos + content.length;
-          this.$refs["mTextarea"].selectionEnd = pos + content.length;
-          this.$refs["mTextarea"].focus();
+          this.$refs['mTextarea'].selectionStart = pos + content.length;
+          this.$refs['mTextarea'].selectionEnd = pos + content.length;
+          this.$refs['mTextarea'].focus();
         });
+      }
+    },
+    resize () {
+      let width = document.querySelector('#m-editor').clientWidth;
+      let editTools = document.querySelector('.edit-tools');
+      if (width > 780) {
+        editTools.style.width = '600px';
+      } else if (680 < width) {
+        editTools.style.width = '480px';
+      } else if (640 < width) {
+        editTools.style.width = '400px';
+      } else if (500 < width) {
+        editTools.style.width = '320px';
+      } else if (width < 500) {
+        editTools.style.width = '0';
+      }
+    },
+    debunce (fun, wait) {
+      let time;
+      return function () {
+        const args = arguments;
+        clearTimeout(time);
+        time = setTimeout (() => {
+          fun.apply(this, args);
+        }, wait)
+      }
+    },
+    throttle (fun, wait) { // 节流函数
+      let previous = 0;
+      return function () {
+        let args = arguments;
+        let now = +new Date();
+        if (now - previous > wait) {
+          fun.apply(this, arguments);
+          previous = now;
+        }
       }
     }
   }
