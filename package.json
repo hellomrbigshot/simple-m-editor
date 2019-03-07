@@ -1,23 +1,27 @@
 {
   "name": "simple-m-editor",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "private": false,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "build-bundle": "vue-cli-service build --target lib --name simple-m-editor ./src/components/index.js"
+    "build-bundle": "vue-cli-service build --target lib --name simple-m-editor ./src/components/index.js",
+    "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "highlight.js": "^9.14.2",
     "marked": "^0.6.0",
     "vue": "^2.5.22"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.4.0",
     "@vue/cli-plugin-eslint": "^3.4.0",
+    "@vue/cli-plugin-unit-jest": "^3.4.1",
     "@vue/cli-service": "^3.4.0",
+    "@vue/test-utils": "^1.0.0-beta.20",
+    "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^10.0.1",
+    "babel-jest": "^23.6.0",
     "eslint": "^5.8.0",
     "eslint-plugin-vue": "^5.0.0",
     "node-sass": "^4.11.0",
@@ -48,9 +52,9 @@
     "last 2 versions",
     "not ie <= 8"
   ],
+  "main": "./dist/simple-m-editor.common.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/hellomrbigshot/simple-m-editor.git"
-  },
-  "main": "./dist/simple-m-editor.common.js"
+  }
 }

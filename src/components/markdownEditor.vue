@@ -72,11 +72,9 @@
   </div>
 </template>
 <script>
-import marked from "marked";
-import hljs from "highlight.js";
-import "highlight.js/styles/tomorrow.css";
-import "../assets/css/icon.css";
-import { config } from "./config.js"
+import marked from 'marked';
+import { config } from './config.js';
+import '../assets/css/icon.css';
 marked.setOptions({
   renderer: new marked.Renderer(),
   highlight: function(code) {
@@ -87,7 +85,7 @@ marked.setOptions({
   tables: true,
   breaks: true,
   headerIds: true,
-  headerPrefix: "m-editor",
+  headerPrefix: 'm-editor',
   sanitize: false,
   smartLists: true,
   smartypants: false,
@@ -97,13 +95,23 @@ marked.setOptions({
 String.prototype.splice = function (index, str) {
   return `${this.slice(0, index)}${str}${this.slice(index)}`
 }
+
+let script = document.createElement('script'),
+    link = document.createElement('link');
+script.type = 'text/javascript';  
+script.src = 'https://cdn.bootcss.com/highlight.js/9.14.2/highlight.min.js';  
+link.rel = 'stylesheet';
+link.href = 'https://cdn.bootcss.com/highlight.js/9.14.2/styles/tomorrow.min.css'; 
+document.head.appendChild(script);  
+document.head.appendChild(link);
+
 export default {
-  name: "simpleMEditor",
+  name: 'simpleMEditor',
   data() {
     return {
       config,
       input: this.value,
-      mode: "live",
+      mode: 'live',
       fullScreen: false,
       iconLength: config.length
     };
@@ -111,7 +119,7 @@ export default {
   props: {
     value: {
       type: String,
-      default: "### 用 markdown 写一篇文章"
+      default: '### 用 markdown 写一篇文章'
     }
   },
   computed: {
@@ -125,10 +133,16 @@ export default {
   },
   watch: {
     input(val) {
-      this.$emit("input", val);
+      this.$emit('input', val);
+      this.$emit('on-change', {content: val, htmlContent: this.compiledMarkdown});
     },
     value(val) {
       this.input = val;
+    },
+    fullScreen() {
+      setTimeout(() => {
+        this.resize();
+      })
     }
   },
   methods: {
@@ -143,14 +157,14 @@ export default {
       }
     },
     addContent (content) {
-      let pos = this.$refs["mTextarea"].selectionStart;
+      let pos = this.$refs['mTextarea'].selectionStart;
       if (pos >= 0) {
         this.input = this.input.splice(pos, content);
-        this.$refs["mTextarea"].blur();
+        this.$refs['mTextarea'].blur();
         setTimeout(() => {
-          this.$refs["mTextarea"].selectionStart = pos + content.length;
-          this.$refs["mTextarea"].selectionEnd = pos + content.length;
-          this.$refs["mTextarea"].focus();
+          this.$refs['mTextarea'].selectionStart = pos + content.length;
+          this.$refs['mTextarea'].selectionEnd = pos + content.length;
+          this.$refs['mTextarea'].focus();
         });
       }
     },

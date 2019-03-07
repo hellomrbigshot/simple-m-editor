@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <editor v-model="text"></editor>
+    <editor v-model="text" @on-change="change"></editor>
   </div>
 </template>
 
@@ -13,6 +13,11 @@ export default {
   data () {
     return {
       text: ''
+    }
+  },
+  methods: {
+    change (answer) {
+      console.log(answer);
     }
   }
 }
@@ -33,5 +38,9 @@ li {
 }
 a {
   color: #42b983;
+}
+.hello {
+  width: 80%;
+  margin: 0 auto;
 }
 </style>
