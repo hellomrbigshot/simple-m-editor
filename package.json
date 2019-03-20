@@ -1,6 +1,6 @@
 {
   "name": "simple-m-editor",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "private": false,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "marked": "^0.6.0",
-    "vue": "^2.5.22"
+    "vue": "^2.6.9"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.4.0",
@@ -22,11 +22,11 @@
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^23.6.0",
-    "eslint": "^5.8.0",
-    "eslint-plugin-vue": "^5.0.0",
+    "eslint": "^5.15.2",
+    "eslint-plugin-vue": "^5.2.2",
     "node-sass": "^4.11.0",
     "sass-loader": "^7.1.0",
-    "vue-template-compiler": "^2.5.21"
+    "vue-template-compiler": "^2.6.9"
   },
   "eslintConfig": {
     "root": true,
