@@ -96,14 +96,10 @@ String.prototype.splice = function (index, str) {
   return `${this.slice(0, index)}${str}${this.slice(index)}`
 }
 
-let script = document.createElement('script'),
-    link = document.createElement('link');
+let script = document.createElement('script');
 script.type = 'text/javascript';  
-script.src = 'https://cdn.bootcss.com/highlight.js/9.14.2/highlight.min.js';  
-link.rel = 'stylesheet';
-link.href = 'https://cdn.bootcss.com/highlight.js/9.14.2/styles/tomorrow.min.css'; 
-document.head.appendChild(script);  
-document.head.appendChild(link);
+script.src = 'https://cdn.bootcss.com/highlight.js/9.14.2/highlight.min.js';
+document.head.appendChild(script);
 
 export default {
   name: 'simpleMEditor',
@@ -210,4 +206,5 @@ export default {
 <style lang="scss">
 @import './markdownEditor.scss';
 @import './editorpreview.scss';
+@import './tomorrow.css';
 </style>
