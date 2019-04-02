@@ -1,10 +1,24 @@
+.m-editor, .m-editor-preview {
+  span, code, a, input, em, s, strong, small, cite, q, abbr, dfn, data, time, var, samp, sub, sup, 
+  kbd, i, b, u, mark, ruby, rt, rb, bdi, bdo, br, wbr, ins, del,
+  footer, address, main, article, nav, body, section, aside, header, h1, h2, h3, h4, h5, h6,
+  div, p, pre, hr, blockquote, ol, li, ul, dl, dt, dd, figure, figcaption,
+  img, iframe, embed, object, param, video, audio, source, track, canvas, map, area, svg, math,
+  table, caption, colgroup, col, tbody, thead, tfoot, tr, td, th,
+  form, fieldset, legend, label, input, button, select, datalist, optgroup, option, textarea, keygen, output, progress, meter,
+  details, summary, menuitem, menu
+   {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+}
 .m-editor /deep/ {
   * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
   }
-  
 }
 
 .m-editor {
@@ -70,7 +84,7 @@
   .edit-content {
     height: 100%;
     &-scroll {
-      padding-top: 32px;
+      padding-top: 40px;
       height: 100%;
     }
   }

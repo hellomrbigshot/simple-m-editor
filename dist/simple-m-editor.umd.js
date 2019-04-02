@@ -1861,12 +1861,12 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"44a0319a-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/markdownEditor.vue?vue&type=template&id=06cd878e&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"8ddcfb9c-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/markdownEditor.vue?vue&type=template&id=055a30d2&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:['m-editor', _vm.fullScreen && 'm-editor_fullscreen'],attrs:{"id":"m-editor"},on:{"keydown":_vm.tabDelete}},[_c('div',{staticClass:"edit-toolbar"},[_c('ul',{staticClass:"edit-tools pull-left"},[_vm._l((_vm.config),function(item,i){return [(item.showIcon && i < _vm.iconLength)?_c('li',{key:i},[_c('a',{class:['iconfont', item.icon],attrs:{"title":item.title},on:{"click":function($event){return _vm.addContent(item.content)}}})]):_vm._e()]})],2),_c('ul',{staticClass:"edit-mode pull-right"},[_c('li',[_c('a',{class:['iconfont', !_vm.fullScreen && 'icon-quanping' || 'icon-huanyuanhuabu'],attrs:{"title":!_vm.fullScreen && '全屏' || '还原'},on:{"click":function($event){_vm.fullScreen=!_vm.fullScreen}}})]),_c('li',[_c('a',{class:['iconfont', 'icon-tianxie', _vm.mode === 'edit' && 'muted'],attrs:{"title":"编辑"},on:{"click":function($event){_vm.mode='edit'}}})]),_c('li',[_c('a',{class:['iconfont', 'icon-fenlan', _vm.mode === 'live' && 'muted'],attrs:{"title":"分栏"},on:{"click":function($event){_vm.mode='live'}}})]),_c('li',[_c('a',{class:['iconfont', 'icon-zitiyulan', _vm.mode === 'preview' && 'muted'],attrs:{"title":"预览"},on:{"click":function($event){_vm.mode='preview'}}})])])]),_c('div',{class:['edit-content']},[_c('div',{staticClass:"edit-content-scroll"},[_c('transition',{directives:[{name:"show",rawName:"v-show",value:(_vm.mode!=='preview'),expression:"mode!=='preview'"}]},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.mode!=='preview'),expression:"mode!=='preview'"}],class:['m-editor-input', _vm.mode === 'edit' && 'edit-full']},[_c('textarea',{directives:[{name:"model",rawName:"v-model",value:(_vm.input),expression:"input"}],ref:"mTextarea",attrs:{"spellcheck":"false"},domProps:{"value":(_vm.input)},on:{"input":function($event){if($event.target.composing){ return; }_vm.input=$event.target.value}}})])]),_c('transition',{directives:[{name:"show",rawName:"v-show",value:(_vm.mode!=='edit'),expression:"mode!=='edit'"}]},[_c('div',{class:['m-editor-preview', _vm.mode === 'preview' && 'edit-full']},[_c('div',{domProps:{"innerHTML":_vm._s(_vm.compiledMarkdown)}})])])],1)])])}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/markdownEditor.vue?vue&type=template&id=06cd878e&
+// CONCATENATED MODULE: ./src/components/markdownEditor.vue?vue&type=template&id=055a30d2&
 
 // EXTERNAL MODULE: ./node_modules/marked/lib/marked.js
 var marked = __webpack_require__("0e54");
@@ -2027,6 +2027,9 @@ var icon = __webpack_require__("d21e");
 //
 //
 //
+//
+//
+//
 
 
 
@@ -2040,7 +2043,7 @@ marked_default.a.setOptions({
   tables: true,
   breaks: true,
   headerIds: true,
-  headerPrefix: 'm-editor',
+  headerPrefix: "m-editor",
   sanitize: false,
   smartLists: true,
   smartypants: false,
@@ -2051,17 +2054,17 @@ String.prototype.splice = function (index, str) {
   return "".concat(this.slice(0, index)).concat(str).concat(this.slice(index));
 };
 
-var script = document.createElement('script');
-script.type = 'text/javascript';
-script.src = 'https://cdn.bootcss.com/highlight.js/9.14.2/highlight.min.js';
+var script = document.createElement("script");
+script.type = "text/javascript";
+script.src = "https://cdn.bootcss.com/highlight.js/9.14.2/highlight.min.js";
 document.head.appendChild(script);
 /* harmony default export */ var markdownEditorvue_type_script_lang_js_ = ({
-  name: 'simpleMEditor',
+  name: "simpleMEditor",
   data: function data() {
     return {
       config: config,
       input: this.value,
-      mode: 'live',
+      mode: "live",
       fullScreen: false,
       iconLength: config.length
     };
@@ -2069,7 +2072,7 @@ document.head.appendChild(script);
   props: {
     value: {
       type: String,
-      default: '### 用 markdown 写一篇文章'
+      default: "### 用 markdown 写一篇文章"
     }
   },
   computed: {
@@ -2079,12 +2082,12 @@ document.head.appendChild(script);
   },
   mounted: function mounted() {
     this.resize();
-    window.onresize = this.throttle(this.resize, 150);
+    window.onresize = this.throttle(this.resize, 150, this);
   },
   watch: {
     input: function input(val) {
-      this.$emit('input', val);
-      this.$emit('on-change', {
+      this.$emit("input", val);
+      this.$emit("on-change", {
         content: val,
         htmlContent: this.compiledMarkdown
       });
@@ -2106,7 +2109,7 @@ document.head.appendChild(script);
       var TABKEY = 9;
 
       if (e.keyCode === TABKEY) {
-        this.addContent('    ');
+        this.addContent("    ");
 
         if (e.preventDefault) {
           e.preventDefault();
@@ -2116,56 +2119,58 @@ document.head.appendChild(script);
     addContent: function addContent(content) {
       var _this2 = this;
 
-      var pos = this.$refs['mTextarea'].selectionStart;
+      var pos = this.$refs["mTextarea"].selectionStart;
 
-      if (pos >= 0) {
+      if (pos > -1) {
         this.input = this.input.splice(pos, content);
-        this.$refs['mTextarea'].blur();
+        this.$refs["mTextarea"].blur();
         setTimeout(function () {
-          _this2.$refs['mTextarea'].selectionStart = pos + content.length;
-          _this2.$refs['mTextarea'].selectionEnd = pos + content.length;
+          _this2.$refs["mTextarea"].selectionStart = pos + content.length;
+          _this2.$refs["mTextarea"].selectionEnd = pos + content.length;
 
-          _this2.$refs['mTextarea'].focus();
+          _this2.$refs["mTextarea"].focus();
         });
       }
     },
     resize: function resize() {
-      var width = document.querySelector('#m-editor').clientWidth;
-      var editTools = document.querySelector('.edit-tools');
+      var width = document.querySelector("#m-editor").clientWidth;
+      var editTools = document.querySelector(".edit-tools");
 
       if (width > 780) {
-        editTools.style.width = '600px';
+        editTools.style.width = "600px";
       } else if (680 < width) {
-        editTools.style.width = '480px';
+        editTools.style.width = "480px";
       } else if (640 < width) {
-        editTools.style.width = '400px';
+        editTools.style.width = "400px";
       } else if (500 < width) {
-        editTools.style.width = '320px';
+        editTools.style.width = "320px";
+        this.mode = 'live';
       } else if (width < 500) {
-        editTools.style.width = '0';
+        editTools.style.width = "0";
+        this.mode = 'edit';
       }
     },
-    debunce: function debunce(fun, wait) {
+    debunce: function debunce(fun, wait, ctx) {
+      var _arguments = arguments;
       var time;
       return function () {
-        var _this3 = this;
-
-        var args = arguments;
+        var args = _arguments;
         clearTimeout(time);
         time = setTimeout(function () {
-          fun.apply(_this3, args);
+          fun.apply(ctx, args);
         }, wait);
       };
     },
-    throttle: function throttle(fun, wait) {
+    throttle: function throttle(fun, wait, ctx) {
+      var _arguments2 = arguments;
       // 节流函数
       var previous = 0;
       return function () {
-        var args = arguments;
+        var args = _arguments2;
         var now = +new Date();
 
         if (now - previous > wait) {
-          fun.apply(this, arguments);
+          fun.apply(ctx, _arguments2);
           previous = now;
         }
       };
