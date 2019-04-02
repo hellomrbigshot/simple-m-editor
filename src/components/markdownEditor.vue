@@ -7,8 +7,11 @@
     <div class="edit-toolbar">
       <ul class="edit-tools pull-left">
         <template v-for="(item, i) in config">
-          <li  :key="i" v-if="item.showIcon && i < iconLength">
-            <a 
+          <li
+            :key="i"
+            v-if="item.showIcon && i < iconLength"
+          >
+            <a
               :class="['iconfont', item.icon]"
               :title="item.title"
               @click="addContent(item.content)"
@@ -72,9 +75,9 @@
   </div>
 </template>
 <script>
-import marked from 'marked';
-import { config } from './config.js';
-import '../assets/css/icon.css';
+import marked from "marked";
+import { config } from "./config.js";
+import "../assets/css/icon.css";
 marked.setOptions({
   renderer: new marked.Renderer(),
   highlight: function(code) {
@@ -85,29 +88,29 @@ marked.setOptions({
   tables: true,
   breaks: true,
   headerIds: true,
-  headerPrefix: 'm-editor',
+  headerPrefix: "m-editor",
   sanitize: false,
   smartLists: true,
   smartypants: false,
   xhtml: false
-})
+});
 
-String.prototype.splice = function (index, str) {
-  return `${this.slice(0, index)}${str}${this.slice(index)}`
-}
+String.prototype.splice = function(index, str) {
+  return `${this.slice(0, index)}${str}${this.slice(index)}`;
+};
 
-let script = document.createElement('script');
-script.type = 'text/javascript';  
-script.src = 'https://cdn.bootcss.com/highlight.js/9.14.2/highlight.min.js';
+const script = document.createElement("script");
+script.type = "text/javascript";
+script.src = "https://cdn.bootcss.com/highlight.js/9.14.2/highlight.min.js";
 document.head.appendChild(script);
 
 export default {
-  name: 'simpleMEditor',
+  name: "simpleMEditor",
   data() {
     return {
       config,
       input: this.value,
-      mode: 'live',
+      mode: "live",
       fullScreen: false,
       iconLength: config.length
     };
@@ -115,7 +118,7 @@ export default {
   props: {
     value: {
       type: String,
-      default: '### 用 markdown 写一篇文章'
+      default: "### 用 markdown 写一篇文章"
     }
   },
   computed: {
@@ -123,14 +126,17 @@ export default {
       return marked(this.input);
     }
   },
-  mounted () {
+  mounted() {
     this.resize();
-    window.onresize = this.throttle(this.resize, 150);
+    window.onresize = this.throttle(this.resize, 150, this);
   },
   watch: {
     input(val) {
-      this.$emit('input', val);
-      this.$emit('on-change', {content: val, htmlContent: this.compiledMarkdown});
+      this.$emit("input", val);
+      this.$emit("on-change", {
+        content: val,
+        htmlContent: this.compiledMarkdown
+      });
     },
     value(val) {
       this.input = val;
@@ -138,7 +144,7 @@ export default {
     fullScreen() {
       setTimeout(() => {
         this.resize();
-      })
+      });
     }
   },
   methods: {
@@ -146,65 +152,67 @@ export default {
       // 自定义默认 tab 事件
       const TABKEY = 9;
       if (e.keyCode === TABKEY) {
-        this.addContent('    ');
+        this.addContent("    ");
         if (e.preventDefault) {
           e.preventDefault();
         }
       }
     },
-    addContent (content) {
-      let pos = this.$refs['mTextarea'].selectionStart;
-      if (pos >= 0) {
+    addContent(content) {
+      let pos = this.$refs["mTextarea"].selectionStart;
+      if (pos > -1) {
         this.input = this.input.splice(pos, content);
-        this.$refs['mTextarea'].blur();
+        this.$refs["mTextarea"].blur();
         setTimeout(() => {
-          this.$refs['mTextarea'].selectionStart = pos + content.length;
-          this.$refs['mTextarea'].selectionEnd = pos + content.length;
-          this.$refs['mTextarea'].focus();
+          this.$refs["mTextarea"].selectionStart = pos + content.length;
+          this.$refs["mTextarea"].selectionEnd = pos + content.length;
+          this.$refs["mTextarea"].focus();
         });
       }
     },
-    resize () {
-      let width = document.querySelector('#m-editor').clientWidth;
-      let editTools = document.querySelector('.edit-tools');
+    resize() {
+      let width = document.querySelector("#m-editor").clientWidth;
+      let editTools = document.querySelector(".edit-tools");
       if (width > 780) {
-        editTools.style.width = '600px';
+        editTools.style.width = "600px";
       } else if (680 < width) {
-        editTools.style.width = '480px';
+        editTools.style.width = "480px";
       } else if (640 < width) {
-        editTools.style.width = '400px';
+        editTools.style.width = "400px";
       } else if (500 < width) {
-        editTools.style.width = '320px';
+        editTools.style.width = "320px";
+        this.mode = 'live';
       } else if (width < 500) {
-        editTools.style.width = '0';
+        editTools.style.width = "0";
+        this.mode = 'edit';
       }
     },
-    debunce (fun, wait) {
+    debunce(fun, wait, ctx) {
       let time;
-      return function () {
+      return () => {
         const args = arguments;
         clearTimeout(time);
-        time = setTimeout (() => {
-          fun.apply(this, args);
-        }, wait)
-      }
+        time = setTimeout(() => {
+          fun.apply(ctx, args);
+        }, wait);
+      };
     },
-    throttle (fun, wait) { // 节流函数
+    throttle(fun, wait, ctx) {
+      // 节流函数
       let previous = 0;
-      return function () {
+      return () => {
         let args = arguments;
         let now = +new Date();
         if (now - previous > wait) {
-          fun.apply(this, arguments);
+          fun.apply(ctx, arguments);
           previous = now;
         }
-      }
+      };
     }
   }
 };
 </script>
 <style lang="scss">
-@import './markdownEditor.scss';
-@import './editorpreview.scss';
-@import './tomorrow.css';
+@import "./markdownEditor.scss";
+@import "./editorpreview.scss";
 </style>
