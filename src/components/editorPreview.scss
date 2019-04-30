@@ -1,5 +1,12 @@
 @import '../assets/css/tomorrow.css';
 .m-editor-preview {
+  line-height: 2;
+  ul {
+    list-style: disc;
+  }
+  a {
+    color: #2d8cf0;
+  }
   blockquote {
     border-left: 2px solid #009a61;
     color: #555;
