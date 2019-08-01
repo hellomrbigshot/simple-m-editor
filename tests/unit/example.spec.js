@@ -10,16 +10,16 @@ import { shallowMount } from '@vue/test-utils'
 //     expect(wrapper.text()).toMatch(msg)
 //   })
 // })
-import markdownEditor from '@/components/markdownEditor.vue'
+import Editor from '@/Editor/index'
 
-describe('markdownEditor.vue', () => {
+describe('Editor.vue', () => {
   it('renders props.input when passed', () => {
     const msg = '# hello world'
-    const wrapper = shallowMount(markdownEditor, {
+    const wrapper = shallowMount(Editor, {
       propsData: { value: msg }
     })
     wrapper.vm.$nextTick(() => {
-      expect(wrapper.html()).toMatch('<h1>hello world</h1>')
+      expect(wrapper.vm.value).toMatch('# hello world')
     })
   })
 })
