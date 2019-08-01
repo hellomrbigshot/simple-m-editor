@@ -1,7 +1,7 @@
 <template>
-  <div id="m-editor" :class="['m-editor', fullScreen && 'm-editor_fullscreen']" @keydown="tabDelete">
+  <div id="m-editor" ref="mEditor" :class="['m-editor', fullScreen && 'm-editor_fullscreen']" @keydown="tabDelete">
     <div class="edit-toolbar">
-      <ul class="edit-tools pull-left">
+      <ul class="edit-tools pull-left" ref="editTools">
         <template v-for="(item, i) in config">
           <li :key="i" v-if="item.showIcon && i < iconLength">
             <a :class="['iconfont', item.icon]" :title="item.title" @click="addContent(item.content)"></a>
@@ -27,11 +27,12 @@
       <div class="edit-content-scroll">
         <template v-show="mode!=='preview'">
           <div v-show="mode!=='preview'" :class="['m-editor-input', mode === 'edit' && 'edit-full']" ref="inputWrapper">
-            <textarea v-model="input" ref="mTextarea" /> </div>
+            <textarea v-model="input" ref="mTextarea" />
+          </div>
         </template>
         <template v-show="mode!=='edit'">
           <div :class="['m-editor-preview', mode === 'preview' && 'edit-full']">
-            <div v-html="compiledMarkdown"></div>
+            <div ref="previewContent" id="m-editor-preview" v-html="compiledMarkdown"></div>
           </div>
         </template>
       </div>
@@ -41,6 +42,7 @@
 <script>
 import marked from 'marked';
 import { config } from '../assets/js/config';
+import hljs from '../assets/js/hljs';
 import '../assets/css/icon.css';
 marked.setOptions({
   renderer: new marked.Renderer(),
@@ -52,24 +54,18 @@ marked.setOptions({
   tables: true,
   breaks: true,
   headerIds: true,
-  headerPrefix: 'm-editor',
+  // headerPrefix: 'm-editor',
   sanitize: false,
   smartLists: true,
   smartypants: false,
   xhtml: false
 });
-
 String.prototype.splice = function (index, str) {
   return `${this.slice(0, index)}${str}${this.slice(index)}`;
 };
 
-const script = document.createElement("script");
-script.type = "text/javascript";
-script.src = "https://cdn.bootcss.com/highlight.js/9.14.2/highlight.min.js";
-document.head.appendChild(script);
-
 export default {
-  name: 'simpleMEditor',
+  name: 'SimpleMEditor',
   data() {
     return {
       config,
@@ -92,7 +88,7 @@ export default {
   },
   mounted() {
     this.resize();
-    window.onresize = this.throttle(this.resize, 150, this);
+    // window.onresize = this.throttle(this.resize, 150, this);
   },
   watch: {
     input(val) {
@@ -135,8 +131,9 @@ export default {
       }
     },
     resize() {
-      let width = document.querySelector('#m-editor').clientWidth;
-      let editTools = document.querySelector('.edit-tools');
+      let width = this.$refs['mEditor'].clientWidth;
+      let editTools = this.$refs['editTools'];
+      console.log(width);
       if (width > 780) {
         editTools.style.width = '600px';
       } else if (680 < width) {
@@ -177,6 +174,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-@import "../../assets/css/editorText.scss";
-@import "../../assets/css/editorPreview.scss";
+@import "../assets/css/editorText.scss";
+@import "../assets/css/editorPreview.scss";
 </style>

@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: 'HelloWorld',
+  name: 'Example',
   components: {
     editor: () => import('./Editor/index')
   },
