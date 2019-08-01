@@ -84,7 +84,7 @@
   .edit-content {
     height: 100%;
     &-scroll {
-      padding-top: 40px;
+      padding-top: 41px;
       height: 100%;
     }
   }
@@ -95,14 +95,13 @@
     width: 50%;
     height: 100%;
     textarea {
-      padding: 8px 12px;
+      padding: 12px 12px 8px 12px;
       background-color: #1e1e1e;
       color: #fff;
       box-sizing: border-box;
       width: 100%;
       font-size: 14px;
-      line-height: 30px;
-      height: 100%;
+      line-height: 26px;
       border: none;
       outline: none;
       resize: none;
@@ -118,7 +117,28 @@
     }
   }
   .m-editor-input {
+    background: #1e1e1e;
     border-right: 1px solid #dddee1;
+    position: relative;
+    overflow-y: auto;
+    .side-line {
+      padding: 12px 0 8px;
+      z-index: 2;
+      list-style: none;
+      width: 20px;
+      box-sizing: border-box;
+      position: absolute;
+      left: 0;
+      top: 0;
+      background: #000;
+      li {
+        font-size: 14px;
+        color: #fff;
+        text-align: center;
+        width: 20px;
+        line-height: 26px;
+      }
+    }
   }
   .edit-full {
     width: 100%;
