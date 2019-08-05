@@ -173,7 +173,7 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 @import "../assets/css/editorText.scss";
 @import "../assets/css/editorPreview.scss";
 </style>
