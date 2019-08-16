@@ -9,7 +9,7 @@
 export default {
   name: 'app',
   components: {
-    Example: () => import('./Example')
+    Example: () => import('./example/Example')
   }
 }
 </script>

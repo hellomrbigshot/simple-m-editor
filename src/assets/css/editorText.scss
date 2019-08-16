@@ -128,14 +128,28 @@ $dark-preview-background: #282c34;
       background: $light-background;
       min-height: 100%;
       overflow: hidden;
+      pre, textarea {
+        display: block;
+        word-wrap: break-word;
+        margin: 0;
+        box-sizing: border-box;
+        text-align: left;
+        width: 100%;
+        box-sizing: border-box;
+        font-family: inherit;
+        font-size: 14px;
+        padding: 10px 0;
+        line-height: inherit;
+        display: block;
+      }
+      pre {
+        visibility: hidden;
+        white-space: pre-wrap;
+      }
       textarea {
           position: absolute;
           color: #2c3e50;
-          line-height: 30px;
-          padding: 10px 0;
-          font-size: 14px;
           background:$light-background;
-          box-sizing: border-box;
           top: 0;
           left: 0;
           bottom: 0;
@@ -143,7 +157,6 @@ $dark-preview-background: #282c34;
           border: none;
           resize: none;
           outline: none;
-          width: 100%;
           z-index: 2;
           min-height: 100%;
       }
