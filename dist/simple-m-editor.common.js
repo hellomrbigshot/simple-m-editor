@@ -1444,12 +1444,12 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-// CONCATENATED MODULE: ./node_modules/_cache-loader@2.0.1@cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"adcc1a08-vue-loader-template"}!./node_modules/_vue-loader@15.7.1@vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/_cache-loader@2.0.1@cache-loader/dist/cjs.js??ref--0-0!./node_modules/_vue-loader@15.7.1@vue-loader/lib??vue-loader-options!./src/Editor/index.vue?vue&type=template&id=97281ff6&
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"mEditor",class:['editor', _vm.fullScreen && 'editor-fullscreen'],attrs:{"id":"m-editor"},on:{"keydown":_vm.tabDelete}},[_c('div',{staticClass:"editor-toolbar"},[_c('ul',{ref:"editTools",staticClass:"editor-toolbar-tools"},[_vm._l((_vm.config),function(item,i){return [(item.showIcon && i < _vm.iconLength)?_c('li',{key:i},[_c('a',{class:['iconfont', item.icon],attrs:{"title":item.title},on:{"click":function($event){return _vm.addContent(item.content)}}})]):_vm._e()]})],2),_c('ul',{staticClass:"editor-toolbar-mode"},[_c('li',[_c('a',{class:['iconfont', !_vm.fullScreen && 'icon-quanping' || 'icon-huanyuanhuabu'],attrs:{"title":!_vm.fullScreen && '全屏' || '还原'},on:{"click":function($event){_vm.fullScreen = !_vm.fullScreen}}})]),_vm._l((_vm.modeConfig),function(mode,i){return _c('li',{key:i},[_c('a',{class:['iconfont', mode.icon, _vm.editMode === mode.mode && 'muted'],on:{"click":function($event){_vm.editMode = mode.mode}}})])})],2)]),_c('div',{staticClass:"editor-content"},[_c('div',{ref:"editContentWrapper",class:['editor-content-edit', _vm.editMode === 'edit' && 'active', _vm.editMode === 'preview' && 'inactive'],nativeOn:{"scroll":function($event){return _vm.handleScroll($event)}}},[_c('div',{ref:"editContent",staticClass:"editor-content-edit-block",on:{"mouseover":function($event){return _vm.handleMouseOver('edit')}}},[_c('ul',{staticClass:"editor-content-edit-column"},_vm._l((_vm.columnLength),function(i){return _c('li',{key:i},[_vm._v(_vm._s(i))])}),0),_c('div',{staticClass:"editor-content-edit-input"},[_c('pre',{ref:"inputPre"},[_vm._v(_vm._s(_vm.input))]),_c('textarea',{directives:[{name:"model",rawName:"v-model",value:(_vm.input),expression:"input"}],ref:"mTextarea",domProps:{"value":(_vm.input)},on:{"input":function($event){if($event.target.composing){ return; }_vm.input=$event.target.value}}})])])]),_c('div',{ref:"previewContentWrapper",class:['editor-content-preview', _vm.editMode === 'preview' && 'active', _vm.editMode === 'edit' && 'inactive'],on:{"mouseover":function($event){return _vm.handleMouseOver('preview')}}},[_c('div',{ref:"previewContent",staticClass:"m-editor-preview",domProps:{"innerHTML":_vm._s(_vm.compiledMarkdown)}})])])])}
+// CONCATENATED MODULE: ./node_modules/_cache-loader@2.0.1@cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"adcc1a08-vue-loader-template"}!./node_modules/_vue-loader@15.7.1@vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/_cache-loader@2.0.1@cache-loader/dist/cjs.js??ref--0-0!./node_modules/_vue-loader@15.7.1@vue-loader/lib??vue-loader-options!./src/Editor/index.vue?vue&type=template&id=7bb34922&
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"mEditor",class:['editor', _vm.fullScreen && 'editor-fullscreen'],attrs:{"id":"m-editor"},on:{"keydown":_vm.tabDelete}},[_c('div',{staticClass:"editor-toolbar"},[_c('ul',{ref:"editTools",staticClass:"editor-toolbar-tools"},[_vm._l((_vm.config),function(item,i){return [(item.showIcon && i < _vm.iconLength)?_c('li',{key:i},[_c('a',{class:['iconfont', item.icon],attrs:{"title":item.title},on:{"click":function($event){return _vm.addContent(item.content)}}})]):_vm._e()]})],2),_c('ul',{staticClass:"editor-toolbar-mode"},[_c('li',[_c('a',{class:['iconfont', !_vm.fullScreen && 'icon-quanping' || 'icon-huanyuanhuabu'],attrs:{"title":!_vm.fullScreen && '全屏' || '还原'},on:{"click":function($event){_vm.fullScreen = !_vm.fullScreen}}})]),_vm._l((_vm.modeConfig),function(mode,i){return _c('li',{key:i},[_c('a',{class:['iconfont', mode.icon, _vm.editMode === mode.mode && 'muted'],on:{"click":function($event){_vm.editMode = mode.mode}}})])})],2)]),_c('div',{staticClass:"editor-content"},[_c('div',{ref:"editContentWrapper",class:['editor-content-edit', _vm.editMode === 'edit' && 'active', _vm.editMode === 'preview' && 'inactive'],nativeOn:{"scroll":function($event){return _vm.handleScroll($event)}}},[_c('div',{ref:"editContent",staticClass:"editor-content-edit-block",on:{"mouseover":function($event){return _vm.handleMouseOver('edit')}}},[_c('ul',{staticClass:"editor-content-edit-column"},_vm._l((_vm.columnLength),function(i){return _c('li',{key:i},[_vm._v(_vm._s(i))])}),0),_c('div',{staticClass:"editor-content-edit-input"},[_c('pre',{ref:"inputPre"},[_vm._v(_vm._s(_vm.input))]),_c('textarea',{directives:[{name:"model",rawName:"v-model",value:(_vm.input),expression:"input"}],ref:"mTextarea",attrs:{"placeholder":_vm.placeholder},domProps:{"value":(_vm.input)},on:{"input":function($event){if($event.target.composing){ return; }_vm.input=$event.target.value}}})])])]),_c('div',{ref:"previewContentWrapper",class:['editor-content-preview', _vm.editMode === 'preview' && 'active', _vm.editMode === 'edit' && 'inactive'],on:{"mouseover":function($event){return _vm.handleMouseOver('preview')}}},[_c('div',{ref:"previewContent",staticClass:"m-editor-preview",domProps:{"innerHTML":_vm._s(_vm.compiledMarkdown)}})])])])}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/Editor/index.vue?vue&type=template&id=97281ff6&
+// CONCATENATED MODULE: ./src/Editor/index.vue?vue&type=template&id=7bb34922&
 
 // EXTERNAL MODULE: ./node_modules/_core-js@2.6.9@core-js/modules/es6.regexp.split.js
 var es6_regexp_split = __webpack_require__("7bc1");
@@ -1536,9 +1536,6 @@ var config = [{
   showIcon: true
 }];
 
-// EXTERNAL MODULE: ./node_modules/_core-js@2.6.9@core-js/modules/es6.array.iterator.js
-var es6_array_iterator = __webpack_require__("dac5");
-
 // EXTERNAL MODULE: ./node_modules/_core-js@2.6.9@core-js/modules/es6.object.keys.js
 var es6_object_keys = __webpack_require__("fb37");
 
@@ -1606,7 +1603,6 @@ var xml = __webpack_require__("6aa0");
 var xml_default = /*#__PURE__*/__webpack_require__.n(xml);
 
 // CONCATENATED MODULE: ./src/assets/js/hljs.js
-
 
 
 
@@ -1752,6 +1748,10 @@ String.prototype.splice = function (index, str) {
       validator: function validator(value) {
         return ['live', 'preview', 'edit'].indexOf(value) !== -1;
       }
+    },
+    placeholder: {
+      default: '请输入……',
+      type: String
     }
   },
   computed: {
@@ -1760,19 +1760,19 @@ String.prototype.splice = function (index, str) {
     }
   },
   mounted: function mounted() {
-    this.resizeEvent = this.throttle(this.handleResize, 150, this);
-    this.scrollEvent = this.throttle(this.handleScroll, 50, this);
+    this.resizeEvent = this.throttle(this.handleResize, 150, this); // this.scrollEvent = this.throttle(this.handleScroll, 50, this);
+
     this.editContentWrapper = this.$refs['editContentWrapper'];
     this.previewContentWrapper = this.$refs['previewContentWrapper'];
     window.addEventListener('resize', this.resizeEvent);
-    this.editContentWrapper.addEventListener('scroll', this.scrollEvent, true);
-    this.previewContentWrapper.addEventListener('scroll', this.scrollEvent, true);
+    this.editContentWrapper.addEventListener('scroll', this.handleScroll, true);
+    this.previewContentWrapper.addEventListener('scroll', this.handleScroll, true);
     this.handleResize();
   },
   beforeDestroy: function beforeDestroy() {
     window.removeEventListener('resize', this.resizeEvent);
-    this.editContentWrapper.removeEventListener('scroll', this.scrollEvent);
-    this.previewContentWrapper.removeEventListener('scroll', this.scrollEvent);
+    this.editContentWrapper.removeEventListener('scroll', this.handleScroll);
+    this.previewContentWrapper.removeEventListener('scroll', this.handleScroll);
   },
   watch: {
     input: function input(val) {

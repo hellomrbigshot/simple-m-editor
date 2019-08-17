@@ -25,7 +25,7 @@
           </ul>
           <div class="editor-content-edit-input">
             <pre ref="inputPre">{{ input }}</pre>
-            <textarea v-model="input" ref="mTextarea" />
+            <textarea v-model="input" :placeholder="placeholder" ref="mTextarea" />
             </div>
         </div>
       </div>
@@ -106,6 +106,10 @@ export default {
       validator: (value) => {
         return ['live', 'preview', 'edit'].indexOf(value) !== -1
       }
+    },
+    placeholder: {
+      default: '请输入……',
+      type: String
     }
   },
   computed: {
@@ -115,18 +119,18 @@ export default {
   },
   mounted() {
     this.resizeEvent = this.throttle(this.handleResize, 150, this);
-    this.scrollEvent = this.throttle(this.handleScroll, 50, this);
+    // this.scrollEvent = this.throttle(this.handleScroll, 50, this);
     this.editContentWrapper = this.$refs['editContentWrapper'];
     this.previewContentWrapper = this.$refs['previewContentWrapper'];
     window.addEventListener('resize', this.resizeEvent);
-    this.editContentWrapper.addEventListener('scroll', this.scrollEvent, true);
-    this.previewContentWrapper.addEventListener('scroll', this.scrollEvent, true);
+    this.editContentWrapper.addEventListener('scroll', this.handleScroll, true);
+    this.previewContentWrapper.addEventListener('scroll', this.handleScroll, true);
     this.handleResize();
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.resizeEvent);
-    this.editContentWrapper.removeEventListener('scroll', this.scrollEvent);
-    this.previewContentWrapper.removeEventListener('scroll', this.scrollEvent);
+    this.editContentWrapper.removeEventListener('scroll', this.handleScroll);
+    this.previewContentWrapper.removeEventListener('scroll', this.handleScroll);
   },
   watch: {
     input(val) {
