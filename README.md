@@ -2,11 +2,11 @@
 
 A simple markdown editor with Vue.js
 
-### Install
+## Install
 
 npm i -S simple-m-editor
 
-### Usage with Vue.js
+## Usage with Vue.js
 
 ```
 <template>
@@ -32,10 +32,26 @@ export default {
 }
 ```
 
-### Preview
+## Preview
 
 [address](https://hellomrbigshot.github.io/simple-m-editor/dist/index.html)
 
-### Licence
+## Api
 
-[MIT Licence](./LICENSE).
+### props
+
+| name       | type   | defautl     | description     |
+| ---------- | -------| ----------- | --------------- |
+| placeholder| String | 请输入……     | placehoder      |
+| mode       | String | live        | one of ['live', 'edit', 'preview']|
+
+
+### event
+
+| name     | params | description    |
+| -------  | ------ | -----------    |
+| onChange | Object: { content, htmlContent } | change event |
+
+## Licence
+
+[MIT Licence](./LICENSE)
