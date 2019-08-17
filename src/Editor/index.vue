@@ -226,6 +226,6 @@ export default {
 };
 </script>
 <style lang="scss">
-@import "../assets/css/editorText.scss";
-@import "../assets/css/editorPreview.scss";
+@import "../assets/css/editor.scss";
+@import "../assets/css/preview.scss";
 </style>
