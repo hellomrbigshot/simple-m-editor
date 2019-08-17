@@ -5,19 +5,20 @@
 </template>
 
 <script>
+import text from './example.md';
 export default {
   name: 'Example',
   components: {
-    editor: () => import('./Editor/index')
+    editor: () => import('../Editor/index')
   },
   data () {
     return {
-      text: ''
+      text
     }
   },
   methods: {
     change (answer) {
-      console.log(answer);
+      // console.log(answer);
     }
   }
 }

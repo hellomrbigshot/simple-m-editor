@@ -1,40 +1,36 @@
 <template>
-  <div id="m-editor" ref="mEditor" :class="['m-editor', fullScreen && 'm-editor_fullscreen']" @keydown="tabDelete">
-    <div class="edit-toolbar">
-      <ul class="edit-tools pull-left" ref="editTools">
+  <div id="m-editor" ref="mEditor" :class="['editor', fullScreen && 'editor-fullscreen']" @keydown="tabDelete">
+    <div class="editor-toolbar">
+      <ul class="editor-toolbar-tools" ref="editTools">
         <template v-for="(item, i) in config">
           <li :key="i" v-if="item.showIcon && i < iconLength">
-            <a :class="['iconfont', item.icon]" :title="item.title" @click="addContent(item.content)"></a>
+            <a :class="['iconfont', item.icon]" :title="item.title" @click="addContent(item.content)" />
           </li>
         </template>
       </ul>
-      <ul class="edit-mode pull-right">
+      <ul class="editor-toolbar-mode">
         <li>
-          <a :class="['iconfont', !fullScreen && 'icon-quanping' || 'icon-huanyuanhuabu']" :title="!fullScreen && '全屏' || '还原'" @click="fullScreen=!fullScreen"></a>
+          <a :class="['iconfont', !fullScreen && 'icon-quanping' || 'icon-huanyuanhuabu']" :title="!fullScreen && '全屏' || '还原'" @click="fullScreen = !fullScreen" />
         </li>
-        <li>
-          <a :class="['iconfont', 'icon-tianxie', mode === 'edit' && 'muted']" title="编辑" @click="mode='edit'"></a>
-        </li>
-        <li>
-          <a :class="['iconfont', 'icon-fenlan', mode === 'live' && 'muted']" title="分栏" @click="mode='live'"></a>
-        </li>
-        <li>
-          <a :class="['iconfont', 'icon-zitiyulan', mode === 'preview' && 'muted']" title="预览" @click="mode='preview'"></a>
+        <li v-for="(mode, i) in modeConfig" :key="i">
+          <a :class="['iconfont', mode.icon, editMode === mode.mode && 'muted']" @click="editMode = mode.mode" />
         </li>
       </ul>
     </div>
-    <div :class="['edit-content']">
-      <div class="edit-content-scroll">
-        <template v-show="mode!=='preview'">
-          <div v-show="mode!=='preview'" :class="['m-editor-input', mode === 'edit' && 'edit-full']" ref="inputWrapper">
-            <textarea v-model="input" ref="mTextarea" />
-          </div>
-        </template>
-        <template v-show="mode!=='edit'">
-          <div :class="['m-editor-preview', mode === 'preview' && 'edit-full']">
-            <div ref="previewContent" id="m-editor-preview" v-html="compiledMarkdown"></div>
-          </div>
-        </template>
+    <div class="editor-content">
+      <div ref="editContentWrapper" :class="['editor-content-edit', editMode === 'edit' && 'active', editMode === 'preview' && 'inactive']" @scroll.native="handleScroll">
+        <div class="editor-content-edit-block" ref="editContent" @mouseover="handleMouseOver('edit')">
+          <ul class="editor-content-edit-column">
+            <li v-for="i of columnLength" :key="i">{{ i }}</li>
+          </ul>
+          <div class="editor-content-edit-input">
+            <pre ref="inputPre">{{ input }}</pre>
+            <textarea v-model="input" :placeholder="placeholder" ref="mTextarea" />
+            </div>
+        </div>
+      </div>
+      <div ref="previewContentWrapper" @mouseover="handleMouseOver('preview')" :class="['editor-content-preview', editMode === 'preview' && 'active', editMode === 'edit' && 'inactive']">
+        <div ref="previewContent" class="m-editor-preview" v-html="compiledMarkdown" />
       </div>
     </div>
   </div>
@@ -44,6 +40,23 @@ import marked from 'marked';
 import { config } from '../assets/js/config';
 import hljs from '../assets/js/hljs';
 import '../assets/css/icon.css';
+const modeConfig = [
+  {
+    mode: 'edit',
+    title: '编辑',
+    icon: 'icon-tianxie'
+  },
+  {
+    mode: 'live',
+    title: '分栏',
+    icon: 'icon-fenlan'
+  },
+  {
+    mode: 'preview',
+    title: '预览',
+    icon: 'icon-zitiyulan'
+  }
+]
 marked.setOptions({
   renderer: new marked.Renderer(),
   highlight: (code) => {
@@ -54,12 +67,12 @@ marked.setOptions({
   tables: true,
   breaks: true,
   headerIds: true,
-  // headerPrefix: 'm-editor',
   sanitize: false,
   smartLists: true,
   smartypants: false,
   xhtml: false
 });
+
 String.prototype.splice = function (index, str) {
   return `${this.slice(0, index)}${str}${this.slice(index)}`;
 };
@@ -69,16 +82,34 @@ export default {
   data() {
     return {
       config,
+      modeConfig,
       input: this.value,
-      mode: 'live',
+      editMode: this.mode,
       fullScreen: false,
-      iconLength: config.length
+      iconLength: config.length,
+      resizeEvent: null,
+      scrollEvent: null,
+      columnLength: 1,
+      editContentWrapper: null,
+      previewContentWrapper: null,
+      scrollType: null
     };
   },
   props: {
     value: {
       type: String,
       default: '### 用 markdown 写一篇文章'
+    },
+    mode: {
+      default: 'live',
+      type: String,
+      validator: (value) => {
+        return ['live', 'preview', 'edit'].indexOf(value) !== -1
+      }
+    },
+    placeholder: {
+      default: '请输入……',
+      type: String
     }
   },
   computed: {
@@ -87,8 +118,19 @@ export default {
     }
   },
   mounted() {
-    this.resize();
-    // window.onresize = this.throttle(this.resize, 150, this);
+    this.resizeEvent = this.throttle(this.handleResize, 150, this);
+    // this.scrollEvent = this.throttle(this.handleScroll, 50, this);
+    this.editContentWrapper = this.$refs['editContentWrapper'];
+    this.previewContentWrapper = this.$refs['previewContentWrapper'];
+    window.addEventListener('resize', this.resizeEvent);
+    this.editContentWrapper.addEventListener('scroll', this.handleScroll, true);
+    this.previewContentWrapper.addEventListener('scroll', this.handleScroll, true);
+    this.handleResize();
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.resizeEvent);
+    this.editContentWrapper.removeEventListener('scroll', this.handleScroll);
+    this.previewContentWrapper.removeEventListener('scroll', this.handleScroll);
   },
   watch: {
     input(val) {
@@ -100,16 +142,16 @@ export default {
     },
     value(val) {
       this.input = val;
+      this.handleColumnChange();
     },
     fullScreen() {
-      setTimeout(() => {
-        this.resize();
-      });
+      this.$nextTick(() => {
+        this.handleResize()
+      })
     }
   },
   methods: {
-    tabDelete(e) {
-      // 自定义默认 tab 事件
+    tabDelete(e) { // 自定义默认 tab 事件
       const TABKEY = 9;
       if (e.keyCode === TABKEY) {
         this.addContent('    ');
@@ -130,50 +172,60 @@ export default {
         });
       }
     },
-    resize() {
+    handleResize() { // resize
       let width = this.$refs['mEditor'].clientWidth;
       let editTools = this.$refs['editTools'];
-      console.log(width);
       if (width > 780) {
-        editTools.style.width = '600px';
+        this.iconLength = this.config.length;
       } else if (680 < width) {
-        editTools.style.width = '480px';
+        this.iconLength = this.config.length - 3;
       } else if (640 < width) {
-        editTools.style.width = '400px';
+        this.iconLength = this.config.length - 6;
       } else if (500 < width) {
-        editTools.style.width = '320px';
-        this.mode = 'live';
+        this.iconLength = this.config.length - 9;
       } else if (width < 500) {
-        editTools.style.width = '0';
-        this.mode = 'edit';
+        this.iconLength = 0;
+        this.editMode = 'edit';
       }
+      this.handleColumnChange();
     },
-    debunce(fun, wait, ctx) {
-      let time;
-      return () => {
-        const args = arguments;
-        clearTimeout(time);
-        time = setTimeout(() => {
-          fun.apply(ctx, args);
-        }, wait);
-      };
-    },
-    throttle(fun, wait, ctx) {
-      // 节流函数
+    throttle(fun, wait, ctx) { // 节流函数
       let previous = 0;
       return () => {
-        let args = arguments;
         let now = +new Date();
         if (now - previous > wait) {
           fun.apply(ctx, arguments);
           previous = now;
         }
       };
+    },
+    handleColumnChange() {
+      if (this.mode === 'preview') return false;
+      this.$nextTick(() => {
+        this.columnLength = Math.max(this.input.split('\n').length, (this.$refs['inputPre'].scrollHeight - 20) / 30);
+      })
+    },
+    handleMouseOver(type) {
+      this.scrollType = type;
+    },
+    handleScroll() { // 滚动事件
+      const editContentWrapper = this.$refs['editContentWrapper'];
+      const previewContentWrapper = this.$refs['previewContentWrapper'];
+      const editScroll = editContentWrapper.scrollTop;
+      const previewScroll = previewContentWrapper.scrollTop;
+      const editScrollMax = editContentWrapper.scrollHeight - editContentWrapper.offsetHeight;
+      const previewScrollMax = previewContentWrapper.scrollHeight - previewContentWrapper.offsetHeight;
+      if (this.scrollType === 'edit') {
+        previewContentWrapper.scrollTop = previewScrollMax * (editScroll / editScrollMax);
+      } else if (this.scrollType === 'preview') {
+        editContentWrapper.scrollTop = editScrollMax * (previewScroll / previewScrollMax);
+      }
+
     }
   }
 };
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 @import "../assets/css/editorText.scss";
 @import "../assets/css/editorPreview.scss";
 </style>

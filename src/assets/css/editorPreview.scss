@@ -1,8 +1,20 @@
 @import '../assets/css/tomorrow.css';
 .m-editor-preview {
+  text-align: left;
   line-height: 2;
+  ul, ol {
+    margin: 1.5em 0;
+    padding: 0 2em;
+  }
   ul {
-    list-style: disc;
+    li {
+      list-style: disc;
+    }
+  }
+  ol {
+    li {
+      list-style: decimal;
+    }
   }
   a {
     color: #2d8cf0;
@@ -54,11 +66,6 @@
         background: #f8f8f9;
       }
     }
-  }
-  ul, ol {
-    margin: 1.5em 0;
-    padding: 0 2em;
-    // list-style: circle;
   }
   ol {
     padding: 0 2em;

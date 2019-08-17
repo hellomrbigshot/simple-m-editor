@@ -1,12 +1,17 @@
 # simple-m-editor
-一个基于 Vue.js 的简单的 markdown 编辑器。
-### 安装
+
+A simple markdown editor with Vue.js
+
+## Install
+
 npm i -S simple-m-editor
-### 使用
+
+## Usage with Vue.js
+
 ```
 <template>
 <div>
-  <m-editor v-model="text"></m-editor>
+  <m-editor v-model="text" @on-change="handleChange"></m-editor>
 </div>
 </template>
 import mEditor from 'simple-m-editor'
@@ -18,8 +23,35 @@ export default {
     return {
       text: ''
     }
+  },
+  methods: {
+    handleChange(data) {
+      console.log(data)
+    }
   }
 }
 ```
-### 预览
-[点我预览](https://hellomrbigshot.github.io/simple-m-editor/dist/index.html)
+
+## Preview
+
+[address](https://hellomrbigshot.github.io/simple-m-editor/dist/index.html)
+
+## Api
+
+### props
+
+| name       | type   | defautl     | description     |
+| ---------- | -------| ----------- | --------------- |
+| placeholder| String | 请输入……     | placehoder      |
+| mode       | String | live        | one of ['live', 'edit', 'preview']|
+
+
+### event
+
+| name     | params | description    |
+| -------  | ------ | -----------    |
+| onChange | Object: { content, htmlContent } | change event |
+
+## Licence
+
+[MIT Licence](./LICENSE)

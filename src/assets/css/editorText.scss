@@ -1,4 +1,15 @@
-.m-editor, .m-editor-preview {
+$light-background: #fff;
+$light-color: #2c3e50;
+$light-preview-background: #fcfcfc;
+$light-preview-color: #2c3e50;
+$light-column-background: #eee;
+$light-column-color: #2c3e50;
+
+$dark-background: #1e1e1e;
+$dark-color: #fff;
+$dark-preview-background: #282c34;
+
+.editor, .editor-preview {
   span, code, a, input, em, s, strong, small, cite, q, abbr, dfn, data, time, var, samp, sub, sup, 
   kbd, i, b, u, mark, ruby, rt, rb, bdi, bdo, br, wbr, ins, del,
   footer, address, main, article, nav, body, section, aside, header, h1, h2, h3, h4, h5, h6,
@@ -11,142 +22,147 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-  }
-}
-.m-editor /deep/ {
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+    list-style: none;
   }
 }
 
-.m-editor {
-  position: relative;
+.editor {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #eee;
+  box-shadow: 0 0 12px rgba(0, 0, 0, .1);
   height: 500px;
-  color: #333;
-  line-height: 40px;
-  font-size: 14px;
-  border: 1px solid #dddee1;
-  overflow: hidden;
-  text-align: left;
-  
-  .edit-toolbar {
-    border-bottom: 1px solid #dddee1;
-    position: absolute;
-    background: #fff;
-    width: 100%;
-    .edit-tools, .edit-mode {
-      line-height: 0;
-      font-size: 0;
-      white-space: nowrap;
-      overflow: hidden;
-      li {
-        font-size: 18px;
-        display: inline-block;
-        overflow: auto;
-        a {
-          display: block;
-          font-size: 18px;
-          width: 40px;
-          height: 40px;
-          line-height: 30px;
-          border: 5px solid #fff;
-          text-align: center;
-          color: #999;
-          &:hover {
-            cursor: pointer;
-            border-color: #f6f6f6;
-            background-color: #f6f6f6;
-            color: #64b587;
-          }
+  border-radius: 8px;
+}
+.editor-toolbar {
+  border-radius: 8px 8px 0 0;
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #efefef;
+  &-tools, &-mode {
+    list-style: none;
+    display: flex;
+    li {
+      width: 30px;
+      margin: 5px 3px 5px 3px;
+      a {
+        line-height: 20px;
+        font-size: 15px;
+        padding: 5px;
+        display: block;
+        &:hover {
+          color: #64b587;
+          background: #f6f6f6;
+          cursor: pointer;
+          border-radius: 5px;
         }
-        .muted {
+        &.muted {
+          background: #efefef;
           color: #ddd;
-          border-color: #f6f6f6;
-          background-color: #f6f6f6;
-          cursor: default;
           &:hover {
             cursor: default;
             color: #ddd;
           }
-          
         }
       }
     }
-    .pull-left {
-      float: left;
-    }
-    .pull-right {
-      float: right;
-    }
   }
-  .edit-content {
-    height: 100%;
-    &-scroll {
-      padding-top: 41px;
-      height: 100%;
-    }
-  }
-  .m-editor-input,
-  .m-editor-preview {
-    box-sizing: border-box;
-    float: left;
-    width: 50%;
-    height: 100%;
-    textarea {
-      padding: 12px 12px 8px 12px;
-      background-color: #1e1e1e;
-      color: #fff;
-      box-sizing: border-box;
-      width: 100%;
-      font-size: 14px;
-      line-height: 26px;
-      border: none;
-      outline: none;
-      resize: none;
-      font-family: Arial, Helvetica, sans-serif;
-      min-height: 100%;
-    }
-    div {
-      padding: 8px 12px;
-      width: 100%;
-      height: 100%;
-      overflow-y: auto;
-      // background: #f6f6f6;
-      background: #fff;
-    }
-  }
-  .m-editor-input {
-    background: #1e1e1e;
-    border-right: 1px solid #dddee1;
-    position: relative;
-    overflow-y: auto;
-    .side-line {
-      padding: 12px 0 8px;
-      z-index: 2;
-      list-style: none;
-      width: 20px;
-      box-sizing: border-box;
-      position: absolute;
-      left: 0;
-      top: 0;
-      background: #000;
-      li {
-        font-size: 14px;
-        color: #fff;
-        text-align: center;
-        width: 20px;
-        line-height: 26px;
-      }
-    }
-  }
-  .edit-full {
-    width: 100%;
-    border-right: 0;
+  &-tools {
+    padding-left: 10px!important;
   }
 }
-.m-editor_fullscreen {
+.editor-content {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  border-radius: 0 0 8px 8px;
+}
+.editor-content-preview, .editor-content-edit {
+  flex: 0 0 50%;
+  height: 100%;
+  overflow-y: auto;
+  &.active {
+    flex: 0 0 100%;
+  }
+  &.inactive {
+    flex: 0 0 0;
+  }
+  transition: all .3s ease-in;
+}
+.editor-content-preview {
+  background: $light-preview-background;
+  color: $light-preview-color;
+  padding: 10px!important;
+}
+
+.editor-content-edit {
+  background: $light-background;
+  &-block {
+      display: flex;
+      overflow: hidden;
+      min-height: 100%;
+  }
+
+  &-column {
+      min-width: 30px;
+      padding: 10px 0 100px!important;
+      min-height: 100%;
+      text-align: center;
+      list-style: none;
+      background: $light-column-background;
+      color: $light-column-color;
+      font-size: 13px;
+      li {
+          list-style: none;
+          line-height: 30px;
+      }
+  }
+
+  &-input {
+      margin-left: 10px!important;
+      position: relative;
+      flex: 1 0 0;
+      line-height: 30px;
+      background: $light-background;
+      min-height: 100%;
+      overflow: hidden;
+      pre, textarea {
+        display: block;
+        word-wrap: break-word;
+        margin: 0;
+        box-sizing: border-box;
+        text-align: left;
+        width: 100%;
+        box-sizing: border-box;
+        font-family: inherit;
+        font-size: 14px;
+        padding: 10px 0;
+        line-height: inherit;
+        display: block;
+      }
+      pre {
+        visibility: hidden;
+        white-space: pre-wrap;
+      }
+      textarea {
+          position: absolute;
+          color: #2c3e50;
+          background:$light-background;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          height: 100%;
+          border: none;
+          resize: none;
+          outline: none;
+          z-index: 2;
+          min-height: 100%;
+      }
+  }
+}
+.editor-fullscreen {
   position: fixed;
   top: 0;
   left: 0;
@@ -155,5 +171,5 @@
   border: none;
   width: 100%;
   height: 100vh !important;
-  background-color: #f6f6f6;
+  background-color: #fff;
 }

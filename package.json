@@ -1,6 +1,6 @@
 {
   "name": "simple-m-editor",
-  "version": "0.2.9",
+  "version": "0.3.2",
   "private": false,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -28,6 +28,7 @@
     "eslint-plugin-vue": "^5.2.2",
     "node-sass": "^4.11.0",
     "sass-loader": "^7.1.0",
+    "text-loader": "^0.0.1",
     "vue-template-compiler": "^2.6.9"
   },
   "eslintConfig": {
