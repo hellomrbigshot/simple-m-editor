@@ -1,24 +1,28 @@
 <template>
   <div class="hello">
-    <editor v-model="text"></editor>
+    <editor v-model="text" @on-change="change" />
   </div>
 </template>
 
 <script>
+import text from './example.md';
 export default {
-  name: 'HelloWorld',
+  name: 'Example',
   components: {
-    editor: () => import('./markdownEditor.vue')
+    editor: () => import('../Editor/index')
   },
   data () {
     return {
-      text: ''
+      text
+    }
+  },
+  methods: {
+    change (answer) {
+      // console.log(answer);
     }
   }
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h3 {
   margin: 40px 0 0;
@@ -33,5 +37,9 @@ li {
 }
 a {
   color: #42b983;
+}
+.hello {
+  width: 80%;
+  margin: 0 auto;
 }
 </style>

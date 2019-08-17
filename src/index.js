@@ -1,4 +1,4 @@
-import markdownEditor from './markdownEditor.vue'
+import markdownEditor from './Editor/index'
 
 // import 方式引入
 export default markdownEditor
@@ -14,5 +14,3 @@ if (typeof window !== 'undefined' && window.Vue) {
 //     Vue.component('m-editor', markdownEditor)
 //   }
 // }
-
-

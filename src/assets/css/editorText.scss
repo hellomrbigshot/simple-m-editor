@@ -1,0 +1,175 @@
+$light-background: #fff;
+$light-color: #2c3e50;
+$light-preview-background: #fcfcfc;
+$light-preview-color: #2c3e50;
+$light-column-background: #eee;
+$light-column-color: #2c3e50;
+
+$dark-background: #1e1e1e;
+$dark-color: #fff;
+$dark-preview-background: #282c34;
+
+.editor, .editor-preview {
+  span, code, a, input, em, s, strong, small, cite, q, abbr, dfn, data, time, var, samp, sub, sup, 
+  kbd, i, b, u, mark, ruby, rt, rb, bdi, bdo, br, wbr, ins, del,
+  footer, address, main, article, nav, body, section, aside, header, h1, h2, h3, h4, h5, h6,
+  div, p, pre, hr, blockquote, ol, li, ul, dl, dt, dd, figure, figcaption,
+  img, iframe, embed, object, param, video, audio, source, track, canvas, map, area, svg, math,
+  table, caption, colgroup, col, tbody, thead, tfoot, tr, td, th,
+  form, fieldset, legend, label, input, button, select, datalist, optgroup, option, textarea, keygen, output, progress, meter,
+  details, summary, menuitem, menu
+   {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    list-style: none;
+  }
+}
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #eee;
+  box-shadow: 0 0 12px rgba(0, 0, 0, .1);
+  height: 500px;
+  border-radius: 8px;
+}
+.editor-toolbar {
+  border-radius: 8px 8px 0 0;
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #efefef;
+  &-tools, &-mode {
+    list-style: none;
+    display: flex;
+    li {
+      width: 30px;
+      margin: 5px 3px 5px 3px;
+      a {
+        line-height: 20px;
+        font-size: 15px;
+        padding: 5px;
+        display: block;
+        &:hover {
+          color: #64b587;
+          background: #f6f6f6;
+          cursor: pointer;
+          border-radius: 5px;
+        }
+        &.muted {
+          background: #efefef;
+          color: #ddd;
+          &:hover {
+            cursor: default;
+            color: #ddd;
+          }
+        }
+      }
+    }
+  }
+  &-tools {
+    padding-left: 10px!important;
+  }
+}
+.editor-content {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  border-radius: 0 0 8px 8px;
+}
+.editor-content-preview, .editor-content-edit {
+  flex: 0 0 50%;
+  height: 100%;
+  overflow-y: auto;
+  &.active {
+    flex: 0 0 100%;
+  }
+  &.inactive {
+    flex: 0 0 0;
+  }
+  transition: all .3s ease-in;
+}
+.editor-content-preview {
+  background: $light-preview-background;
+  color: $light-preview-color;
+  padding: 10px!important;
+}
+
+.editor-content-edit {
+  background: $light-background;
+  &-block {
+      display: flex;
+      overflow: hidden;
+      min-height: 100%;
+  }
+
+  &-column {
+      min-width: 30px;
+      padding: 10px 0 100px!important;
+      min-height: 100%;
+      text-align: center;
+      list-style: none;
+      background: $light-column-background;
+      color: $light-column-color;
+      font-size: 13px;
+      li {
+          list-style: none;
+          line-height: 30px;
+      }
+  }
+
+  &-input {
+      margin-left: 10px!important;
+      position: relative;
+      flex: 1 0 0;
+      line-height: 30px;
+      background: $light-background;
+      min-height: 100%;
+      overflow: hidden;
+      pre, textarea {
+        display: block;
+        word-wrap: break-word;
+        margin: 0;
+        box-sizing: border-box;
+        text-align: left;
+        width: 100%;
+        box-sizing: border-box;
+        font-family: inherit;
+        font-size: 14px;
+        padding: 10px 0;
+        line-height: inherit;
+        display: block;
+      }
+      pre {
+        visibility: hidden;
+        white-space: pre-wrap;
+      }
+      textarea {
+          position: absolute;
+          color: #2c3e50;
+          background:$light-background;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          height: 100%;
+          border: none;
+          resize: none;
+          outline: none;
+          z-index: 2;
+          min-height: 100%;
+      }
+  }
+}
+.editor-fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  margin-top: 0;
+  border: none;
+  width: 100%;
+  height: 100vh !important;
+  background-color: #fff;
+}
