@@ -125,10 +125,107 @@ module.exports = function (it, key) {
 
 /***/ }),
 
+/***/ "0d5f":
+/***/ (function(module, exports, __webpack_require__) {
+
+// 7.3.20 SpeciesConstructor(O, defaultConstructor)
+var anObject = __webpack_require__("a013");
+var aFunction = __webpack_require__("648a");
+var SPECIES = __webpack_require__("8b37")('species');
+module.exports = function (O, D) {
+  var C = anObject(O).constructor;
+  var S;
+  return C === undefined || (S = anObject(C)[SPECIES]) == undefined ? D : aFunction(S);
+};
+
+
+/***/ }),
+
 /***/ "14fc":
 /***/ (function(module, exports) {
 
 module.exports = {};
+
+
+/***/ }),
+
+/***/ "1f98":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var regexpFlags = __webpack_require__("f425");
+
+var nativeExec = RegExp.prototype.exec;
+// This always refers to the native implementation, because the
+// String#replace polyfill uses ./fix-regexp-well-known-symbol-logic.js,
+// which loads this file before patching the method.
+var nativeReplace = String.prototype.replace;
+
+var patchedExec = nativeExec;
+
+var LAST_INDEX = 'lastIndex';
+
+var UPDATES_LAST_INDEX_WRONG = (function () {
+  var re1 = /a/,
+      re2 = /b*/g;
+  nativeExec.call(re1, 'a');
+  nativeExec.call(re2, 'a');
+  return re1[LAST_INDEX] !== 0 || re2[LAST_INDEX] !== 0;
+})();
+
+// nonparticipating capturing group, copied from es5-shim's String#split patch.
+var NPCG_INCLUDED = /()??/.exec('')[1] !== undefined;
+
+var PATCH = UPDATES_LAST_INDEX_WRONG || NPCG_INCLUDED;
+
+if (PATCH) {
+  patchedExec = function exec(str) {
+    var re = this;
+    var lastIndex, reCopy, match, i;
+
+    if (NPCG_INCLUDED) {
+      reCopy = new RegExp('^' + re.source + '$(?!\\s)', regexpFlags.call(re));
+    }
+    if (UPDATES_LAST_INDEX_WRONG) lastIndex = re[LAST_INDEX];
+
+    match = nativeExec.call(re, str);
+
+    if (UPDATES_LAST_INDEX_WRONG && match) {
+      re[LAST_INDEX] = re.global ? match.index + match[0].length : lastIndex;
+    }
+    if (NPCG_INCLUDED && match && match.length > 1) {
+      // Fix browsers whose `exec` methods don't consistently return `undefined`
+      // for NPCG, like IE8. NOTE: This doesn' work for /(.?)?/
+      // eslint-disable-next-line no-loop-func
+      nativeReplace.call(match[0], reCopy, function () {
+        for (i = 1; i < arguments.length - 2; i++) {
+          if (arguments[i] === undefined) match[i] = undefined;
+        }
+      });
+    }
+
+    return match;
+  };
+}
+
+module.exports = patchedExec;
+
+
+/***/ }),
+
+/***/ "22e9":
+/***/ (function(module, exports, __webpack_require__) {
+
+// 7.2.8 IsRegExp(argument)
+var isObject = __webpack_require__("88dd");
+var cof = __webpack_require__("94ac");
+var MATCH = __webpack_require__("8b37")('match');
+module.exports = function (it) {
+  var isRegExp;
+  return isObject(it) && ((isRegExp = it[MATCH]) !== undefined ? !!isRegExp : cof(it) == 'RegExp');
+};
 
 
 /***/ }),
@@ -266,6 +363,59 @@ module.exports = function(hljs) {
 
 /***/ }),
 
+/***/ "2f03":
+/***/ (function(module, exports, __webpack_require__) {
+
+var toInteger = __webpack_require__("c481");
+var defined = __webpack_require__("f01a");
+// true  -> String#at
+// false -> String#codePointAt
+module.exports = function (TO_STRING) {
+  return function (that, pos) {
+    var s = String(defined(that));
+    var i = toInteger(pos);
+    var l = s.length;
+    var a, b;
+    if (i < 0 || i >= l) return TO_STRING ? '' : undefined;
+    a = s.charCodeAt(i);
+    return a < 0xd800 || a > 0xdbff || i + 1 === l || (b = s.charCodeAt(i + 1)) < 0xdc00 || b > 0xdfff
+      ? TO_STRING ? s.charAt(i) : a
+      : TO_STRING ? s.slice(i, i + 2) : (a - 0xd800 << 10) + (b - 0xdc00) + 0x10000;
+  };
+};
+
+
+/***/ }),
+
+/***/ "35dd":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var classof = __webpack_require__("4819");
+var builtinExec = RegExp.prototype.exec;
+
+ // `RegExpExec` abstract operation
+// https://tc39.github.io/ecma262/#sec-regexpexec
+module.exports = function (R, S) {
+  var exec = R.exec;
+  if (typeof exec === 'function') {
+    var result = exec.call(R, S);
+    if (typeof result !== 'object') {
+      throw new TypeError('RegExp exec method returned something other than an Object or null');
+    }
+    return result;
+  }
+  if (classof(R) !== 'RegExp') {
+    throw new TypeError('RegExp#exec called on incompatible receiver');
+  }
+  return builtinExec.call(R, S);
+};
+
+
+/***/ }),
+
 /***/ "3754":
 /***/ (function(module, exports) {
 
@@ -275,6 +425,23 @@ var global = module.exports = typeof window != 'undefined' && window.Math == Mat
   // eslint-disable-next-line no-new-func
   : Function('return this')();
 if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
+
+
+/***/ }),
+
+/***/ "3a59":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var regexpExec = __webpack_require__("1f98");
+__webpack_require__("b2f5")({
+  target: 'RegExp',
+  proto: true,
+  forced: regexpExec !== /./.exec
+}, {
+  exec: regexpExec
+});
 
 
 /***/ }),
@@ -307,6 +474,36 @@ module.exports = Object.getPrototypeOf || function (O) {
   if (typeof O.constructor == 'function' && O instanceof O.constructor) {
     return O.constructor.prototype;
   } return O instanceof Object ? ObjectProto : null;
+};
+
+
+/***/ }),
+
+/***/ "4819":
+/***/ (function(module, exports, __webpack_require__) {
+
+// getting tag from 19.1.3.6 Object.prototype.toString()
+var cof = __webpack_require__("94ac");
+var TAG = __webpack_require__("8b37")('toStringTag');
+// ES3 wrong here
+var ARG = cof(function () { return arguments; }()) == 'Arguments';
+
+// fallback for IE11 Script Access Denied error
+var tryGet = function (it, key) {
+  try {
+    return it[key];
+  } catch (e) { /* empty */ }
+};
+
+module.exports = function (it) {
+  var O, T, B;
+  return it === undefined ? 'Undefined' : it === null ? 'Null'
+    // @@toStringTag case
+    : typeof (T = tryGet(O = Object(it), TAG)) == 'string' ? T
+    // builtinTag case
+    : ARG ? cof(O)
+    // ES3 arguments fallback
+    : (B = cof(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : B;
 };
 
 
@@ -523,6 +720,110 @@ module.exports = function(hljs) {
     ]
   };
 };
+
+/***/ }),
+
+/***/ "629c":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+__webpack_require__("3a59");
+var redefine = __webpack_require__("e5ef");
+var hide = __webpack_require__("743d");
+var fails = __webpack_require__("b6f1");
+var defined = __webpack_require__("f01a");
+var wks = __webpack_require__("8b37");
+var regexpExec = __webpack_require__("1f98");
+
+var SPECIES = wks('species');
+
+var REPLACE_SUPPORTS_NAMED_GROUPS = !fails(function () {
+  // #replace needs built-in support for named groups.
+  // #match works fine because it just return the exec results, even if it has
+  // a "grops" property.
+  var re = /./;
+  re.exec = function () {
+    var result = [];
+    result.groups = { a: '7' };
+    return result;
+  };
+  return ''.replace(re, '$<a>') !== '7';
+});
+
+var SPLIT_WORKS_WITH_OVERWRITTEN_EXEC = (function () {
+  // Chrome 51 has a buggy "split" implementation when RegExp#exec !== nativeExec
+  var re = /(?:)/;
+  var originalExec = re.exec;
+  re.exec = function () { return originalExec.apply(this, arguments); };
+  var result = 'ab'.split(re);
+  return result.length === 2 && result[0] === 'a' && result[1] === 'b';
+})();
+
+module.exports = function (KEY, length, exec) {
+  var SYMBOL = wks(KEY);
+
+  var DELEGATES_TO_SYMBOL = !fails(function () {
+    // String methods call symbol-named RegEp methods
+    var O = {};
+    O[SYMBOL] = function () { return 7; };
+    return ''[KEY](O) != 7;
+  });
+
+  var DELEGATES_TO_EXEC = DELEGATES_TO_SYMBOL ? !fails(function () {
+    // Symbol-named RegExp methods call .exec
+    var execCalled = false;
+    var re = /a/;
+    re.exec = function () { execCalled = true; return null; };
+    if (KEY === 'split') {
+      // RegExp[@@split] doesn't call the regex's exec method, but first creates
+      // a new one. We need to return the patched regex when creating the new one.
+      re.constructor = {};
+      re.constructor[SPECIES] = function () { return re; };
+    }
+    re[SYMBOL]('');
+    return !execCalled;
+  }) : undefined;
+
+  if (
+    !DELEGATES_TO_SYMBOL ||
+    !DELEGATES_TO_EXEC ||
+    (KEY === 'replace' && !REPLACE_SUPPORTS_NAMED_GROUPS) ||
+    (KEY === 'split' && !SPLIT_WORKS_WITH_OVERWRITTEN_EXEC)
+  ) {
+    var nativeRegExpMethod = /./[SYMBOL];
+    var fns = exec(
+      defined,
+      SYMBOL,
+      ''[KEY],
+      function maybeCallNative(nativeMethod, regexp, str, arg2, forceStringMethod) {
+        if (regexp.exec === regexpExec) {
+          if (DELEGATES_TO_SYMBOL && !forceStringMethod) {
+            // The native String method already delegates to @@method (this
+            // polyfilled function), leasing to infinite recursion.
+            // We avoid it by directly calling the native @@method method.
+            return { done: true, value: nativeRegExpMethod.call(regexp, str, arg2) };
+          }
+          return { done: true, value: nativeMethod.call(str, regexp, arg2) };
+        }
+        return { done: false };
+      }
+    );
+    var strfn = fns[0];
+    var rxfn = fns[1];
+
+    redefine(String.prototype, KEY, strfn);
+    hide(RegExp.prototype, SYMBOL, length == 2
+      // 21.2.5.8 RegExp.prototype[@@replace](string, replaceValue)
+      // 21.2.5.11 RegExp.prototype[@@split](string, limit)
+      ? function (string, arg) { return rxfn.call(string, this, arg); }
+      // 21.2.5.6 RegExp.prototype[@@match](string)
+      // 21.2.5.9 RegExp.prototype[@@search](string)
+      : function (string) { return rxfn.call(string, this); }
+    );
+  }
+};
+
 
 /***/ }),
 
@@ -831,6 +1132,148 @@ module.exports = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
 
 /***/ }),
 
+/***/ "7bc1":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var isRegExp = __webpack_require__("22e9");
+var anObject = __webpack_require__("a013");
+var speciesConstructor = __webpack_require__("0d5f");
+var advanceStringIndex = __webpack_require__("b0f4");
+var toLength = __webpack_require__("b146");
+var callRegExpExec = __webpack_require__("35dd");
+var regexpExec = __webpack_require__("1f98");
+var fails = __webpack_require__("b6f1");
+var $min = Math.min;
+var $push = [].push;
+var $SPLIT = 'split';
+var LENGTH = 'length';
+var LAST_INDEX = 'lastIndex';
+var MAX_UINT32 = 0xffffffff;
+
+// babel-minify transpiles RegExp('x', 'y') -> /x/y and it causes SyntaxError
+var SUPPORTS_Y = !fails(function () { RegExp(MAX_UINT32, 'y'); });
+
+// @@split logic
+__webpack_require__("629c")('split', 2, function (defined, SPLIT, $split, maybeCallNative) {
+  var internalSplit;
+  if (
+    'abbc'[$SPLIT](/(b)*/)[1] == 'c' ||
+    'test'[$SPLIT](/(?:)/, -1)[LENGTH] != 4 ||
+    'ab'[$SPLIT](/(?:ab)*/)[LENGTH] != 2 ||
+    '.'[$SPLIT](/(.?)(.?)/)[LENGTH] != 4 ||
+    '.'[$SPLIT](/()()/)[LENGTH] > 1 ||
+    ''[$SPLIT](/.?/)[LENGTH]
+  ) {
+    // based on es5-shim implementation, need to rework it
+    internalSplit = function (separator, limit) {
+      var string = String(this);
+      if (separator === undefined && limit === 0) return [];
+      // If `separator` is not a regex, use native split
+      if (!isRegExp(separator)) return $split.call(string, separator, limit);
+      var output = [];
+      var flags = (separator.ignoreCase ? 'i' : '') +
+                  (separator.multiline ? 'm' : '') +
+                  (separator.unicode ? 'u' : '') +
+                  (separator.sticky ? 'y' : '');
+      var lastLastIndex = 0;
+      var splitLimit = limit === undefined ? MAX_UINT32 : limit >>> 0;
+      // Make `global` and avoid `lastIndex` issues by working with a copy
+      var separatorCopy = new RegExp(separator.source, flags + 'g');
+      var match, lastIndex, lastLength;
+      while (match = regexpExec.call(separatorCopy, string)) {
+        lastIndex = separatorCopy[LAST_INDEX];
+        if (lastIndex > lastLastIndex) {
+          output.push(string.slice(lastLastIndex, match.index));
+          if (match[LENGTH] > 1 && match.index < string[LENGTH]) $push.apply(output, match.slice(1));
+          lastLength = match[0][LENGTH];
+          lastLastIndex = lastIndex;
+          if (output[LENGTH] >= splitLimit) break;
+        }
+        if (separatorCopy[LAST_INDEX] === match.index) separatorCopy[LAST_INDEX]++; // Avoid an infinite loop
+      }
+      if (lastLastIndex === string[LENGTH]) {
+        if (lastLength || !separatorCopy.test('')) output.push('');
+      } else output.push(string.slice(lastLastIndex));
+      return output[LENGTH] > splitLimit ? output.slice(0, splitLimit) : output;
+    };
+  // Chakra, V8
+  } else if ('0'[$SPLIT](undefined, 0)[LENGTH]) {
+    internalSplit = function (separator, limit) {
+      return separator === undefined && limit === 0 ? [] : $split.call(this, separator, limit);
+    };
+  } else {
+    internalSplit = $split;
+  }
+
+  return [
+    // `String.prototype.split` method
+    // https://tc39.github.io/ecma262/#sec-string.prototype.split
+    function split(separator, limit) {
+      var O = defined(this);
+      var splitter = separator == undefined ? undefined : separator[SPLIT];
+      return splitter !== undefined
+        ? splitter.call(separator, O, limit)
+        : internalSplit.call(String(O), separator, limit);
+    },
+    // `RegExp.prototype[@@split]` method
+    // https://tc39.github.io/ecma262/#sec-regexp.prototype-@@split
+    //
+    // NOTE: This cannot be properly polyfilled in engines that don't support
+    // the 'y' flag.
+    function (regexp, limit) {
+      var res = maybeCallNative(internalSplit, regexp, this, limit, internalSplit !== $split);
+      if (res.done) return res.value;
+
+      var rx = anObject(regexp);
+      var S = String(this);
+      var C = speciesConstructor(rx, RegExp);
+
+      var unicodeMatching = rx.unicode;
+      var flags = (rx.ignoreCase ? 'i' : '') +
+                  (rx.multiline ? 'm' : '') +
+                  (rx.unicode ? 'u' : '') +
+                  (SUPPORTS_Y ? 'y' : 'g');
+
+      // ^(? + rx + ) is needed, in combination with some S slicing, to
+      // simulate the 'y' flag.
+      var splitter = new C(SUPPORTS_Y ? rx : '^(?:' + rx.source + ')', flags);
+      var lim = limit === undefined ? MAX_UINT32 : limit >>> 0;
+      if (lim === 0) return [];
+      if (S.length === 0) return callRegExpExec(splitter, S) === null ? [S] : [];
+      var p = 0;
+      var q = 0;
+      var A = [];
+      while (q < S.length) {
+        splitter.lastIndex = SUPPORTS_Y ? q : 0;
+        var z = callRegExpExec(splitter, SUPPORTS_Y ? S : S.slice(q));
+        var e;
+        if (
+          z === null ||
+          (e = $min(toLength(splitter.lastIndex + (SUPPORTS_Y ? 0 : q)), S.length)) === p
+        ) {
+          q = advanceStringIndex(S, q, unicodeMatching);
+        } else {
+          A.push(S.slice(p, q));
+          if (A.length === lim) return A;
+          for (var i = 1; i <= z.length - 1; i++) {
+            A.push(z[i]);
+            if (A.length === lim) return A;
+          }
+          q = p = e;
+        }
+      }
+      A.push(S.slice(p));
+      return A;
+    }
+  ];
+});
+
+
+/***/ }),
+
 /***/ "7dea":
 /***/ (function(module, exports) {
 
@@ -1001,12 +1444,15 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-// CONCATENATED MODULE: ./node_modules/_cache-loader@2.0.1@cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"086f634e-vue-loader-template"}!./node_modules/_vue-loader@15.7.1@vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/_cache-loader@2.0.1@cache-loader/dist/cjs.js??ref--0-0!./node_modules/_vue-loader@15.7.1@vue-loader/lib??vue-loader-options!./src/Editor/index.vue?vue&type=template&id=92494416&
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"mEditor",class:['m-editor', _vm.fullScreen && 'm-editor_fullscreen'],attrs:{"id":"m-editor"},on:{"keydown":_vm.tabDelete}},[_c('div',{staticClass:"edit-toolbar"},[_c('ul',{ref:"editTools",staticClass:"edit-tools pull-left"},[_vm._l((_vm.config),function(item,i){return [(item.showIcon && i < _vm.iconLength)?_c('li',{key:i},[_c('a',{class:['iconfont', item.icon],attrs:{"title":item.title},on:{"click":function($event){return _vm.addContent(item.content)}}})]):_vm._e()]})],2),_c('ul',{staticClass:"edit-mode pull-right"},[_c('li',[_c('a',{class:['iconfont', !_vm.fullScreen && 'icon-quanping' || 'icon-huanyuanhuabu'],attrs:{"title":!_vm.fullScreen && '全屏' || '还原'},on:{"click":function($event){_vm.fullScreen=!_vm.fullScreen}}})]),_c('li',[_c('a',{class:['iconfont', 'icon-tianxie', _vm.mode === 'edit' && 'muted'],attrs:{"title":"编辑"},on:{"click":function($event){_vm.mode='edit'}}})]),_c('li',[_c('a',{class:['iconfont', 'icon-fenlan', _vm.mode === 'live' && 'muted'],attrs:{"title":"分栏"},on:{"click":function($event){_vm.mode='live'}}})]),_c('li',[_c('a',{class:['iconfont', 'icon-zitiyulan', _vm.mode === 'preview' && 'muted'],attrs:{"title":"预览"},on:{"click":function($event){_vm.mode='preview'}}})])])]),_c('div',{class:['edit-content']},[_c('div',{staticClass:"edit-content-scroll"},[[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.mode!=='preview'),expression:"mode!=='preview'"}],ref:"inputWrapper",class:['m-editor-input', _vm.mode === 'edit' && 'edit-full']},[_c('textarea',{directives:[{name:"model",rawName:"v-model",value:(_vm.input),expression:"input"}],ref:"mTextarea",domProps:{"value":(_vm.input)},on:{"input":function($event){if($event.target.composing){ return; }_vm.input=$event.target.value}}})])],[_c('div',{class:['m-editor-preview', _vm.mode === 'preview' && 'edit-full']},[_c('div',{ref:"previewContent",attrs:{"id":"m-editor-preview"},domProps:{"innerHTML":_vm._s(_vm.compiledMarkdown)}})])]],2)])])}
+// CONCATENATED MODULE: ./node_modules/_cache-loader@2.0.1@cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"adcc1a08-vue-loader-template"}!./node_modules/_vue-loader@15.7.1@vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/_cache-loader@2.0.1@cache-loader/dist/cjs.js??ref--0-0!./node_modules/_vue-loader@15.7.1@vue-loader/lib??vue-loader-options!./src/Editor/index.vue?vue&type=template&id=97281ff6&
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"mEditor",class:['editor', _vm.fullScreen && 'editor-fullscreen'],attrs:{"id":"m-editor"},on:{"keydown":_vm.tabDelete}},[_c('div',{staticClass:"editor-toolbar"},[_c('ul',{ref:"editTools",staticClass:"editor-toolbar-tools"},[_vm._l((_vm.config),function(item,i){return [(item.showIcon && i < _vm.iconLength)?_c('li',{key:i},[_c('a',{class:['iconfont', item.icon],attrs:{"title":item.title},on:{"click":function($event){return _vm.addContent(item.content)}}})]):_vm._e()]})],2),_c('ul',{staticClass:"editor-toolbar-mode"},[_c('li',[_c('a',{class:['iconfont', !_vm.fullScreen && 'icon-quanping' || 'icon-huanyuanhuabu'],attrs:{"title":!_vm.fullScreen && '全屏' || '还原'},on:{"click":function($event){_vm.fullScreen = !_vm.fullScreen}}})]),_vm._l((_vm.modeConfig),function(mode,i){return _c('li',{key:i},[_c('a',{class:['iconfont', mode.icon, _vm.editMode === mode.mode && 'muted'],on:{"click":function($event){_vm.editMode = mode.mode}}})])})],2)]),_c('div',{staticClass:"editor-content"},[_c('div',{ref:"editContentWrapper",class:['editor-content-edit', _vm.editMode === 'edit' && 'active', _vm.editMode === 'preview' && 'inactive'],nativeOn:{"scroll":function($event){return _vm.handleScroll($event)}}},[_c('div',{ref:"editContent",staticClass:"editor-content-edit-block",on:{"mouseover":function($event){return _vm.handleMouseOver('edit')}}},[_c('ul',{staticClass:"editor-content-edit-column"},_vm._l((_vm.columnLength),function(i){return _c('li',{key:i},[_vm._v(_vm._s(i))])}),0),_c('div',{staticClass:"editor-content-edit-input"},[_c('pre',{ref:"inputPre"},[_vm._v(_vm._s(_vm.input))]),_c('textarea',{directives:[{name:"model",rawName:"v-model",value:(_vm.input),expression:"input"}],ref:"mTextarea",domProps:{"value":(_vm.input)},on:{"input":function($event){if($event.target.composing){ return; }_vm.input=$event.target.value}}})])])]),_c('div',{ref:"previewContentWrapper",class:['editor-content-preview', _vm.editMode === 'preview' && 'active', _vm.editMode === 'edit' && 'inactive'],on:{"mouseover":function($event){return _vm.handleMouseOver('preview')}}},[_c('div',{ref:"previewContent",staticClass:"m-editor-preview",domProps:{"innerHTML":_vm._s(_vm.compiledMarkdown)}})])])])}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/Editor/index.vue?vue&type=template&id=92494416&
+// CONCATENATED MODULE: ./src/Editor/index.vue?vue&type=template&id=97281ff6&
+
+// EXTERNAL MODULE: ./node_modules/_core-js@2.6.9@core-js/modules/es6.regexp.split.js
+var es6_regexp_split = __webpack_require__("7bc1");
 
 // EXTERNAL MODULE: ./node_modules/_marked@0.6.3@marked/lib/marked.js
 var marked = __webpack_require__("9036");
@@ -1202,10 +1648,7 @@ Object.keys(languagesMapping).forEach(function (language) {
 var icon = __webpack_require__("d21e");
 
 // CONCATENATED MODULE: ./node_modules/_cache-loader@2.0.1@cache-loader/dist/cjs.js??ref--12-0!./node_modules/_thread-loader@2.1.2@thread-loader/dist/cjs.js!./node_modules/_babel-loader@8.0.6@babel-loader/lib!./node_modules/_cache-loader@2.0.1@cache-loader/dist/cjs.js??ref--0-0!./node_modules/_vue-loader@15.7.1@vue-loader/lib??vue-loader-options!./src/Editor/index.vue?vue&type=script&lang=js&
-//
-//
-//
-//
+
 //
 //
 //
@@ -1247,6 +1690,19 @@ var icon = __webpack_require__("d21e");
 
 
 
+var modeConfig = [{
+  mode: 'edit',
+  title: '编辑',
+  icon: 'icon-tianxie'
+}, {
+  mode: 'live',
+  title: '分栏',
+  icon: 'icon-fenlan'
+}, {
+  mode: 'preview',
+  title: '预览',
+  icon: 'icon-zitiyulan'
+}];
 marked_default.a.setOptions({
   renderer: new marked_default.a.Renderer(),
   highlight: function highlight(code) {
@@ -1257,7 +1713,6 @@ marked_default.a.setOptions({
   tables: true,
   breaks: true,
   headerIds: true,
-  // headerPrefix: 'm-editor',
   sanitize: false,
   smartLists: true,
   smartypants: false,
@@ -1273,16 +1728,30 @@ String.prototype.splice = function (index, str) {
   data: function data() {
     return {
       config: config,
+      modeConfig: modeConfig,
       input: this.value,
-      mode: 'live',
+      editMode: this.mode,
       fullScreen: false,
-      iconLength: config.length
+      iconLength: config.length,
+      resizeEvent: null,
+      scrollEvent: null,
+      columnLength: 1,
+      editContentWrapper: null,
+      previewContentWrapper: null,
+      scrollType: null
     };
   },
   props: {
     value: {
       type: String,
       default: '### 用 markdown 写一篇文章'
+    },
+    mode: {
+      default: 'live',
+      type: String,
+      validator: function validator(value) {
+        return ['live', 'preview', 'edit'].indexOf(value) !== -1;
+      }
     }
   },
   computed: {
@@ -1291,7 +1760,19 @@ String.prototype.splice = function (index, str) {
     }
   },
   mounted: function mounted() {
-    this.resize(); // window.onresize = this.throttle(this.resize, 150, this);
+    this.resizeEvent = this.throttle(this.handleResize, 150, this);
+    this.scrollEvent = this.throttle(this.handleScroll, 50, this);
+    this.editContentWrapper = this.$refs['editContentWrapper'];
+    this.previewContentWrapper = this.$refs['previewContentWrapper'];
+    window.addEventListener('resize', this.resizeEvent);
+    this.editContentWrapper.addEventListener('scroll', this.scrollEvent, true);
+    this.previewContentWrapper.addEventListener('scroll', this.scrollEvent, true);
+    this.handleResize();
+  },
+  beforeDestroy: function beforeDestroy() {
+    window.removeEventListener('resize', this.resizeEvent);
+    this.editContentWrapper.removeEventListener('scroll', this.scrollEvent);
+    this.previewContentWrapper.removeEventListener('scroll', this.scrollEvent);
   },
   watch: {
     input: function input(val) {
@@ -1303,12 +1784,13 @@ String.prototype.splice = function (index, str) {
     },
     value: function value(val) {
       this.input = val;
+      this.handleColumnChange();
     },
     fullScreen: function fullScreen() {
       var _this = this;
 
-      setTimeout(function () {
-        _this.resize();
+      this.$nextTick(function () {
+        _this.handleResize();
       });
     }
   },
@@ -1342,49 +1824,64 @@ String.prototype.splice = function (index, str) {
         });
       }
     },
-    resize: function resize() {
+    handleResize: function handleResize() {
+      // resize
       var width = this.$refs['mEditor'].clientWidth;
       var editTools = this.$refs['editTools'];
-      console.log(width);
 
       if (width > 780) {
-        editTools.style.width = '600px';
+        this.iconLength = this.config.length;
       } else if (680 < width) {
-        editTools.style.width = '480px';
+        this.iconLength = this.config.length - 3;
       } else if (640 < width) {
-        editTools.style.width = '400px';
+        this.iconLength = this.config.length - 6;
       } else if (500 < width) {
-        editTools.style.width = '320px';
-        this.mode = 'live';
+        this.iconLength = this.config.length - 9;
       } else if (width < 500) {
-        editTools.style.width = '0';
-        this.mode = 'edit';
+        this.iconLength = 0;
+        this.editMode = 'edit';
       }
-    },
-    debunce: function debunce(fun, wait, ctx) {
-      var _arguments = arguments;
-      var time;
-      return function () {
-        var args = _arguments;
-        clearTimeout(time);
-        time = setTimeout(function () {
-          fun.apply(ctx, args);
-        }, wait);
-      };
+
+      this.handleColumnChange();
     },
     throttle: function throttle(fun, wait, ctx) {
-      var _arguments2 = arguments;
+      var _arguments = arguments;
       // 节流函数
       var previous = 0;
       return function () {
-        var args = _arguments2;
         var now = +new Date();
 
         if (now - previous > wait) {
-          fun.apply(ctx, _arguments2);
+          fun.apply(ctx, _arguments);
           previous = now;
         }
       };
+    },
+    handleColumnChange: function handleColumnChange() {
+      var _this3 = this;
+
+      if (this.mode === 'preview') return false;
+      this.$nextTick(function () {
+        _this3.columnLength = Math.max(_this3.input.split('\n').length, (_this3.$refs['inputPre'].scrollHeight - 20) / 30);
+      });
+    },
+    handleMouseOver: function handleMouseOver(type) {
+      this.scrollType = type;
+    },
+    handleScroll: function handleScroll() {
+      // 滚动事件
+      var editContentWrapper = this.$refs['editContentWrapper'];
+      var previewContentWrapper = this.$refs['previewContentWrapper'];
+      var editScroll = editContentWrapper.scrollTop;
+      var previewScroll = previewContentWrapper.scrollTop;
+      var editScrollMax = editContentWrapper.scrollHeight - editContentWrapper.offsetHeight;
+      var previewScrollMax = previewContentWrapper.scrollHeight - previewContentWrapper.offsetHeight;
+
+      if (this.scrollType === 'edit') {
+        previewContentWrapper.scrollTop = previewScrollMax * (editScroll / editScrollMax);
+      } else if (this.scrollType === 'preview') {
+        editContentWrapper.scrollTop = editScrollMax * (previewScroll / previewScrollMax);
+      }
     }
   }
 });
@@ -4016,6 +4513,22 @@ var store = global[SHARED] || (global[SHARED] = {});
 
 /***/ }),
 
+/***/ "b0f4":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var at = __webpack_require__("2f03")(true);
+
+ // `AdvanceStringIndex` abstract operation
+// https://tc39.github.io/ecma262/#sec-advancestringindex
+module.exports = function (S, index, unicode) {
+  return index + (unicode ? at(S, index).length : 1);
+};
+
+
+/***/ }),
+
 /***/ "b146":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -6209,6 +6722,27 @@ module.exports = function(hljs) {
     ]
   };
 };
+
+/***/ }),
+
+/***/ "f425":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+// 21.2.5.3 get RegExp.prototype.flags
+var anObject = __webpack_require__("a013");
+module.exports = function () {
+  var that = anObject(this);
+  var result = '';
+  if (that.global) result += 'g';
+  if (that.ignoreCase) result += 'i';
+  if (that.multiline) result += 'm';
+  if (that.unicode) result += 'u';
+  if (that.sticky) result += 'y';
+  return result;
+};
+
 
 /***/ }),
 

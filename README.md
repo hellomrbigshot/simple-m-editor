@@ -32,6 +32,10 @@ export default {
 }
 ```
 
-### preview
+### Preview
 
 [address](https://hellomrbigshot.github.io/simple-m-editor/dist/index.html)
+
+### Licence
+
+[MIT Licence](./LICENSE).
