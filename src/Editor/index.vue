@@ -13,7 +13,7 @@
           <a :class="['iconfont', !fullScreen && 'icon-quanping' || 'icon-huanyuanhuabu']" :title="!fullScreen && '全屏' || '还原'" @click="fullScreen = !fullScreen" />
         </li>
         <li v-for="(mode, i) in modeConfig" :key="i">
-          <a :class="['iconfont', mode.icon, editMode === mode.mode && 'muted']" @click="editMode = mode.mode" />
+          <a :class="['iconfont', mode.icon, editMode === mode.mode && 'muted']" @click="handleModeEdit(mode.mode)" />
         </li>
       </ul>
     </div>
@@ -24,7 +24,7 @@
             <li v-for="i of columnLength" :key="i">{{ i }}</li>
           </ul>
           <div class="editor-content-edit-input">
-            <pre ref="inputPre">{{ input }}</pre>
+            <div ref="inputPre">{{ input.replace(/\n$/, '\n ') }}</div>
             <textarea v-model="input" :placeholder="placeholder" ref="mTextarea" />
             </div>
         </div>
@@ -40,6 +40,7 @@ import marked from 'marked';
 import { config } from '../assets/js/config';
 import hljs from '../assets/js/hljs';
 import '../assets/css/icon.css';
+import { setTimeout } from 'timers';
 const modeConfig = [
   {
     mode: 'edit',
@@ -174,7 +175,6 @@ export default {
     },
     handleResize() { // resize
       let width = this.$refs['mEditor'].clientWidth;
-      let editTools = this.$refs['editTools'];
       if (width > 780) {
         this.iconLength = this.config.length;
       } else if (680 < width) {
@@ -220,7 +220,12 @@ export default {
       } else if (this.scrollType === 'preview') {
         editContentWrapper.scrollTop = editScrollMax * (previewScroll / previewScrollMax);
       }
-
+    },
+    handleModeEdit(mode) {
+      this.editMode = mode;
+      setTimeout(() => { // mode 改变后有 .2s 的动画，计算行数需要添加延时
+        this.handleColumnChange();
+      }, 200)
     }
   }
 };

@@ -90,7 +90,7 @@ $dark-preview-background: #282c34;
   &.inactive {
     flex: 0 0 0;
   }
-  transition: all .3s ease-in;
+  transition: all .2s ease-in;
 }
 .editor-content-preview {
   background: $light-preview-background;
@@ -129,7 +129,7 @@ $dark-preview-background: #282c34;
       background: $light-background;
       min-height: 100%;
       overflow: hidden;
-      pre, textarea {
+      div, textarea {
         display: block;
         word-wrap: break-word;
         margin: 0;
@@ -143,7 +143,7 @@ $dark-preview-background: #282c34;
         line-height: inherit;
         display: block;
       }
-      pre {
+      div {
         visibility: hidden;
         white-space: pre-wrap;
       }
