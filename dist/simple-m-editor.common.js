@@ -1,7 +1,56 @@
 module.exports =
 /******/ (function(modules) { // webpackBootstrap
+/******/ 	// install a JSONP callback for chunk loading
+/******/ 	function webpackJsonpCallback(data) {
+/******/ 		var chunkIds = data[0];
+/******/ 		var moreModules = data[1];
+/******/
+/******/
+/******/ 		// add "moreModules" to the modules object,
+/******/ 		// then flag all "chunkIds" as loaded and fire callback
+/******/ 		var moduleId, chunkId, i = 0, resolves = [];
+/******/ 		for(;i < chunkIds.length; i++) {
+/******/ 			chunkId = chunkIds[i];
+/******/ 			if(installedChunks[chunkId]) {
+/******/ 				resolves.push(installedChunks[chunkId][0]);
+/******/ 			}
+/******/ 			installedChunks[chunkId] = 0;
+/******/ 		}
+/******/ 		for(moduleId in moreModules) {
+/******/ 			if(Object.prototype.hasOwnProperty.call(moreModules, moduleId)) {
+/******/ 				modules[moduleId] = moreModules[moduleId];
+/******/ 			}
+/******/ 		}
+/******/ 		if(parentJsonpFunction) parentJsonpFunction(data);
+/******/
+/******/ 		while(resolves.length) {
+/******/ 			resolves.shift()();
+/******/ 		}
+/******/
+/******/ 	};
+/******/
+/******/
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
+/******/
+/******/ 	// object to store loaded CSS chunks
+/******/ 	var installedCssChunks = {
+/******/ 		0: 0
+/******/ 	}
+/******/
+/******/ 	// object to store loaded and loading chunks
+/******/ 	// undefined = chunk not loaded, null = chunk preloaded/prefetched
+/******/ 	// Promise = chunk loading, 0 = chunk loaded
+/******/ 	var installedChunks = {
+/******/ 		0: 0
+/******/ 	};
+/******/
+/******/
+/******/
+/******/ 	// script path function
+/******/ 	function jsonpScriptSrc(chunkId) {
+/******/ 		return __webpack_require__.p + "simple-m-editor.common." + ({}[chunkId]||chunkId) + ".js"
+/******/ 	}
 /******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
@@ -27,6 +76,105 @@ module.exports =
 /******/ 		return module.exports;
 /******/ 	}
 /******/
+/******/ 	// This file contains only the entry chunk.
+/******/ 	// The chunk loading function for additional chunks
+/******/ 	__webpack_require__.e = function requireEnsure(chunkId) {
+/******/ 		var promises = [];
+/******/
+/******/
+/******/ 		// mini-css-extract-plugin CSS loading
+/******/ 		var cssChunks = {"1":1};
+/******/ 		if(installedCssChunks[chunkId]) promises.push(installedCssChunks[chunkId]);
+/******/ 		else if(installedCssChunks[chunkId] !== 0 && cssChunks[chunkId]) {
+/******/ 			promises.push(installedCssChunks[chunkId] = new Promise(function(resolve, reject) {
+/******/ 				var href = "css/" + ({}[chunkId]||chunkId) + "." + {"1":"ee89ad8e"}[chunkId] + ".css";
+/******/ 				var fullhref = __webpack_require__.p + href;
+/******/ 				var existingLinkTags = document.getElementsByTagName("link");
+/******/ 				for(var i = 0; i < existingLinkTags.length; i++) {
+/******/ 					var tag = existingLinkTags[i];
+/******/ 					var dataHref = tag.getAttribute("data-href") || tag.getAttribute("href");
+/******/ 					if(tag.rel === "stylesheet" && (dataHref === href || dataHref === fullhref)) return resolve();
+/******/ 				}
+/******/ 				var existingStyleTags = document.getElementsByTagName("style");
+/******/ 				for(var i = 0; i < existingStyleTags.length; i++) {
+/******/ 					var tag = existingStyleTags[i];
+/******/ 					var dataHref = tag.getAttribute("data-href");
+/******/ 					if(dataHref === href || dataHref === fullhref) return resolve();
+/******/ 				}
+/******/ 				var linkTag = document.createElement("link");
+/******/ 				linkTag.rel = "stylesheet";
+/******/ 				linkTag.type = "text/css";
+/******/ 				linkTag.onload = resolve;
+/******/ 				linkTag.onerror = function(event) {
+/******/ 					var request = event && event.target && event.target.src || fullhref;
+/******/ 					var err = new Error("Loading CSS chunk " + chunkId + " failed.\n(" + request + ")");
+/******/ 					err.code = "CSS_CHUNK_LOAD_FAILED";
+/******/ 					err.request = request;
+/******/ 					delete installedCssChunks[chunkId]
+/******/ 					linkTag.parentNode.removeChild(linkTag)
+/******/ 					reject(err);
+/******/ 				};
+/******/ 				linkTag.href = fullhref;
+/******/
+/******/ 				var head = document.getElementsByTagName("head")[0];
+/******/ 				head.appendChild(linkTag);
+/******/ 			}).then(function() {
+/******/ 				installedCssChunks[chunkId] = 0;
+/******/ 			}));
+/******/ 		}
+/******/
+/******/ 		// JSONP chunk loading for javascript
+/******/
+/******/ 		var installedChunkData = installedChunks[chunkId];
+/******/ 		if(installedChunkData !== 0) { // 0 means "already installed".
+/******/
+/******/ 			// a Promise means "currently loading".
+/******/ 			if(installedChunkData) {
+/******/ 				promises.push(installedChunkData[2]);
+/******/ 			} else {
+/******/ 				// setup Promise in chunk cache
+/******/ 				var promise = new Promise(function(resolve, reject) {
+/******/ 					installedChunkData = installedChunks[chunkId] = [resolve, reject];
+/******/ 				});
+/******/ 				promises.push(installedChunkData[2] = promise);
+/******/
+/******/ 				// start chunk loading
+/******/ 				var script = document.createElement('script');
+/******/ 				var onScriptComplete;
+/******/
+/******/ 				script.charset = 'utf-8';
+/******/ 				script.timeout = 120;
+/******/ 				if (__webpack_require__.nc) {
+/******/ 					script.setAttribute("nonce", __webpack_require__.nc);
+/******/ 				}
+/******/ 				script.src = jsonpScriptSrc(chunkId);
+/******/
+/******/ 				onScriptComplete = function (event) {
+/******/ 					// avoid mem leaks in IE.
+/******/ 					script.onerror = script.onload = null;
+/******/ 					clearTimeout(timeout);
+/******/ 					var chunk = installedChunks[chunkId];
+/******/ 					if(chunk !== 0) {
+/******/ 						if(chunk) {
+/******/ 							var errorType = event && (event.type === 'load' ? 'missing' : event.type);
+/******/ 							var realSrc = event && event.target && event.target.src;
+/******/ 							var error = new Error('Loading chunk ' + chunkId + ' failed.\n(' + errorType + ': ' + realSrc + ')');
+/******/ 							error.type = errorType;
+/******/ 							error.request = realSrc;
+/******/ 							chunk[1](error);
+/******/ 						}
+/******/ 						installedChunks[chunkId] = undefined;
+/******/ 					}
+/******/ 				};
+/******/ 				var timeout = setTimeout(function(){
+/******/ 					onScriptComplete({ type: 'timeout', target: script });
+/******/ 				}, 120000);
+/******/ 				script.onerror = script.onload = onScriptComplete;
+/******/ 				document.head.appendChild(script);
+/******/ 			}
+/******/ 		}
+/******/ 		return Promise.all(promises);
+/******/ 	};
 /******/
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = modules;
@@ -79,6 +227,16 @@ module.exports =
 /******/
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
+/******/
+/******/ 	// on error function for async loading
+/******/ 	__webpack_require__.oe = function(err) { console.error(err); throw err; };
+/******/
+/******/ 	var jsonpArray = (typeof self !== 'undefined' ? self : this)["webpackJsonpsimple_m_editor"] = (typeof self !== 'undefined' ? self : this)["webpackJsonpsimple_m_editor"] || [];
+/******/ 	var oldJsonpFunction = jsonpArray.push.bind(jsonpArray);
+/******/ 	jsonpArray.push = webpackJsonpCallback;
+/******/ 	jsonpArray = jsonpArray.slice();
+/******/ 	for(var i = 0; i < jsonpArray.length; i++) webpackJsonpCallback(jsonpArray[i]);
+/******/ 	var parentJsonpFunction = oldJsonpFunction;
 /******/
 /******/
 /******/ 	// Load entry module and return exports
@@ -879,6 +1037,108 @@ module.exports = function (it, tag, stat) {
 
 /***/ }),
 
+/***/ "6691":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return normalizeComponent; });
+/* globals __VUE_SSR_CONTEXT__ */
+
+// IMPORTANT: Do NOT use ES2015 features in this file (except for modules).
+// This module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle.
+
+function normalizeComponent (
+  scriptExports,
+  render,
+  staticRenderFns,
+  functionalTemplate,
+  injectStyles,
+  scopeId,
+  moduleIdentifier, /* server only */
+  shadowMode /* vue-cli only */
+) {
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // render functions
+  if (render) {
+    options.render = render
+    options.staticRenderFns = staticRenderFns
+    options._compiled = true
+  }
+
+  // functional template
+  if (functionalTemplate) {
+    options.functional = true
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = 'data-v-' + scopeId
+  }
+
+  var hook
+  if (moduleIdentifier) { // server build
+    hook = function (context) {
+      // 2.3 injection
+      context =
+        context || // cached call
+        (this.$vnode && this.$vnode.ssrContext) || // stateful
+        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
+      // 2.2 with runInNewContext: true
+      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+        context = __VUE_SSR_CONTEXT__
+      }
+      // inject component styles
+      if (injectStyles) {
+        injectStyles.call(this, context)
+      }
+      // register component module identifier for async chunk inferrence
+      if (context && context._registeredComponents) {
+        context._registeredComponents.add(moduleIdentifier)
+      }
+    }
+    // used by ssr in case component is cached and beforeCreate
+    // never gets called
+    options._ssrRegister = hook
+  } else if (injectStyles) {
+    hook = shadowMode
+      ? function () { injectStyles.call(this, this.$root.$options.shadowRoot) }
+      : injectStyles
+  }
+
+  if (hook) {
+    if (options.functional) {
+      // for template-only hot-reload because in that case the render fn doesn't
+      // go through the normalizer
+      options._injectStyles = hook
+      // register for functioal component in vue file
+      var originalRender = options.render
+      options.render = function renderWithStyleInjection (h, context) {
+        hook.call(context)
+        return originalRender(h, context)
+      }
+    } else {
+      // inject component registration as beforeCreate hook
+      var existing = options.beforeCreate
+      options.beforeCreate = existing
+        ? [].concat(existing, hook)
+        : [hook]
+    }
+  }
+
+  return {
+    exports: scriptExports,
+    options: options
+  }
+}
+
+
+/***/ }),
+
 /***/ "66fa":
 /***/ (function(module, exports) {
 
@@ -1444,12 +1704,12 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-// CONCATENATED MODULE: ./node_modules/_cache-loader@2.0.1@cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"adcc1a08-vue-loader-template"}!./node_modules/_vue-loader@15.7.1@vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/_cache-loader@2.0.1@cache-loader/dist/cjs.js??ref--0-0!./node_modules/_vue-loader@15.7.1@vue-loader/lib??vue-loader-options!./src/Editor/index.vue?vue&type=template&id=8b6703fc&
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"mEditor",class:['editor', _vm.fullScreen && 'editor-fullscreen'],attrs:{"id":"m-editor"},on:{"keydown":_vm.tabDelete}},[_c('div',{staticClass:"editor-toolbar"},[_c('ul',{ref:"editTools",staticClass:"editor-toolbar-tools"},[_vm._l((_vm.config),function(item,i){return [(item.showIcon && i < _vm.iconLength)?_c('li',{key:i},[_c('a',{class:['iconfont', item.icon],attrs:{"title":item.title},on:{"click":function($event){return _vm.addContent(item.content)}}})]):_vm._e()]})],2),_c('ul',{staticClass:"editor-toolbar-mode"},[_c('li',[_c('a',{class:['iconfont', !_vm.fullScreen && 'icon-quanping' || 'icon-huanyuanhuabu'],attrs:{"title":!_vm.fullScreen && '全屏' || '还原'},on:{"click":function($event){_vm.fullScreen = !_vm.fullScreen}}})]),_vm._l((_vm.modeConfig),function(mode,i){return _c('li',{key:i},[_c('a',{class:['iconfont', mode.icon, _vm.editMode === mode.mode && 'muted'],on:{"click":function($event){_vm.editMode = mode.mode}}})])})],2)]),_c('div',{staticClass:"editor-content"},[_c('div',{ref:"editContentWrapper",class:['editor-content-edit', _vm.editMode === 'edit' && 'active', _vm.editMode === 'preview' && 'inactive'],nativeOn:{"scroll":function($event){return _vm.handleScroll($event)}}},[_c('div',{ref:"editContent",staticClass:"editor-content-edit-block",on:{"mouseover":function($event){return _vm.handleMouseOver('edit')}}},[_c('ul',{staticClass:"editor-content-edit-column"},_vm._l((_vm.columnLength),function(i){return _c('li',{key:i},[_vm._v(_vm._s(i))])}),0),_c('div',{staticClass:"editor-content-edit-input"},[_c('pre',{ref:"inputPre"},[_vm._v(_vm._s(_vm.input))]),_c('textarea',{directives:[{name:"model",rawName:"v-model",value:(_vm.input),expression:"input"}],ref:"mTextarea",attrs:{"placeholder":_vm.placeholder},domProps:{"value":(_vm.input)},on:{"input":function($event){if($event.target.composing){ return; }_vm.input=$event.target.value}}})])])]),_c('div',{ref:"previewContentWrapper",class:['editor-content-preview', _vm.editMode === 'preview' && 'active', _vm.editMode === 'edit' && 'inactive'],on:{"mouseover":function($event){return _vm.handleMouseOver('preview')}}},[_c('div',{ref:"previewContent",staticClass:"m-editor-preview",domProps:{"innerHTML":_vm._s(_vm.compiledMarkdown)}})])])])}
+// CONCATENATED MODULE: ./node_modules/_cache-loader@2.0.1@cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"adcc1a08-vue-loader-template"}!./node_modules/_vue-loader@15.7.1@vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/_cache-loader@2.0.1@cache-loader/dist/cjs.js??ref--0-0!./node_modules/_vue-loader@15.7.1@vue-loader/lib??vue-loader-options!./src/Editor/index.vue?vue&type=template&id=cb4717ce&
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"mEditor",class:['editor', _vm.fullScreen && 'editor-fullscreen'],attrs:{"id":"m-editor"},on:{"keydown":_vm.tabDelete}},[_c('div',{staticClass:"editor-toolbar"},[_c('ul',{ref:"editTools",staticClass:"editor-toolbar-tools"},[_vm._l((_vm.config),function(item,i){return [(item.showIcon && i < _vm.iconLength)?_c('li',{key:i},[(!item.children)?_c('a',{class:['iconfont', item.icon],attrs:{"title":item.title},on:{"click":function($event){return _vm.addContent(item.content)}}}):_c('tool-tip',[_c('a',{class:['iconfont', item.icon],attrs:{"title":item.title}}),_c('div',{attrs:{"slot":"content"},slot:"content"},_vm._l((item.children),function(_item,j){return _c('div',{key:j,staticStyle:{"width":"100%"}},[_c('a',{style:({ fontSize: ((_item.size) + "px") }),attrs:{"title":_item.title},on:{"click":function($event){return _vm.addContent(_item.content)}}},[_vm._v(_vm._s(_item.text))])])}),0)])],1):_vm._e()]})],2),_c('ul',{staticClass:"editor-toolbar-mode"},[_c('li',[_c('a',{class:['iconfont', !_vm.fullScreen && 'icon-quanping' || 'icon-huanyuanhuabu'],attrs:{"title":!_vm.fullScreen && '全屏' || '还原'},on:{"click":function($event){_vm.fullScreen = !_vm.fullScreen}}})]),_vm._l((_vm.modeConfig),function(mode,i){return _c('li',{key:i},[_c('a',{class:['iconfont', mode.icon, _vm.editMode === mode.mode && 'muted'],on:{"click":function($event){return _vm.handleModeEdit(mode.mode)}}})])})],2)]),_c('div',{staticClass:"editor-content"},[_c('div',{ref:"editContentWrapper",class:['editor-content-edit', _vm.editMode === 'edit' && 'active', _vm.editMode === 'preview' && 'inactive'],nativeOn:{"scroll":function($event){return _vm.handleScroll($event)}}},[_c('div',{ref:"editContent",staticClass:"editor-content-edit-block",on:{"mouseover":function($event){return _vm.handleMouseOver('edit')}}},[_c('ul',{staticClass:"editor-content-edit-column"},_vm._l((_vm.columnLength),function(i){return _c('li',{key:i},[_vm._v(_vm._s(i))])}),0),_c('div',{staticClass:"editor-content-edit-input"},[_c('div',{ref:"inputPre"},[_vm._v(_vm._s(_vm.input.replace(/\n$/, '\n ')))]),_c('textarea',{directives:[{name:"model",rawName:"v-model",value:(_vm.input),expression:"input"}],ref:"mTextarea",attrs:{"placeholder":_vm.placeholder},domProps:{"value":(_vm.input)},on:{"input":function($event){if($event.target.composing){ return; }_vm.input=$event.target.value}}})])])]),_c('div',{ref:"previewContentWrapper",class:['editor-content-preview', _vm.editMode === 'preview' && 'active', _vm.editMode === 'edit' && 'inactive'],on:{"mouseover":function($event){return _vm.handleMouseOver('preview')}}},[_c('div',{ref:"previewContent",staticClass:"m-editor-preview",domProps:{"innerHTML":_vm._s(_vm.compiledMarkdown)}})])])])}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/Editor/index.vue?vue&type=template&id=8b6703fc&
+// CONCATENATED MODULE: ./src/Editor/index.vue?vue&type=template&id=cb4717ce&
 
 // EXTERNAL MODULE: ./node_modules/_core-js@2.6.9@core-js/modules/es6.regexp.split.js
 var es6_regexp_split = __webpack_require__("7bc1");
@@ -1460,6 +1720,31 @@ var marked_default = /*#__PURE__*/__webpack_require__.n(marked);
 
 // CONCATENATED MODULE: ./src/assets/js/config.js
 var config = [{
+  icon: 'icon-zitibiaoti',
+  title: '标题',
+  showIcon: true,
+  children: [{
+    text: 'H1',
+    size: 32,
+    title: '一级标题',
+    content: '# h1'
+  }, {
+    text: 'H2',
+    size: 24,
+    title: '二级标题',
+    content: '## h2'
+  }, {
+    text: 'H3',
+    size: 18,
+    title: '三级标题',
+    content: '### h3'
+  }, {
+    text: 'H4',
+    size: 16,
+    title: '四级标题',
+    content: '#### h4'
+  }]
+}, {
   icon: 'icon-zitijiacu',
   title: '加粗',
   content: '**加粗** ',
@@ -1682,6 +1967,22 @@ var icon = __webpack_require__("d21e");
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -1721,6 +2022,11 @@ String.prototype.splice = function (index, str) {
 
 /* harmony default export */ var Editorvue_type_script_lang_js_ = ({
   name: 'SimpleMEditor',
+  components: {
+    ToolTip: function ToolTip() {
+      return __webpack_require__.e(/* import() */ 1).then(__webpack_require__.bind(null, "c68f"));
+    }
+  },
   data: function data() {
     return {
       config: config,
@@ -1760,7 +2066,7 @@ String.prototype.splice = function (index, str) {
     }
   },
   mounted: function mounted() {
-    this.resizeEvent = this.throttle(this.handleResize, 150, this); // this.scrollEvent = this.throttle(this.handleScroll, 50, this);
+    this.resizeEvent = this.throttle(this.handleResize, 150, this); // this.scrollEvent = this.throttle(this.handleScroll, 50, this)
 
     this.editContentWrapper = this.$refs['editContentWrapper'];
     this.previewContentWrapper = this.$refs['previewContentWrapper'];
@@ -1827,7 +2133,6 @@ String.prototype.splice = function (index, str) {
     handleResize: function handleResize() {
       // resize
       var width = this.$refs['mEditor'].clientWidth;
-      var editTools = this.$refs['editTools'];
 
       if (width > 780) {
         this.iconLength = this.config.length;
@@ -1882,6 +2187,15 @@ String.prototype.splice = function (index, str) {
       } else if (this.scrollType === 'preview') {
         editContentWrapper.scrollTop = editScrollMax * (previewScroll / previewScrollMax);
       }
+    },
+    handleModeEdit: function handleModeEdit(mode) {
+      var _this4 = this;
+
+      this.editMode = mode;
+      setTimeout(function () {
+        // mode 改变后有 .2s 的动画，计算行数需要添加延时
+        _this4.handleColumnChange();
+      }, 200);
     }
   }
 });
@@ -1890,100 +2204,8 @@ String.prototype.splice = function (index, str) {
 // EXTERNAL MODULE: ./src/Editor/index.vue?vue&type=style&index=0&lang=scss&
 var Editorvue_type_style_index_0_lang_scss_ = __webpack_require__("2941");
 
-// CONCATENATED MODULE: ./node_modules/_vue-loader@15.7.1@vue-loader/lib/runtime/componentNormalizer.js
-/* globals __VUE_SSR_CONTEXT__ */
-
-// IMPORTANT: Do NOT use ES2015 features in this file (except for modules).
-// This module is a runtime utility for cleaner component module output and will
-// be included in the final webpack user bundle.
-
-function normalizeComponent (
-  scriptExports,
-  render,
-  staticRenderFns,
-  functionalTemplate,
-  injectStyles,
-  scopeId,
-  moduleIdentifier, /* server only */
-  shadowMode /* vue-cli only */
-) {
-  // Vue.extend constructor export interop
-  var options = typeof scriptExports === 'function'
-    ? scriptExports.options
-    : scriptExports
-
-  // render functions
-  if (render) {
-    options.render = render
-    options.staticRenderFns = staticRenderFns
-    options._compiled = true
-  }
-
-  // functional template
-  if (functionalTemplate) {
-    options.functional = true
-  }
-
-  // scopedId
-  if (scopeId) {
-    options._scopeId = 'data-v-' + scopeId
-  }
-
-  var hook
-  if (moduleIdentifier) { // server build
-    hook = function (context) {
-      // 2.3 injection
-      context =
-        context || // cached call
-        (this.$vnode && this.$vnode.ssrContext) || // stateful
-        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
-      // 2.2 with runInNewContext: true
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__
-      }
-      // inject component styles
-      if (injectStyles) {
-        injectStyles.call(this, context)
-      }
-      // register component module identifier for async chunk inferrence
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier)
-      }
-    }
-    // used by ssr in case component is cached and beforeCreate
-    // never gets called
-    options._ssrRegister = hook
-  } else if (injectStyles) {
-    hook = shadowMode
-      ? function () { injectStyles.call(this, this.$root.$options.shadowRoot) }
-      : injectStyles
-  }
-
-  if (hook) {
-    if (options.functional) {
-      // for template-only hot-reload because in that case the render fn doesn't
-      // go through the normalizer
-      options._injectStyles = hook
-      // register for functioal component in vue file
-      var originalRender = options.render
-      options.render = function renderWithStyleInjection (h, context) {
-        hook.call(context)
-        return originalRender(h, context)
-      }
-    } else {
-      // inject component registration as beforeCreate hook
-      var existing = options.beforeCreate
-      options.beforeCreate = existing
-        ? [].concat(existing, hook)
-        : [hook]
-    }
-  }
-
-  return {
-    exports: scriptExports,
-    options: options
-  }
-}
+// EXTERNAL MODULE: ./node_modules/_vue-loader@15.7.1@vue-loader/lib/runtime/componentNormalizer.js
+var componentNormalizer = __webpack_require__("6691");
 
 // CONCATENATED MODULE: ./src/Editor/index.vue
 
@@ -1994,7 +2216,7 @@ function normalizeComponent (
 
 /* normalize component */
 
-var component = normalizeComponent(
+var component = Object(componentNormalizer["a" /* default */])(
   src_Editorvue_type_script_lang_js_,
   render,
   staticRenderFns,
