@@ -4,7 +4,23 @@
       <ul class="editor-toolbar-tools" ref="editTools">
         <template v-for="(item, i) in config">
           <li :key="i" v-if="item.showIcon && i < iconLength">
-            <a :class="['iconfont', item.icon]" :title="item.title" @click="addContent(item.content)" />
+            <a
+              v-if="!item.children"
+              :class="['iconfont', item.icon]"
+              :title="item.title"
+              @click="addContent(item.content)"
+            />
+            <tool-tip v-else>
+              <a
+                :class="['iconfont', item.icon]"
+                :title="item.title"
+              />
+              <div slot="content">
+                <div v-for="(_item, j) in item.children" :key="j" style="width: 100%;">
+                  <a :title="_item.title" @click="addContent(_item.content)" :style="{ fontSize: `${_item.size}px` }">{{ _item.text }}</a>
+                </div>
+              </div>
+            </tool-tip>
           </li>
         </template>
       </ul>
@@ -36,11 +52,10 @@
   </div>
 </template>
 <script>
-import marked from 'marked';
-import { config } from '../assets/js/config';
-import hljs from '../assets/js/hljs';
-import '../assets/css/icon.css';
-import { setTimeout } from 'timers';
+import marked from 'marked'
+import { config } from '../assets/js/config'
+import hljs from '../assets/js/hljs'
+import '../assets/css/icon.css'
 const modeConfig = [
   {
     mode: 'edit',
@@ -61,7 +76,7 @@ const modeConfig = [
 marked.setOptions({
   renderer: new marked.Renderer(),
   highlight: (code) => {
-    return hljs.highlightAuto(code).value;
+    return hljs.highlightAuto(code).value
   },
   pedantic: false,
   gfm: true,
@@ -72,14 +87,17 @@ marked.setOptions({
   smartLists: true,
   smartypants: false,
   xhtml: false
-});
+})
 
 String.prototype.splice = function (index, str) {
-  return `${this.slice(0, index)}${str}${this.slice(index)}`;
-};
+  return `${this.slice(0, index)}${str}${this.slice(index)}`
+}
 
 export default {
   name: 'SimpleMEditor',
+  components: {
+    ToolTip: () => import('../components/ToolTip')
+  },
   data() {
     return {
       config,
@@ -94,7 +112,7 @@ export default {
       editContentWrapper: null,
       previewContentWrapper: null,
       scrollType: null
-    };
+    }
   },
   props: {
     value: {
@@ -115,35 +133,35 @@ export default {
   },
   computed: {
     compiledMarkdown() {
-      return marked(this.input);
+      return marked(this.input)
     }
   },
   mounted() {
-    this.resizeEvent = this.throttle(this.handleResize, 150, this);
-    // this.scrollEvent = this.throttle(this.handleScroll, 50, this);
-    this.editContentWrapper = this.$refs['editContentWrapper'];
-    this.previewContentWrapper = this.$refs['previewContentWrapper'];
-    window.addEventListener('resize', this.resizeEvent);
-    this.editContentWrapper.addEventListener('scroll', this.handleScroll, true);
-    this.previewContentWrapper.addEventListener('scroll', this.handleScroll, true);
-    this.handleResize();
+    this.resizeEvent = this.throttle(this.handleResize, 150, this)
+    // this.scrollEvent = this.throttle(this.handleScroll, 50, this)
+    this.editContentWrapper = this.$refs['editContentWrapper']
+    this.previewContentWrapper = this.$refs['previewContentWrapper']
+    window.addEventListener('resize', this.resizeEvent)
+    this.editContentWrapper.addEventListener('scroll', this.handleScroll, true)
+    this.previewContentWrapper.addEventListener('scroll', this.handleScroll, true)
+    this.handleResize()
   },
   beforeDestroy() {
-    window.removeEventListener('resize', this.resizeEvent);
-    this.editContentWrapper.removeEventListener('scroll', this.handleScroll);
-    this.previewContentWrapper.removeEventListener('scroll', this.handleScroll);
+    window.removeEventListener('resize', this.resizeEvent)
+    this.editContentWrapper.removeEventListener('scroll', this.handleScroll)
+    this.previewContentWrapper.removeEventListener('scroll', this.handleScroll)
   },
   watch: {
     input(val) {
-      this.$emit('input', val);
+      this.$emit('input', val)
       this.$emit('on-change', {
         content: val,
         htmlContent: this.compiledMarkdown
-      });
+      })
     },
     value(val) {
-      this.input = val;
-      this.handleColumnChange();
+      this.input = val
+      this.handleColumnChange()
     },
     fullScreen() {
       this.$nextTick(() => {
@@ -153,82 +171,82 @@ export default {
   },
   methods: {
     tabDelete(e) { // 自定义默认 tab 事件
-      const TABKEY = 9;
+      const TABKEY = 9
       if (e.keyCode === TABKEY) {
-        this.addContent('    ');
+        this.addContent('    ')
         if (e.preventDefault) {
-          e.preventDefault();
+          e.preventDefault()
         }
       }
     },
     addContent(content) { // 移动光标到添加文本的最后
-      let pos = this.$refs['mTextarea'].selectionStart;
+      let pos = this.$refs['mTextarea'].selectionStart
       if (pos > -1) {
-        this.input = this.input.splice(pos, content);
-        this.$refs['mTextarea'].blur();
+        this.input = this.input.splice(pos, content)
+        this.$refs['mTextarea'].blur()
         setTimeout(() => {
-          this.$refs['mTextarea'].selectionStart = pos + content.length;
-          this.$refs['mTextarea'].selectionEnd = pos + content.length;
-          this.$refs['mTextarea'].focus();
-        });
+          this.$refs['mTextarea'].selectionStart = pos + content.length
+          this.$refs['mTextarea'].selectionEnd = pos + content.length
+          this.$refs['mTextarea'].focus()
+        })
       }
     },
     handleResize() { // resize
-      let width = this.$refs['mEditor'].clientWidth;
+      let width = this.$refs['mEditor'].clientWidth
       if (width > 780) {
-        this.iconLength = this.config.length;
+        this.iconLength = this.config.length
       } else if (680 < width) {
-        this.iconLength = this.config.length - 3;
+        this.iconLength = this.config.length - 3
       } else if (640 < width) {
-        this.iconLength = this.config.length - 6;
+        this.iconLength = this.config.length - 6
       } else if (500 < width) {
-        this.iconLength = this.config.length - 9;
+        this.iconLength = this.config.length - 9
       } else if (width < 500) {
-        this.iconLength = 0;
-        this.editMode = 'edit';
+        this.iconLength = 0
+        this.editMode = 'edit'
       }
-      this.handleColumnChange();
+      this.handleColumnChange()
     },
     throttle(fun, wait, ctx) { // 节流函数
-      let previous = 0;
+      let previous = 0
       return () => {
-        let now = +new Date();
+        let now = +new Date()
         if (now - previous > wait) {
-          fun.apply(ctx, arguments);
-          previous = now;
+          fun.apply(ctx, arguments)
+          previous = now
         }
-      };
+      }
     },
     handleColumnChange() {
-      if (this.mode === 'preview') return false;
+      if (this.mode === 'preview') return false
       this.$nextTick(() => {
-        this.columnLength = Math.max(this.input.split('\n').length, (this.$refs['inputPre'].scrollHeight - 20) / 30);
+        this.columnLength = Math.max(this.input.split('\n').length, (this.$refs['inputPre'].scrollHeight - 20) / 30)
       })
     },
     handleMouseOver(type) {
-      this.scrollType = type;
+      this.scrollType = type
     },
     handleScroll() { // 滚动事件
-      const editContentWrapper = this.$refs['editContentWrapper'];
-      const previewContentWrapper = this.$refs['previewContentWrapper'];
-      const editScroll = editContentWrapper.scrollTop;
-      const previewScroll = previewContentWrapper.scrollTop;
-      const editScrollMax = editContentWrapper.scrollHeight - editContentWrapper.offsetHeight;
-      const previewScrollMax = previewContentWrapper.scrollHeight - previewContentWrapper.offsetHeight;
+      const editContentWrapper = this.$refs['editContentWrapper']
+      const previewContentWrapper = this.$refs['previewContentWrapper']
+      const editScroll = editContentWrapper.scrollTop
+      const previewScroll = previewContentWrapper.scrollTop
+      const editScrollMax = editContentWrapper.scrollHeight - editContentWrapper.offsetHeight
+      const previewScrollMax = previewContentWrapper.scrollHeight - previewContentWrapper.offsetHeight
       if (this.scrollType === 'edit') {
-        previewContentWrapper.scrollTop = previewScrollMax * (editScroll / editScrollMax);
+        previewContentWrapper.scrollTop = previewScrollMax * (editScroll / editScrollMax)
       } else if (this.scrollType === 'preview') {
-        editContentWrapper.scrollTop = editScrollMax * (previewScroll / previewScrollMax);
+        editContentWrapper.scrollTop = editScrollMax * (previewScroll / previewScrollMax)
       }
     },
     handleModeEdit(mode) {
-      this.editMode = mode;
+      this.editMode = mode
       setTimeout(() => { // mode 改变后有 .2s 的动画，计算行数需要添加延时
-        this.handleColumnChange();
+        this.handleColumnChange()
       }, 200)
     }
   }
-};
+}
 </script>
 <style lang="scss">
 @import "../assets/css/editor.scss";
