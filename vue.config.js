@@ -1,6 +1,8 @@
-const CompressionPlugin = require("compression-webpack-plugin");
+const CompressionPlugin = require("compression-webpack-plugin")
 module.exports = {
   lintOnSave: false,
+  productionSourceMap: process.env.NODE_ENV === 'production' ? false : true,
+  // filenameHashing: false,
   chainWebpack: config => {
     // GraphQL Loader
     config.module
@@ -11,7 +13,7 @@ module.exports = {
         .end()
   },
   configureWebpack: () => {
-    let configNew = {};
+    let configNew = {}
     if (process.env.NODE_ENV === 'production') {
       configNew.plugins = [
         new CompressionPlugin({
@@ -22,6 +24,6 @@ module.exports = {
         })
       ]
     }
-    return configNew;
+    return configNew
   }
 }

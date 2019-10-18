@@ -1,44 +1,18 @@
 <template>
-  <div id="m-editor" ref="mEditor" :class="['editor', fullScreen && 'editor-fullscreen']" @keydown="tabDelete">
-    <div class="editor-toolbar">
-      <ul class="editor-toolbar-tools" ref="editTools">
-        <template v-for="(item, i) in config">
-          <li :key="i" v-if="item.showIcon && i < iconLength">
-            <a
-              v-if="!item.children"
-              :class="['iconfont', item.icon]"
-              :title="item.title"
-              @click="addContent(item.content)"
-            />
-            <tool-tip v-else>
-              <a
-                :class="['iconfont', item.icon]"
-                :title="item.title"
-              />
-              <div slot="content">
-                <div v-for="(_item, j) in item.children" :key="j" style="width: 100%;">
-                  <a :title="_item.title" @click="addContent(_item.content)" :style="{ fontSize: `${_item.size}px` }">{{ _item.text }}</a>
-                </div>
-              </div>
-            </tool-tip>
-          </li>
-        </template>
-      </ul>
-      <ul class="editor-toolbar-mode">
-        <li>
-          <a :class="['iconfont', !fullScreen && 'icon-quanping' || 'icon-huanyuanhuabu']" :title="!fullScreen && '全屏' || '还原'" @click="fullScreen = !fullScreen" />
-        </li>
-        <li v-for="(mode, i) in modeConfig" :key="i">
-          <a :class="['iconfont', mode.icon, editMode === mode.mode && 'muted']" @click="handleModeEdit(mode.mode)" />
-        </li>
-      </ul>
-    </div>
+  <div id="m-editor" ref="mEditor" :class="['editor', `${theme}-editor`, editFullScreen && 'editor-editFullScreen']" @keydown="handleKeyPress">
+    <tool-bar
+      :fullScreen="editFullScreen"
+      :mode="editMode"
+      :config="config"
+      :icon-length="iconLength"
+      @full-screen-change="() => {editFullScreen = !editFullScreen}"
+      @mode-change="handleModeEdit"
+      @add-content="addContent"
+    />
     <div class="editor-content">
       <div ref="editContentWrapper" :class="['editor-content-edit', editMode === 'edit' && 'active', editMode === 'preview' && 'inactive']" @scroll.native="handleScroll">
         <div class="editor-content-edit-block" ref="editContent" @mouseover="handleMouseOver('edit')">
-          <ul class="editor-content-edit-column">
-            <li v-for="i of columnLength" :key="i">{{ i }}</li>
-          </ul>
+          <Column v-if="showLineNum" :length="columnLength"/>
           <div class="editor-content-edit-input">
             <div ref="inputPre">{{ input.replace(/\n$/, '\n ') }}</div>
             <textarea v-model="input" :placeholder="placeholder" ref="mTextarea" />
@@ -55,24 +29,9 @@
 import marked from 'marked'
 import { config } from '../assets/js/config'
 import hljs from '../assets/js/hljs'
+import ToolBar from '../components/ToolBar'
+import Column from '../components/Column'
 import '../assets/css/icon.css'
-const modeConfig = [
-  {
-    mode: 'edit',
-    title: '编辑',
-    icon: 'icon-tianxie'
-  },
-  {
-    mode: 'live',
-    title: '分栏',
-    icon: 'icon-fenlan'
-  },
-  {
-    mode: 'preview',
-    title: '预览',
-    icon: 'icon-zitiyulan'
-  }
-]
 marked.setOptions({
   renderer: new marked.Renderer(),
   highlight: (code) => {
@@ -96,18 +55,17 @@ String.prototype.splice = function (index, str) {
 export default {
   name: 'SimpleMEditor',
   components: {
-    ToolTip: () => import('../components/ToolTip')
+    ToolBar,
+    Column
   },
   data() {
     return {
       config,
-      modeConfig,
       input: this.value,
       editMode: this.mode,
-      fullScreen: false,
+      editFullScreen: this.fullScreen,
       iconLength: config.length,
       resizeEvent: null,
-      scrollEvent: null,
       columnLength: 1,
       editContentWrapper: null,
       previewContentWrapper: null,
@@ -129,6 +87,25 @@ export default {
     placeholder: {
       default: '请输入……',
       type: String
+    },
+    fullScreen: {
+      default: false,
+      type: Boolean
+    },
+    showLineNum: {
+      default: true,
+      type: Boolean
+    },
+    autoScroll: {
+      default: true,
+      type: Boolean
+    },
+    theme: {
+      default: 'light',
+      type: String,
+      validator: (value) => {
+        return ['light', 'dark'].indexOf(value) !== -1
+      }
     }
   },
   computed: {
@@ -138,12 +115,13 @@ export default {
   },
   mounted() {
     this.resizeEvent = this.throttle(this.handleResize, 150, this)
-    // this.scrollEvent = this.throttle(this.handleScroll, 50, this)
     this.editContentWrapper = this.$refs['editContentWrapper']
     this.previewContentWrapper = this.$refs['previewContentWrapper']
     window.addEventListener('resize', this.resizeEvent)
-    this.editContentWrapper.addEventListener('scroll', this.handleScroll, true)
-    this.previewContentWrapper.addEventListener('scroll', this.handleScroll, true)
+    if (this.autoScroll) {
+      this.editContentWrapper.addEventListener('scroll', this.handleScroll, true)
+      this.previewContentWrapper.addEventListener('scroll', this.handleScroll, true)
+    }
     this.handleResize()
   },
   beforeDestroy() {
@@ -163,14 +141,14 @@ export default {
       this.input = val
       this.handleColumnChange()
     },
-    fullScreen() {
+    editFullScreen() {
       this.$nextTick(() => {
         this.handleResize()
       })
     }
   },
   methods: {
-    tabDelete(e) { // 自定义默认 tab 事件
+    handleKeyPress(e) { // 自定义默认 tab 事件
       const TABKEY = 9
       if (e.keyCode === TABKEY) {
         this.addContent('    ')
