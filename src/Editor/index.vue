@@ -1,5 +1,14 @@
 <template>
-  <div id="m-editor" ref="mEditor" :class="['editor', `${theme}-editor`, editFullScreen && 'editor-editFullScreen']" @keydown="handleKeyPress">
+  <div
+    id="m-editor"
+    ref="mEditor"
+    :class="[
+      'editor',
+      `${theme}-editor`,
+      editFullScreen && 'editor-editFullScreen'
+    ]"
+    @keydown="handleKeyPress"
+  >
     <tool-bar
       :fullScreen="editFullScreen"
       :mode="editMode"
@@ -10,17 +19,44 @@
       @add-content="addContent"
     />
     <div class="editor-content">
-      <div ref="editContentWrapper" :class="['editor-content-edit', editMode === 'edit' && 'active', editMode === 'preview' && 'inactive']" @scroll.native="handleScroll">
-        <div class="editor-content-edit-block" ref="editContent" @mouseover="handleMouseOver('edit')">
-          <Column v-if="showLineNum" :length="columnLength"/>
+      <div
+        ref="editContentWrapper"
+        :class="[
+          'editor-content-edit',
+          editMode === 'edit' && 'active',
+          editMode === 'preview' && 'inactive'
+        ]"
+        @scroll="handleScroll"
+      >
+        <div
+          ref="editContent"
+          class="editor-content-edit-block"
+          @mouseover="handleMouseOver('edit')"
+        >
+          <Column
+            v-if="showLineNum"
+            :length="columnLength"
+          />
           <div class="editor-content-edit-input">
             <div ref="inputPre">{{ input.replace(/\n$/, '\n ') }}</div>
             <textarea v-model="input" :placeholder="placeholder" ref="mTextarea" />
             </div>
         </div>
       </div>
-      <div ref="previewContentWrapper" @mouseover="handleMouseOver('preview')" :class="['editor-content-preview', editMode === 'preview' && 'active', editMode === 'edit' && 'inactive']">
-        <div ref="previewContent" class="m-editor-preview" v-html="compiledMarkdown" />
+      <div
+        ref="previewContentWrapper"
+        :class="[
+          'editor-content-preview',
+          editMode === 'preview' && 'active',
+          editMode === 'edit' && 'inactive'
+        ]"
+        @mouseover="handleMouseOver('preview')"
+      >
+        <div
+          ref="previewContent"
+          v-html="compiledMarkdown"
+          class="m-editor-preview"
+        />
       </div>
     </div>
   </div>
@@ -29,8 +65,6 @@
 import marked from 'marked'
 import { config } from '../assets/js/config'
 import hljs from '../assets/js/hljs'
-import ToolBar from '../components/ToolBar'
-import Column from '../components/Column'
 import '../assets/css/icon.css'
 marked.setOptions({
   renderer: new marked.Renderer(),
@@ -48,15 +82,11 @@ marked.setOptions({
   xhtml: false
 })
 
-String.prototype.splice = function (index, str) {
-  return `${this.slice(0, index)}${str}${this.slice(index)}`
-}
-
 export default {
   name: 'SimpleMEditor',
   components: {
-    ToolBar,
-    Column
+    ToolBar: () => import('../components/ToolBar'),
+    Column: () => import('../components/Column')
   },
   data() {
     return {
@@ -109,14 +139,14 @@ export default {
     }
   },
   computed: {
-    compiledMarkdown() {
+    compiledMarkdown () {
       return marked(this.input)
     }
   },
-  mounted() {
+  mounted () {
     this.resizeEvent = this.throttle(this.handleResize, 150, this)
-    this.editContentWrapper = this.$refs['editContentWrapper']
-    this.previewContentWrapper = this.$refs['previewContentWrapper']
+    this.editContentWrapper = this.$refs.editContentWrapper
+    this.previewContentWrapper = this.$refs.previewContentWrapper
     window.addEventListener('resize', this.resizeEvent)
     if (this.autoScroll) {
       this.editContentWrapper.addEventListener('scroll', this.handleScroll, true)
@@ -124,31 +154,31 @@ export default {
     }
     this.handleResize()
   },
-  beforeDestroy() {
+  beforeDestroy () {
     window.removeEventListener('resize', this.resizeEvent)
     this.editContentWrapper.removeEventListener('scroll', this.handleScroll)
     this.previewContentWrapper.removeEventListener('scroll', this.handleScroll)
   },
   watch: {
-    input(val) {
+    input (val) {
       this.$emit('input', val)
       this.$emit('on-change', {
         content: val,
         htmlContent: this.compiledMarkdown
       })
     },
-    value(val) {
+    value (val) {
       this.input = val
       this.handleColumnChange()
     },
-    editFullScreen() {
+    editFullScreen () {
       this.$nextTick(() => {
         this.handleResize()
       })
     }
   },
   methods: {
-    handleKeyPress(e) { // 自定义默认 tab 事件
+    handleKeyPress (e) { // 自定义默认 tab 事件
       const TABKEY = 9
       if (e.keyCode === TABKEY) {
         this.addContent('    ')
@@ -157,20 +187,20 @@ export default {
         }
       }
     },
-    addContent(content) { // 移动光标到添加文本的最后
-      let pos = this.$refs['mTextarea'].selectionStart
+    addContent (content) { // 移动光标到添加文本的最后
+      let pos = this.$refs.mTextarea.selectionStart
       if (pos > -1) {
-        this.input = this.input.splice(pos, content)
-        this.$refs['mTextarea'].blur()
+        this.input = this.spliceStr(this.input, pos, content)
+        this.$refs.mTextarea.blur()
         setTimeout(() => {
-          this.$refs['mTextarea'].selectionStart = pos + content.length
-          this.$refs['mTextarea'].selectionEnd = pos + content.length
-          this.$refs['mTextarea'].focus()
+          this.$refs.mTextarea.selectionStart = pos + content.length
+          this.$refs.mTextarea.selectionEnd = pos + content.length
+          this.$refs.mTextarea.focus()
         })
       }
     },
-    handleResize() { // resize
-      let width = this.$refs['mEditor'].clientWidth
+    handleResize () { // resize
+      let width = this.$refs.mEditor.clientWidth
       if (width > 780) {
         this.iconLength = this.config.length
       } else if (680 < width) {
@@ -185,7 +215,7 @@ export default {
       }
       this.handleColumnChange()
     },
-    throttle(fun, wait, ctx) { // 节流函数
+    throttle (fun, wait, ctx) { // 节流函数
       let previous = 0
       return () => {
         let now = +new Date()
@@ -195,18 +225,18 @@ export default {
         }
       }
     },
-    handleColumnChange() {
+    handleColumnChange () {
       if (this.mode === 'preview') return false
       this.$nextTick(() => {
-        this.columnLength = Math.max(this.input.split('\n').length, (this.$refs['inputPre'].scrollHeight - 20) / 30)
+        this.columnLength = Math.max(this.input.split('\n').length, (this.$refs.inputPre.scrollHeight - 20) / 30)
       })
     },
-    handleMouseOver(type) {
+    handleMouseOver (type) {
       this.scrollType = type
     },
-    handleScroll() { // 滚动事件
-      const editContentWrapper = this.$refs['editContentWrapper']
-      const previewContentWrapper = this.$refs['previewContentWrapper']
+    handleScroll () { // 滚动事件
+      const editContentWrapper = this.$refs.editContentWrapper
+      const previewContentWrapper = this.$refs.previewContentWrapper
       const editScroll = editContentWrapper.scrollTop
       const previewScroll = previewContentWrapper.scrollTop
       const editScrollMax = editContentWrapper.scrollHeight - editContentWrapper.offsetHeight
@@ -217,11 +247,17 @@ export default {
         editContentWrapper.scrollTop = editScrollMax * (previewScroll / previewScrollMax)
       }
     },
-    handleModeEdit(mode) {
+    handleModeEdit (mode) {
       this.editMode = mode
       setTimeout(() => { // mode 改变后有 .2s 的动画，计算行数需要添加延时
         this.handleColumnChange()
       }, 200)
+    },
+    /**
+     * string 的 splice 方法
+     */
+    spliceStr (string, index, str) {
+      return `${string.slice(0, index)}${str}${string.slice(index)}`
     }
   }
 }
