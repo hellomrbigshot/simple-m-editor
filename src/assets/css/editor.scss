@@ -1,13 +1,4 @@
-$light-background: #fff;
-$light-color: #2c3e50;
-$light-preview-background: #fcfcfc;
-$light-preview-color: #2c3e50;
-$light-column-background: #eee;
-$light-column-color: #2c3e50;
-
-$dark-background: #1e1e1e;
-$dark-color: #fff;
-$dark-preview-background: #282c34;
+@import './color.scss';
 
 .editor, .editor-preview {
   span, code, a, input, em, s, strong, small, cite, q, abbr, dfn, data, time, var, samp, sub, sup, 
@@ -33,45 +24,6 @@ $dark-preview-background: #282c34;
   box-shadow: 0 0 12px rgba(0, 0, 0, .1);
   height: 500px;
   border-radius: 8px;
-}
-.editor-toolbar {
-  border-radius: 8px 8px 0 0;
-  height: 40px;
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid #efefef;
-  &-tools, &-mode {
-    list-style: none;
-    display: flex;
-    li {
-      width: 30px;
-      margin: 5px 3px 5px 3px;
-      a {
-        line-height: 20px;
-        font-size: 15px;
-        padding: 5px;
-        display: block;
-        color: #2c3e50;
-        &:hover {
-          color: #64b587;
-          background: #f6f6f6;
-          cursor: pointer;
-          border-radius: 5px;
-        }
-        &.muted {
-          background: #efefef;
-          color: #ddd;
-          &:hover {
-            cursor: default;
-            color: #ddd;
-          }
-        }
-      }
-    }
-  }
-  &-tools {
-    padding-left: 10px!important;
-  }
 }
 .editor-content {
   width: 100%;
@@ -104,21 +56,6 @@ $dark-preview-background: #282c34;
       display: flex;
       overflow: hidden;
       min-height: 100%;
-  }
-
-  &-column {
-      min-width: 30px;
-      padding: 10px 0 100px!important;
-      min-height: 100%;
-      text-align: center;
-      list-style: none;
-      background: $light-column-background;
-      color: $light-column-color;
-      font-size: 13px;
-      li {
-          list-style: none;
-          line-height: 30px;
-      }
   }
 
   &-input {
@@ -163,7 +100,16 @@ $dark-preview-background: #282c34;
       }
   }
 }
-.editor-fullscreen {
+.dark-editor {
+  .editor-content-edit {
+    background: $dark-background;
+    textarea {
+      background: $dark-background;
+      color: $dark-color;
+    }
+  }
+}
+.editor-editFullScreen {
   position: fixed;
   top: 0;
   left: 0;

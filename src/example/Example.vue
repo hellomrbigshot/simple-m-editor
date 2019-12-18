@@ -1,6 +1,10 @@
 <template>
   <div class="hello">
-    <editor v-model="text" @on-change="change" />
+    <editor
+      v-model="text"
+      theme="dark"
+      @on-change="change"
+    />
   </div>
 </template>
 

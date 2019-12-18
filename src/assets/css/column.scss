@@ -1,0 +1,20 @@
+@import "./color.scss";
+
+.editor-content-edit-column {
+  min-width: 30px;
+  padding: 10px 0 100px!important;
+  min-height: 100%;
+  text-align: center;
+  list-style: none;
+  background: $light-column-background;
+  color: $light-column-color;
+  font-size: 13px;
+  li {
+    list-style: none;
+    line-height: 30px;
+  }
+}
+.dark-editor .editor-content-edit-column {
+  background: $dark-column-background;
+  color: $dark-column-color;
+}

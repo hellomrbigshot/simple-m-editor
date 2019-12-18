@@ -1,6 +1,9 @@
 # simple-m-editor
 
-A simple markdown editor with Vue.js
+> A markdown editor with Vue.js
+
+![GitHub package.json version](https://img.shields.io/github/package-json/v/hellomrbigshot/simple-m-editor)
+![GitHub](https://img.shields.io/github/license/hellomrbigshot/simple-m-editor)
 
 ## Install
 
@@ -13,7 +16,10 @@ npm i -S simple-m-editor
 // use the same style as the editor shows
 <template>
 <div>
-  <m-editor v-model="text" @on-change="handleChange"/>
+  <m-editor
+    v-model="text"
+    @on-change="handleChange"
+  />
   <div class="m-editor-preview" v-html="markdownContent"></div>
 </div>
 </template>
@@ -47,8 +53,14 @@ export default {
 
 | name       | type   | defautl     | description     |
 | ---------- | -------| ----------- | --------------- |
+| value      | String |             | value           |
 | placeholder| String | 请输入……     | placehoder      |
 | mode       | String | live        | one of ['live', 'edit', 'preview']|
+| full-screen | Boolean| false       | full screen or not |
+| show-line-num| Boolean| true        | show side line number or not |
+| theme      | String | light       | light or dark   |
+| auto-scroll| Boolean| true        | auto sroll or not |
+
 
 
 ### event
