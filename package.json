@@ -1,6 +1,6 @@
 {
   "name": "simple-m-editor",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "private": false,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -40,7 +40,9 @@
       "plugin:vue/essential",
       "eslint:recommended"
     ],
-    "rules": {},
+    "rules": {
+
+    },
     "parserOptions": {
       "parser": "babel-eslint"
     }
@@ -55,7 +57,7 @@
     "last 2 versions",
     "not ie <= 8"
   ],
-  "main": "./dist/simple-m-editor.common.js",
+  "main": "dist/simple-m-editor.common.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/hellomrbigshot/simple-m-editor.git"

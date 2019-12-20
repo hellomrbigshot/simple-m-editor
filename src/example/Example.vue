@@ -22,7 +22,7 @@ export default {
   },
   methods: {
     change (answer) {
-      // console.log(answer);
+      console.log(answer)
     }
   }
 }

@@ -33,13 +33,17 @@
           class="editor-content-edit-block"
           @mouseover="handleMouseOver('edit')"
         >
-          <Column
+          <tool-column
             v-if="showLineNum"
             :length="columnLength"
           />
           <div class="editor-content-edit-input">
             <div ref="inputPre">{{ input.replace(/\n$/, '\n ') }}</div>
-            <textarea v-model="input" :placeholder="placeholder" ref="mTextarea" />
+              <textarea
+                ref="mTextarea"
+                v-model="input"
+                :placeholder="placeholder"
+              />
             </div>
         </div>
       </div>
@@ -66,9 +70,11 @@ import marked from 'marked'
 import { config } from '../assets/js/config'
 import hljs from '../assets/js/hljs'
 import '../assets/css/icon.css'
+import ToolBar from '../components/ToolBar'
+import ToolColumn from '../components/ToolColumn'
 marked.setOptions({
   renderer: new marked.Renderer(),
-  highlight: (code) => {
+  highlight: code => {
     return hljs.highlightAuto(code).value
   },
   pedantic: false,
@@ -85,8 +91,8 @@ marked.setOptions({
 export default {
   name: 'SimpleMEditor',
   components: {
-    ToolBar: () => import('../components/ToolBar'),
-    Column: () => import('../components/Column')
+    ToolBar,
+    ToolColumn
   },
   data() {
     return {
