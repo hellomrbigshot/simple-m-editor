@@ -6,8 +6,13 @@
 ![GitHub](https://img.shields.io/github/license/hellomrbigshot/simple-m-editor)
 
 ## Install
-
-npm i -S simple-m-editor
+```
+yarn add simple-m-editor
+```
+### use npm
+```
+npm install --save simple-m-editor
+```
 
 ## Usage with Vue.js
 

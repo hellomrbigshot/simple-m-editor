@@ -42,11 +42,6 @@ export default {
         this.visible = true
       }
     },
-    handleShowPopper () {
-      if (!this.visible) {
-        this.visible = true
-      }
-    },
     handleClosePopper() {
       this.visible = false
     }
