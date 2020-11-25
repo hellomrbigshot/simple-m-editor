@@ -10,7 +10,7 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "highlight.js": "^9.15.9",
+    "highlight.js": "^10.1.2",
     "marked": "^0.6.0",
     "vue": "^2.6.9"
   },
