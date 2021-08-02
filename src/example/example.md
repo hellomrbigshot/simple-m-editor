@@ -7,6 +7,9 @@
 
 ```
 console.log('hello world')
+for (let i in 10) {
+  console.log(i)
+}
 ```
 
 ### list
