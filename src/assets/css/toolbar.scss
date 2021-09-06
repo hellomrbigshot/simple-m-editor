@@ -1,33 +1,36 @@
+@import "./color.scss";
+
 .editor-toolbar {
   border-radius: 8px 8px 0 0;
   height: 40px;
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid #efefef;
+  border-bottom: 1px solid $light-toolbar-border;
   &-tools, &-mode {
     list-style: none;
     display: flex;
     li {
       width: 30px;
       margin: 5px 3px 5px 3px!important;
-      a {
+      span {
         line-height: 20px;
         font-size: 15px;
-        padding: 5px;
+        padding: 5px!important;
         display: block;
-        color: #2c3e50;
+        color: $light-color;
+        text-align: center;
+        border-radius: 5px;
         &:hover {
-          color: #64b587;
-          background: #f6f6f6;
+          color: $light-toolbar-hover-color;
+          background: $light-toolbar-hover-bg;
           cursor: pointer;
-          border-radius: 5px;
         }
         &.muted {
-          background: #efefef;
-          color: #ddd;
+          background: $light-toolbar-muted-bg;
+          color: $light-toolbar-muted-color;
           &:hover {
             cursor: default;
-            color: #ddd;
+            color: $light-toolbar-muted-color;
           }
         }
       }
@@ -35,5 +38,57 @@
   }
   &-tools {
     padding-left: 10px!important;
+  }
+}
+.dark-editor {
+  .editor-toolbar {
+    background: $dark-bg;
+    border-color: $dark-toolbar-border;
+    &-tools, &-mode {
+      span {
+        line-height: 20px;
+        font-size: 15px;
+        padding: 5px!important;
+        display: block;
+        color: $light-color;
+        text-align: center;
+        border-radius: 5px;
+        &:hover {
+          color: $dark-toolbar-hover-color;
+          background: $dark-toolbar-hover-bg;
+        }
+        &.muted {
+          background: $dark-toolbar-muted-bg;
+          color: $dark-toolbar-muted-color;
+          &:hover {
+            cursor: default;
+            color: $dark-toolbar-muted-color;
+          }
+        }
+      }
+    }
+  }
+}
+.dark-editor {
+  .editor-toolbar {
+    background: $dark-bg;
+    border-color: $dark-toolbar-border;
+    &-tools, &-mode {
+      span {
+        color: #fff;
+        &:hover {
+          color: $dark-toolbar-hover-color;
+          background: $dark-toolbar-hover-bg;
+        }
+        &.muted {
+          background: $dark-toolbar-muted-bg;
+          color: $dark-toolbar-muted-color;
+          &:hover {
+            cursor: default;
+            color: $dark-toolbar-muted-color;
+          }
+        }
+      }
+    }
   }
 }

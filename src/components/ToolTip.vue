@@ -3,7 +3,7 @@
     @mouseenter="handleShowPopper"
     @mouseover="handleShowPopper"
     @mouseleave="handleClosePopper"
-    class="tool-tip-wrapper"
+    class="tooltip-wrapper"
   >
     <div>
       <slot></slot>
@@ -11,7 +11,7 @@
     <transition name="fade">
       <div
         ref="popper"
-        class="tool-tip-content"
+        class="tooltip-content"
         v-show="visible"
         @mouseenter="handleShowPopper"
         @mouseleave="handleClosePopper"
@@ -48,26 +48,6 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
-.tool-tip-wrapper {
-  position: relative;
-}
-.tool-tip-content {
-  padding: 3px;
-  position: absolute;
-  margin-top: 5px;
-  left: 0;
-  z-index: 100;
-  background: #fff;
-  width: auto;
-  font-size: 14px;
-  border-radius: 3px;
-  box-shadow: 0 0 1px 1px #eee;
-}
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
-}
-.fade-enter, .fade-leave-to {
-  opacity: 0;
-}
+<style lang="scss">
+@import "../assets/css/tooltip.scss";
 </style>

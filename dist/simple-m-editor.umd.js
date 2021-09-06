@@ -96,6 +96,59 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ({
 
+/***/ "00fd":
+/***/ (function(module, exports, __webpack_require__) {
+
+var Symbol = __webpack_require__("9e69");
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var nativeObjectToString = objectProto.toString;
+
+/** Built-in value references. */
+var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
+
+/**
+ * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the raw `toStringTag`.
+ */
+function getRawTag(value) {
+  var isOwn = hasOwnProperty.call(value, symToStringTag),
+      tag = value[symToStringTag];
+
+  try {
+    value[symToStringTag] = undefined;
+    var unmasked = true;
+  } catch (e) {}
+
+  var result = nativeObjectToString.call(value);
+  if (unmasked) {
+    if (isOwn) {
+      value[symToStringTag] = tag;
+    } else {
+      delete value[symToStringTag];
+    }
+  }
+  return result;
+}
+
+module.exports = getRawTag;
+
+
+/***/ }),
+
 /***/ "0366":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3605,6 +3658,82 @@ module.exports = !DESCRIPTORS && !fails(function () {
 
 /***/ }),
 
+/***/ "0f32":
+/***/ (function(module, exports, __webpack_require__) {
+
+var debounce = __webpack_require__("b047"),
+    isObject = __webpack_require__("1a8c");
+
+/** Error message constants. */
+var FUNC_ERROR_TEXT = 'Expected a function';
+
+/**
+ * Creates a throttled function that only invokes `func` at most once per
+ * every `wait` milliseconds. The throttled function comes with a `cancel`
+ * method to cancel delayed `func` invocations and a `flush` method to
+ * immediately invoke them. Provide `options` to indicate whether `func`
+ * should be invoked on the leading and/or trailing edge of the `wait`
+ * timeout. The `func` is invoked with the last arguments provided to the
+ * throttled function. Subsequent calls to the throttled function return the
+ * result of the last `func` invocation.
+ *
+ * **Note:** If `leading` and `trailing` options are `true`, `func` is
+ * invoked on the trailing edge of the timeout only if the throttled function
+ * is invoked more than once during the `wait` timeout.
+ *
+ * If `wait` is `0` and `leading` is `false`, `func` invocation is deferred
+ * until to the next tick, similar to `setTimeout` with a timeout of `0`.
+ *
+ * See [David Corbacho's article](https://css-tricks.com/debouncing-throttling-explained-examples/)
+ * for details over the differences between `_.throttle` and `_.debounce`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Function
+ * @param {Function} func The function to throttle.
+ * @param {number} [wait=0] The number of milliseconds to throttle invocations to.
+ * @param {Object} [options={}] The options object.
+ * @param {boolean} [options.leading=true]
+ *  Specify invoking on the leading edge of the timeout.
+ * @param {boolean} [options.trailing=true]
+ *  Specify invoking on the trailing edge of the timeout.
+ * @returns {Function} Returns the new throttled function.
+ * @example
+ *
+ * // Avoid excessively updating the position while scrolling.
+ * jQuery(window).on('scroll', _.throttle(updatePosition, 100));
+ *
+ * // Invoke `renewToken` when the click event is fired, but not more than once every 5 minutes.
+ * var throttled = _.throttle(renewToken, 300000, { 'trailing': false });
+ * jQuery(element).on('click', throttled);
+ *
+ * // Cancel the trailing throttled invocation.
+ * jQuery(window).on('popstate', throttled.cancel);
+ */
+function throttle(func, wait, options) {
+  var leading = true,
+      trailing = true;
+
+  if (typeof func != 'function') {
+    throw new TypeError(FUNC_ERROR_TEXT);
+  }
+  if (isObject(options)) {
+    leading = 'leading' in options ? !!options.leading : leading;
+    trailing = 'trailing' in options ? !!options.trailing : trailing;
+  }
+  return debounce(func, wait, {
+    'leading': leading,
+    'maxWait': wait,
+    'trailing': trailing
+  });
+}
+
+module.exports = throttle;
+
+
+/***/ }),
+
 /***/ "1020":
 /***/ (function(module, exports) {
 
@@ -6281,6 +6410,42 @@ fixRegExpWellKnownSymbolLogic('split', function (SPLIT, nativeSplit, maybeCallNa
 
 /***/ }),
 
+/***/ "1310":
+/***/ (function(module, exports) {
+
+/**
+ * Checks if `value` is object-like. A value is object-like if it's not `null`
+ * and has a `typeof` result of "object".
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ * @example
+ *
+ * _.isObjectLike({});
+ * // => true
+ *
+ * _.isObjectLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isObjectLike(_.noop);
+ * // => false
+ *
+ * _.isObjectLike(null);
+ * // => false
+ */
+function isObjectLike(value) {
+  return value != null && typeof value == 'object';
+}
+
+module.exports = isObjectLike;
+
+
+/***/ }),
+
 /***/ "14c3":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -7044,6 +7209,44 @@ module.exports = less;
 
 /***/ }),
 
+/***/ "1a8c":
+/***/ (function(module, exports) {
+
+/**
+ * Checks if `value` is the
+ * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
+ * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(_.noop);
+ * // => true
+ *
+ * _.isObject(null);
+ * // => false
+ */
+function isObject(value) {
+  var type = typeof value;
+  return value != null && (type == 'object' || type == 'function');
+}
+
+module.exports = isObject;
+
+
+/***/ }),
+
 /***/ "1be4":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -7200,6 +7403,13 @@ exports.f = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
   return internalObjectKeys(O, hiddenKeys);
 };
 
+
+/***/ }),
+
+/***/ "2640":
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
 
 /***/ }),
 
@@ -7420,6 +7630,51 @@ module.exports = php;
 /* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_8_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_8_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_oneOf_1_2_node_modules_sass_loader_dist_cjs_js_ref_8_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_scss___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("8f4e");
 /* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_8_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_8_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_oneOf_1_2_node_modules_sass_loader_dist_cjs_js_ref_8_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_scss___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_8_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_8_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_oneOf_1_2_node_modules_sass_loader_dist_cjs_js_ref_8_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_scss___WEBPACK_IMPORTED_MODULE_0__);
 /* unused harmony reexport * */
+
+
+/***/ }),
+
+/***/ "29f3":
+/***/ (function(module, exports) {
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var nativeObjectToString = objectProto.toString;
+
+/**
+ * Converts `value` to a string using `Object.prototype.toString`.
+ *
+ * @private
+ * @param {*} value The value to convert.
+ * @returns {string} Returns the converted string.
+ */
+function objectToString(value) {
+  return nativeObjectToString.call(value);
+}
+
+module.exports = objectToString;
+
+
+/***/ }),
+
+/***/ "2b3e":
+/***/ (function(module, exports, __webpack_require__) {
+
+var freeGlobal = __webpack_require__("585a");
+
+/** Detect free variable `self`. */
+var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+
+/** Used as a reference to the global object. */
+var root = freeGlobal || freeSelf || Function('return this')();
+
+module.exports = root;
 
 
 /***/ }),
@@ -8101,6 +8356,41 @@ module.exports = getBuiltIn('navigator', 'userAgent') || '';
 
 /***/ }),
 
+/***/ "3729":
+/***/ (function(module, exports, __webpack_require__) {
+
+var Symbol = __webpack_require__("9e69"),
+    getRawTag = __webpack_require__("00fd"),
+    objectToString = __webpack_require__("29f3");
+
+/** `Object#toString` result references. */
+var nullTag = '[object Null]',
+    undefinedTag = '[object Undefined]';
+
+/** Built-in value references. */
+var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
+
+/**
+ * The base implementation of `getTag` without fallbacks for buggy environments.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the `toStringTag`.
+ */
+function baseGetTag(value) {
+  if (value == null) {
+    return value === undefined ? undefinedTag : nullTag;
+  }
+  return (symToStringTag && symToStringTag in Object(value))
+    ? getRawTag(value)
+    : objectToString(value);
+}
+
+module.exports = baseGetTag;
+
+
+/***/ }),
+
 /***/ "37e8":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -8146,6 +8436,36 @@ module.exports = function (it) {
     throw TypeError("Can't set " + String(it) + ' as a prototype');
   } return it;
 };
+
+
+/***/ }),
+
+/***/ "408c":
+/***/ (function(module, exports, __webpack_require__) {
+
+var root = __webpack_require__("2b3e");
+
+/**
+ * Gets the timestamp of the number of milliseconds that have elapsed since
+ * the Unix epoch (1 January 1970 00:00:00 UTC).
+ *
+ * @static
+ * @memberOf _
+ * @since 2.4.0
+ * @category Date
+ * @returns {number} Returns the timestamp.
+ * @example
+ *
+ * _.defer(function(stamp) {
+ *   console.log(_.now() - stamp);
+ * }, _.now());
+ * // => Logs the number of milliseconds it took for the deferred invocation.
+ */
+var now = function() {
+  return root.Date.now();
+};
+
+module.exports = now;
 
 
 /***/ }),
@@ -8243,6 +8563,32 @@ module.exports = !!Object.getOwnPropertySymbols && !fails(function () {
     // Chrome 38-40 symbols are not inherited from DOM collections prototypes to instances
     !Symbol.sham && V8_VERSION && V8_VERSION < 41;
 });
+
+
+/***/ }),
+
+/***/ "4cef":
+/***/ (function(module, exports) {
+
+/** Used to match a single whitespace character. */
+var reWhitespace = /\s/;
+
+/**
+ * Used by `_.trim` and `_.trimEnd` to get the index of the last non-whitespace
+ * character of `string`.
+ *
+ * @private
+ * @param {string} string The string to inspect.
+ * @returns {number} Returns the index of the last non-whitespace character.
+ */
+function trimmedEndIndex(string) {
+  var index = string.length;
+
+  while (index-- && reWhitespace.test(string.charAt(index))) {}
+  return index;
+}
+
+module.exports = trimmedEndIndex;
 
 
 /***/ }),
@@ -9070,6 +9416,18 @@ module.exports = function (argument) {
 
 /***/ }),
 
+/***/ "585a":
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {/** Detect free variable `global` from Node.js. */
+var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
+
+module.exports = freeGlobal;
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__("c8ba")))
+
+/***/ }),
+
 /***/ "5899":
 /***/ (function(module, exports) {
 
@@ -9396,6 +9754,17 @@ module.exports = function ($this, dummy, Wrapper) {
 
 // eslint-disable-next-line es/no-object-getownpropertysymbols -- safe
 exports.f = Object.getOwnPropertySymbols;
+
+
+/***/ }),
+
+/***/ "74f5":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_8_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_8_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_oneOf_1_2_node_modules_sass_loader_dist_cjs_js_ref_8_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ToolTip_vue_vue_type_style_index_0_lang_scss___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("2640");
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_8_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_8_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_oneOf_1_2_node_modules_sass_loader_dist_cjs_js_ref_8_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ToolTip_vue_vue_type_style_index_0_lang_scss___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_8_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_8_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_oneOf_1_2_node_modules_sass_loader_dist_cjs_js_ref_8_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ToolTip_vue_vue_type_style_index_0_lang_scss___WEBPACK_IMPORTED_MODULE_0__);
+/* unused harmony reexport * */
 
 
 /***/ }),
@@ -10109,6 +10478,32 @@ var charAt = __webpack_require__("6547").charAt;
 module.exports = function (S, index, unicode) {
   return index + (unicode ? charAt(S, index).length : 1);
 };
+
+
+/***/ }),
+
+/***/ "8d74":
+/***/ (function(module, exports, __webpack_require__) {
+
+var trimmedEndIndex = __webpack_require__("4cef");
+
+/** Used to match leading whitespace. */
+var reTrimStart = /^\s+/;
+
+/**
+ * The base implementation of `_.trim`.
+ *
+ * @private
+ * @param {string} string The string to trim.
+ * @returns {string} Returns the trimmed string.
+ */
+function baseTrim(string) {
+  return string
+    ? string.slice(0, trimmedEndIndex(string) + 1).replace(reTrimStart, '')
+    : string;
+}
+
+module.exports = baseTrim;
 
 
 /***/ }),
@@ -11305,6 +11700,19 @@ exports.f = DESCRIPTORS ? $defineProperty : function defineProperty(O, P, Attrib
 
 /***/ }),
 
+/***/ "9e69":
+/***/ (function(module, exports, __webpack_require__) {
+
+var root = __webpack_require__("2b3e");
+
+/** Built-in value references. */
+var Symbol = root.Symbol;
+
+module.exports = Symbol;
+
+
+/***/ }),
+
 /***/ "9f7f":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12311,10 +12719,272 @@ module.exports = typescript;
 
 /***/ }),
 
-/***/ "b3d1":
+/***/ "b047":
 /***/ (function(module, exports, __webpack_require__) {
 
-// extracted by mini-css-extract-plugin
+var isObject = __webpack_require__("1a8c"),
+    now = __webpack_require__("408c"),
+    toNumber = __webpack_require__("b4b0");
+
+/** Error message constants. */
+var FUNC_ERROR_TEXT = 'Expected a function';
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeMax = Math.max,
+    nativeMin = Math.min;
+
+/**
+ * Creates a debounced function that delays invoking `func` until after `wait`
+ * milliseconds have elapsed since the last time the debounced function was
+ * invoked. The debounced function comes with a `cancel` method to cancel
+ * delayed `func` invocations and a `flush` method to immediately invoke them.
+ * Provide `options` to indicate whether `func` should be invoked on the
+ * leading and/or trailing edge of the `wait` timeout. The `func` is invoked
+ * with the last arguments provided to the debounced function. Subsequent
+ * calls to the debounced function return the result of the last `func`
+ * invocation.
+ *
+ * **Note:** If `leading` and `trailing` options are `true`, `func` is
+ * invoked on the trailing edge of the timeout only if the debounced function
+ * is invoked more than once during the `wait` timeout.
+ *
+ * If `wait` is `0` and `leading` is `false`, `func` invocation is deferred
+ * until to the next tick, similar to `setTimeout` with a timeout of `0`.
+ *
+ * See [David Corbacho's article](https://css-tricks.com/debouncing-throttling-explained-examples/)
+ * for details over the differences between `_.debounce` and `_.throttle`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Function
+ * @param {Function} func The function to debounce.
+ * @param {number} [wait=0] The number of milliseconds to delay.
+ * @param {Object} [options={}] The options object.
+ * @param {boolean} [options.leading=false]
+ *  Specify invoking on the leading edge of the timeout.
+ * @param {number} [options.maxWait]
+ *  The maximum time `func` is allowed to be delayed before it's invoked.
+ * @param {boolean} [options.trailing=true]
+ *  Specify invoking on the trailing edge of the timeout.
+ * @returns {Function} Returns the new debounced function.
+ * @example
+ *
+ * // Avoid costly calculations while the window size is in flux.
+ * jQuery(window).on('resize', _.debounce(calculateLayout, 150));
+ *
+ * // Invoke `sendMail` when clicked, debouncing subsequent calls.
+ * jQuery(element).on('click', _.debounce(sendMail, 300, {
+ *   'leading': true,
+ *   'trailing': false
+ * }));
+ *
+ * // Ensure `batchLog` is invoked once after 1 second of debounced calls.
+ * var debounced = _.debounce(batchLog, 250, { 'maxWait': 1000 });
+ * var source = new EventSource('/stream');
+ * jQuery(source).on('message', debounced);
+ *
+ * // Cancel the trailing debounced invocation.
+ * jQuery(window).on('popstate', debounced.cancel);
+ */
+function debounce(func, wait, options) {
+  var lastArgs,
+      lastThis,
+      maxWait,
+      result,
+      timerId,
+      lastCallTime,
+      lastInvokeTime = 0,
+      leading = false,
+      maxing = false,
+      trailing = true;
+
+  if (typeof func != 'function') {
+    throw new TypeError(FUNC_ERROR_TEXT);
+  }
+  wait = toNumber(wait) || 0;
+  if (isObject(options)) {
+    leading = !!options.leading;
+    maxing = 'maxWait' in options;
+    maxWait = maxing ? nativeMax(toNumber(options.maxWait) || 0, wait) : maxWait;
+    trailing = 'trailing' in options ? !!options.trailing : trailing;
+  }
+
+  function invokeFunc(time) {
+    var args = lastArgs,
+        thisArg = lastThis;
+
+    lastArgs = lastThis = undefined;
+    lastInvokeTime = time;
+    result = func.apply(thisArg, args);
+    return result;
+  }
+
+  function leadingEdge(time) {
+    // Reset any `maxWait` timer.
+    lastInvokeTime = time;
+    // Start the timer for the trailing edge.
+    timerId = setTimeout(timerExpired, wait);
+    // Invoke the leading edge.
+    return leading ? invokeFunc(time) : result;
+  }
+
+  function remainingWait(time) {
+    var timeSinceLastCall = time - lastCallTime,
+        timeSinceLastInvoke = time - lastInvokeTime,
+        timeWaiting = wait - timeSinceLastCall;
+
+    return maxing
+      ? nativeMin(timeWaiting, maxWait - timeSinceLastInvoke)
+      : timeWaiting;
+  }
+
+  function shouldInvoke(time) {
+    var timeSinceLastCall = time - lastCallTime,
+        timeSinceLastInvoke = time - lastInvokeTime;
+
+    // Either this is the first call, activity has stopped and we're at the
+    // trailing edge, the system time has gone backwards and we're treating
+    // it as the trailing edge, or we've hit the `maxWait` limit.
+    return (lastCallTime === undefined || (timeSinceLastCall >= wait) ||
+      (timeSinceLastCall < 0) || (maxing && timeSinceLastInvoke >= maxWait));
+  }
+
+  function timerExpired() {
+    var time = now();
+    if (shouldInvoke(time)) {
+      return trailingEdge(time);
+    }
+    // Restart the timer.
+    timerId = setTimeout(timerExpired, remainingWait(time));
+  }
+
+  function trailingEdge(time) {
+    timerId = undefined;
+
+    // Only invoke if we have `lastArgs` which means `func` has been
+    // debounced at least once.
+    if (trailing && lastArgs) {
+      return invokeFunc(time);
+    }
+    lastArgs = lastThis = undefined;
+    return result;
+  }
+
+  function cancel() {
+    if (timerId !== undefined) {
+      clearTimeout(timerId);
+    }
+    lastInvokeTime = 0;
+    lastArgs = lastCallTime = lastThis = timerId = undefined;
+  }
+
+  function flush() {
+    return timerId === undefined ? result : trailingEdge(now());
+  }
+
+  function debounced() {
+    var time = now(),
+        isInvoking = shouldInvoke(time);
+
+    lastArgs = arguments;
+    lastThis = this;
+    lastCallTime = time;
+
+    if (isInvoking) {
+      if (timerId === undefined) {
+        return leadingEdge(lastCallTime);
+      }
+      if (maxing) {
+        // Handle invocations in a tight loop.
+        clearTimeout(timerId);
+        timerId = setTimeout(timerExpired, wait);
+        return invokeFunc(lastCallTime);
+      }
+    }
+    if (timerId === undefined) {
+      timerId = setTimeout(timerExpired, wait);
+    }
+    return result;
+  }
+  debounced.cancel = cancel;
+  debounced.flush = flush;
+  return debounced;
+}
+
+module.exports = debounce;
+
+
+/***/ }),
+
+/***/ "b4b0":
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseTrim = __webpack_require__("8d74"),
+    isObject = __webpack_require__("1a8c"),
+    isSymbol = __webpack_require__("ffd6");
+
+/** Used as references for various `Number` constants. */
+var NAN = 0 / 0;
+
+/** Used to detect bad signed hexadecimal string values. */
+var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
+
+/** Used to detect binary string values. */
+var reIsBinary = /^0b[01]+$/i;
+
+/** Used to detect octal string values. */
+var reIsOctal = /^0o[0-7]+$/i;
+
+/** Built-in method references without a dependency on `root`. */
+var freeParseInt = parseInt;
+
+/**
+ * Converts `value` to a number.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to process.
+ * @returns {number} Returns the number.
+ * @example
+ *
+ * _.toNumber(3.2);
+ * // => 3.2
+ *
+ * _.toNumber(Number.MIN_VALUE);
+ * // => 5e-324
+ *
+ * _.toNumber(Infinity);
+ * // => Infinity
+ *
+ * _.toNumber('3.2');
+ * // => 3.2
+ */
+function toNumber(value) {
+  if (typeof value == 'number') {
+    return value;
+  }
+  if (isSymbol(value)) {
+    return NAN;
+  }
+  if (isObject(value)) {
+    var other = typeof value.valueOf == 'function' ? value.valueOf() : value;
+    value = isObject(other) ? (other + '') : other;
+  }
+  if (typeof value != 'string') {
+    return value === 0 ? value : +value;
+  }
+  value = baseTrim(value);
+  var isBinary = reIsBinary.test(value);
+  return (isBinary || reIsOctal.test(value))
+    ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
+    : (reIsBadHex.test(value) ? NAN : +value);
+}
+
+module.exports = toNumber;
+
 
 /***/ }),
 
@@ -13208,17 +13878,6 @@ var EXISTS = isObject(document) && isObject(document.createElement);
 module.exports = function (it) {
   return EXISTS ? document.createElement(it) : {};
 };
-
-
-/***/ }),
-
-/***/ "cc73":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_8_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_8_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_oneOf_1_2_node_modules_sass_loader_dist_cjs_js_ref_8_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ToolTip_vue_vue_type_style_index_0_id_76d1ad94_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("b3d1");
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_8_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_8_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_oneOf_1_2_node_modules_sass_loader_dist_cjs_js_ref_8_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ToolTip_vue_vue_type_style_index_0_id_76d1ad94_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_8_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_8_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_oneOf_1_2_node_modules_sass_loader_dist_cjs_js_ref_8_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ToolTip_vue_vue_type_style_index_0_id_76d1ad94_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__);
-/* unused harmony reexport * */
 
 
 /***/ }),
@@ -14189,12 +14848,12 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"1329a398-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/Editor/index.vue?vue&type=template&id=2adffb52&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"03b8b5f1-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/Editor/index.vue?vue&type=template&id=1288ed86&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"mEditor",class:[
     'editor',
     (_vm.theme + "-editor"),
     _vm.editFullScreen && 'editor-editFullScreen'
-  ],attrs:{"id":"m-editor"},on:{"keydown":_vm.handleKeyPress}},[_c('tool-bar',{attrs:{"fullScreen":_vm.editFullScreen,"mode":_vm.editMode,"config":_vm.config,"icon-length":_vm.iconLength},on:{"full-screen-change":function () {_vm.editFullScreen = !_vm.editFullScreen},"mode-change":_vm.handleModeEdit,"add-content":_vm.addContent}}),_c('div',{staticClass:"editor-content"},[_c('div',{ref:"editContentWrapper",class:[
+  ],attrs:{"id":"m-editor"},on:{"keydown":_vm.handleKeyPress}},[_c('tool-bar',{attrs:{"fullScreen":_vm.editFullScreen,"mode":_vm.editMode,"config":_vm.config,"icon-length":_vm.iconLength},on:{"full-screen-change":_vm.handleFullScreenChange,"mode-change":_vm.handleModeEdit,"add-content":_vm.addContent}}),_c('div',{staticClass:"editor-content"},[_c('div',{ref:"editContentWrapper",class:[
         'editor-content-edit',
         _vm.editMode === 'edit' && 'active',
         _vm.editMode === 'preview' && 'inactive'
@@ -14202,11 +14861,14 @@ var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._sel
         'editor-content-preview',
         _vm.editMode === 'preview' && 'active',
         _vm.editMode === 'edit' && 'inactive'
-      ],on:{"mouseover":function($event){return _vm.handleMouseOver('preview')}}},[_c('div',{ref:"previewContent",staticClass:"m-editor-preview",domProps:{"innerHTML":_vm._s(_vm.compiledMarkdown)}})])])],1)}
+      ],on:{"mouseover":function($event){return _vm.handleMouseOver('preview')}}},[_c('div',{ref:"previewContent",staticClass:"m-editor-preview",domProps:{"innerHTML":_vm._s(_vm.markedHtml)}})])])],1)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/Editor/index.vue?vue&type=template&id=2adffb52&
+// CONCATENATED MODULE: ./src/Editor/index.vue?vue&type=template&id=1288ed86&
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es.number.constructor.js
+var es_number_constructor = __webpack_require__("a9e3");
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.regexp.exec.js
 var es_regexp_exec = __webpack_require__("ac1f");
@@ -14434,22 +15096,19 @@ Object.keys(languagesMapping).forEach(function (language) {
 // EXTERNAL MODULE: ./src/assets/css/icon.css
 var icon = __webpack_require__("d21e");
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"1329a398-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/ToolBar.vue?vue&type=template&id=7f7faa02&
-var ToolBarvue_type_template_id_7f7faa02_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"editor-toolbar"},[_c('ul',{ref:"editTools",staticClass:"editor-toolbar-tools"},[_vm._l((_vm.config),function(item,i){return [(item.showIcon && i < _vm.iconLength)?_c('li',{key:i},[(!item.children)?_c('a',{class:['iconfont', item.icon],attrs:{"title":item.title},on:{"click":function($event){return _vm.$emit('add-content', item.content)}}}):_c('tool-tip',[_c('a',{class:['iconfont', item.icon],attrs:{"title":item.title}}),_c('div',{attrs:{"slot":"content"},slot:"content"},_vm._l((item.children),function(_item,j){return _c('div',{key:j,staticStyle:{"width":"100%"}},[_c('a',{style:({ fontSize: ((_item.size) + "px") }),attrs:{"title":_item.title},on:{"click":function($event){return _vm.$emit('add-content', _item.content)}}},[_vm._v(_vm._s(_item.text))])])}),0)])],1):_vm._e()]})],2),_c('ul',{staticClass:"editor-toolbar-mode"},[_c('li',[_c('a',{class:['iconfont', !_vm.fullScreen && 'icon-quanping' || 'icon-huanyuanhuabu'],attrs:{"title":!_vm.fullScreen && '全屏' || '还原'},on:{"click":function($event){return _vm.$emit('full-screen-change')}}})]),_vm._l((_vm.modeConfig),function(modeItem,i){return _c('li',{key:i},[_c('a',{class:['iconfont', modeItem.icon, _vm.mode === modeItem.mode && 'muted'],on:{"click":function($event){return _vm.$emit('mode-change', modeItem.mode)}}})])})],2)])}
-var ToolBarvue_type_template_id_7f7faa02_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"03b8b5f1-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/ToolBar.vue?vue&type=template&id=373d3ce5&
+var ToolBarvue_type_template_id_373d3ce5_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"editor-toolbar"},[_c('ul',{ref:"editTools",staticClass:"editor-toolbar-tools"},[_vm._l((_vm.config),function(item,i){return [(item.showIcon && i < _vm.iconLength)?_c('li',{key:i},[(!item.children)?_c('span',{class:['iconfont', item.icon],attrs:{"title":item.title},on:{"click":function($event){return _vm.$emit('add-content', item.content)}}}):_c('tool-tip',[_c('span',{class:['iconfont', item.icon],attrs:{"title":item.title}}),_c('div',{attrs:{"slot":"content"},slot:"content"},_vm._l((item.children),function(_item,j){return _c('div',{key:j,staticStyle:{"width":"100%"}},[_c('span',{style:({ fontSize: ((_item.size) + "px") }),attrs:{"title":_item.title},on:{"click":function($event){return _vm.$emit('add-content', _item.content)}}},[_vm._v(_vm._s(_item.text))])])}),0)])],1):_vm._e()]})],2),_c('ul',{staticClass:"editor-toolbar-mode"},[_c('li',[_c('span',{class:['iconfont', !_vm.fullScreen && 'icon-quanping' || 'icon-huanyuanhuabu'],attrs:{"title":!_vm.fullScreen && '全屏' || '还原'},on:{"click":function($event){return _vm.$emit('full-screen-change')}}})]),_vm._l((_vm.modeConfig),function(modeItem,i){return _c('li',{key:i},[_c('span',{class:['iconfont', modeItem.icon, _vm.mode === modeItem.mode && 'muted'],on:{"click":function($event){return _vm.$emit('mode-change', modeItem.mode, _vm.mode)}}})])})],2)])}
+var ToolBarvue_type_template_id_373d3ce5_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/ToolBar.vue?vue&type=template&id=7f7faa02&
+// CONCATENATED MODULE: ./src/components/ToolBar.vue?vue&type=template&id=373d3ce5&
 
-// EXTERNAL MODULE: ./node_modules/core-js/modules/es.number.constructor.js
-var es_number_constructor = __webpack_require__("a9e3");
-
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"1329a398-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/ToolTip.vue?vue&type=template&id=76d1ad94&scoped=true&
-var ToolTipvue_type_template_id_76d1ad94_scoped_true_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"tool-tip-wrapper",on:{"mouseenter":_vm.handleShowPopper,"mouseover":_vm.handleShowPopper,"mouseleave":_vm.handleClosePopper}},[_c('div',[_vm._t("default")],2),_c('transition',{attrs:{"name":"fade"}},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.visible),expression:"visible"}],ref:"popper",staticClass:"tool-tip-content",on:{"mouseenter":_vm.handleShowPopper,"mouseleave":_vm.handleClosePopper}},[_c('div',[_vm._t("content",function(){return [_vm._v(_vm._s(_vm.content))]})],2)])])],1)}
-var ToolTipvue_type_template_id_76d1ad94_scoped_true_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"03b8b5f1-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/ToolTip.vue?vue&type=template&id=177e844f&
+var ToolTipvue_type_template_id_177e844f_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"tooltip-wrapper",on:{"mouseenter":_vm.handleShowPopper,"mouseover":_vm.handleShowPopper,"mouseleave":_vm.handleClosePopper}},[_c('div',[_vm._t("default")],2),_c('transition',{attrs:{"name":"fade"}},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.visible),expression:"visible"}],ref:"popper",staticClass:"tooltip-content",on:{"mouseenter":_vm.handleShowPopper,"mouseleave":_vm.handleClosePopper}},[_c('div',[_vm._t("content",function(){return [_vm._v(_vm._s(_vm.content))]})],2)])])],1)}
+var ToolTipvue_type_template_id_177e844f_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/ToolTip.vue?vue&type=template&id=76d1ad94&scoped=true&
+// CONCATENATED MODULE: ./src/components/ToolTip.vue?vue&type=template&id=177e844f&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/ToolTip.vue?vue&type=script&lang=js&
 //
@@ -14502,8 +15161,8 @@ var ToolTipvue_type_template_id_76d1ad94_scoped_true_staticRenderFns = []
 });
 // CONCATENATED MODULE: ./src/components/ToolTip.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_ToolTipvue_type_script_lang_js_ = (ToolTipvue_type_script_lang_js_); 
-// EXTERNAL MODULE: ./src/components/ToolTip.vue?vue&type=style&index=0&id=76d1ad94&lang=scss&scoped=true&
-var ToolTipvue_type_style_index_0_id_76d1ad94_lang_scss_scoped_true_ = __webpack_require__("cc73");
+// EXTERNAL MODULE: ./src/components/ToolTip.vue?vue&type=style&index=0&lang=scss&
+var ToolTipvue_type_style_index_0_lang_scss_ = __webpack_require__("74f5");
 
 // CONCATENATED MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
 /* globals __VUE_SSR_CONTEXT__ */
@@ -14616,11 +15275,11 @@ function normalizeComponent (
 
 var component = normalizeComponent(
   components_ToolTipvue_type_script_lang_js_,
-  ToolTipvue_type_template_id_76d1ad94_scoped_true_render,
-  ToolTipvue_type_template_id_76d1ad94_scoped_true_staticRenderFns,
+  ToolTipvue_type_template_id_177e844f_render,
+  ToolTipvue_type_template_id_177e844f_staticRenderFns,
   false,
   null,
-  "76d1ad94",
+  null,
   null
   
 )
@@ -14747,8 +15406,8 @@ var ToolBarvue_type_style_index_0_lang_scss_ = __webpack_require__("5cf0");
 
 var ToolBar_component = normalizeComponent(
   components_ToolBarvue_type_script_lang_js_,
-  ToolBarvue_type_template_id_7f7faa02_render,
-  ToolBarvue_type_template_id_7f7faa02_staticRenderFns,
+  ToolBarvue_type_template_id_373d3ce5_render,
+  ToolBarvue_type_template_id_373d3ce5_staticRenderFns,
   false,
   null,
   null,
@@ -14757,7 +15416,7 @@ var ToolBar_component = normalizeComponent(
 )
 
 /* harmony default export */ var ToolBar = (ToolBar_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"1329a398-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/ToolColumn.vue?vue&type=template&id=c5bca8c8&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"03b8b5f1-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/ToolColumn.vue?vue&type=template&id=c5bca8c8&
 var ToolColumnvue_type_template_id_c5bca8c8_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('ul',{staticClass:"editor-content-edit-column"},_vm._l((_vm.length),function(i){return _c('li',{key:i},[_vm._v(_vm._s(i))])}),0)}
 var ToolColumnvue_type_template_id_c5bca8c8_staticRenderFns = []
 
@@ -14805,11 +15464,20 @@ var ToolColumn_component = normalizeComponent(
 )
 
 /* harmony default export */ var ToolColumn = (ToolColumn_component.exports);
+// EXTERNAL MODULE: ./node_modules/lodash/debounce.js
+var debounce = __webpack_require__("b047");
+var debounce_default = /*#__PURE__*/__webpack_require__.n(debounce);
+
+// EXTERNAL MODULE: ./node_modules/lodash/throttle.js
+var throttle = __webpack_require__("0f32");
+var throttle_default = /*#__PURE__*/__webpack_require__.n(throttle);
+
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/Editor/index.vue?vue&type=script&lang=js&
 
 
 
 
+
 //
 //
 //
@@ -14877,6 +15545,8 @@ var ToolColumn_component = normalizeComponent(
 //
 //
 //
+
+
 
 
 
@@ -14904,24 +15574,10 @@ marked_default.a.setOptions({
     ToolBar: ToolBar,
     ToolColumn: ToolColumn
   },
-  data: function data() {
-    return {
-      config: config,
-      input: this.value,
-      editMode: this.mode,
-      editFullScreen: this.fullScreen,
-      iconLength: config.length,
-      resizeEvent: null,
-      columnLength: 1,
-      editContentWrapper: null,
-      previewContentWrapper: null,
-      scrollType: null
-    };
-  },
   props: {
     value: {
       type: String,
-      default: '### 用 markdown 写一篇文章'
+      default: ''
     },
     mode: {
       default: 'live',
@@ -14931,7 +15587,7 @@ marked_default.a.setOptions({
       }
     },
     placeholder: {
-      default: '请输入……',
+      default: '',
       type: String
     },
     fullScreen: {
@@ -14952,15 +15608,45 @@ marked_default.a.setOptions({
       validator: function validator(value) {
         return ['light', 'dark'].indexOf(value) !== -1;
       }
+    },
+    debounce: {
+      type: Boolean,
+      default: false
+    },
+    debounceWait: {
+      type: Number,
+      default: 200
     }
   },
-  computed: {
-    compiledMarkdown: function compiledMarkdown() {
-      return marked_default()(this.input);
-    }
+  data: function data() {
+    var _this = this;
+
+    return {
+      config: config,
+      input: this.value,
+      editMode: this.mode,
+      editFullScreen: this.fullScreen,
+      iconLength: config.length,
+      resizeEvent: null,
+      columnLength: 1,
+      editContentWrapper: null,
+      previewContentWrapper: null,
+      scrollType: null,
+      markedHtml: '',
+      debounceMarked: debounce_default()(function (text) {
+        _this.$emit('input', text);
+
+        _this.$emit('on-change', {
+          content: text,
+          htmlContent: marked_default()(text)
+        });
+
+        _this.markedHtml = marked_default()(text);
+      }, this.debounceWait)
+    };
   },
   mounted: function mounted() {
-    this.resizeEvent = this.throttle(this.handleResize, 150, this);
+    this.resizeEvent = throttle_default()(this.handleResize, 150, this);
     this.editContentWrapper = this.$refs.editContentWrapper;
     this.previewContentWrapper = this.$refs.previewContentWrapper;
     window.addEventListener('resize', this.resizeEvent);
@@ -14978,22 +15664,51 @@ marked_default.a.setOptions({
     this.previewContentWrapper.removeEventListener('scroll', this.handleScroll);
   },
   watch: {
-    input: function input(val) {
-      this.$emit('input', val);
-      this.$emit('on-change', {
-        content: val,
-        htmlContent: this.compiledMarkdown
-      });
+    input: {
+      handler: function handler(val) {
+        this.handleColumnChange();
+
+        if (this.debounce) {
+          this.debounceMarked(val);
+        } else {
+          this.$emit('input', val);
+          this.$emit('on-change', {
+            content: val,
+            htmlContent: marked_default()(val)
+          });
+          this.markedHtml = marked_default()(val);
+        }
+      },
+      immediate: true
     },
-    value: function value(val) {
-      this.input = val;
-      this.handleColumnChange();
+    value: {
+      handler: function handler(val) {
+        this.input = val;
+      },
+      immediate: true
+    },
+    debounceWait: {
+      handler: function handler(val) {
+        var _this2 = this;
+
+        this.debounceMarked = debounce_default()(function (text) {
+          _this2.$emit('input', text);
+
+          _this2.$emit('on-change', {
+            content: text,
+            htmlContent: marked_default()(text)
+          });
+
+          _this2.markedHtml = marked_default()(text);
+        }, val);
+      },
+      immediate: true
     },
     editFullScreen: function editFullScreen() {
-      var _this = this;
+      var _this3 = this;
 
       this.$nextTick(function () {
-        _this.handleResize();
+        _this3.handleResize();
       });
     }
   },
@@ -15011,7 +15726,7 @@ marked_default.a.setOptions({
       }
     },
     addContent: function addContent(content) {
-      var _this2 = this;
+      var _this4 = this;
 
       // 移动光标到添加文本的最后
       var pos = this.$refs.mTextarea.selectionStart;
@@ -15020,10 +15735,10 @@ marked_default.a.setOptions({
         this.input = this.spliceStr(this.input, pos, content);
         this.$refs.mTextarea.blur();
         setTimeout(function () {
-          _this2.$refs.mTextarea.selectionStart = pos + content.length;
-          _this2.$refs.mTextarea.selectionEnd = pos + content.length;
+          _this4.$refs.mTextarea.selectionStart = pos + content.length;
+          _this4.$refs.mTextarea.selectionEnd = pos + content.length;
 
-          _this2.$refs.mTextarea.focus();
+          _this4.$refs.mTextarea.focus();
         });
       }
     },
@@ -15046,25 +15761,12 @@ marked_default.a.setOptions({
 
       this.handleColumnChange();
     },
-    throttle: function throttle(fun, wait, ctx) {
-      var _arguments = arguments;
-      // 节流函数
-      var previous = 0;
-      return function () {
-        var now = +new Date();
-
-        if (now - previous > wait) {
-          fun.apply(ctx, _arguments);
-          previous = now;
-        }
-      };
-    },
     handleColumnChange: function handleColumnChange() {
-      var _this3 = this;
+      var _this5 = this;
 
       if (this.mode === 'preview') return false;
       this.$nextTick(function () {
-        _this3.columnLength = Math.max(_this3.input.split('\n').length, (_this3.$refs.inputPre.scrollHeight - 20) / 30);
+        _this5.columnLength = Math.max(_this5.input.split('\n').length, (_this5.$refs.inputPre.scrollHeight - 20) / 30);
       });
     },
     handleMouseOver: function handleMouseOver(type) {
@@ -15085,14 +15787,19 @@ marked_default.a.setOptions({
         editContentWrapper.scrollTop = editScrollMax * (previewScroll / previewScrollMax);
       }
     },
-    handleModeEdit: function handleModeEdit(mode) {
-      var _this4 = this;
+    handleModeEdit: function handleModeEdit(mode, oldMode) {
+      var _this6 = this;
 
       this.editMode = mode;
       setTimeout(function () {
         // mode 改变后有 .2s 的动画，计算行数需要添加延时
-        _this4.handleColumnChange();
+        _this6.handleColumnChange();
       }, 200);
+      this.$emit('on-mode-change', mode, oldMode);
+    },
+    handleFullScreenChange: function handleFullScreenChange() {
+      this.editFullScreen = !this.editFullScreen;
+      this.$emit('on-full-screen-change', this.editFullScreen);
     },
 
     /**
@@ -15285,6 +15992,42 @@ var NATIVE_SYMBOL = __webpack_require__("4930");
 module.exports = NATIVE_SYMBOL
   && !Symbol.sham
   && typeof Symbol.iterator == 'symbol';
+
+
+/***/ }),
+
+/***/ "ffd6":
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseGetTag = __webpack_require__("3729"),
+    isObjectLike = __webpack_require__("1310");
+
+/** `Object#toString` result references. */
+var symbolTag = '[object Symbol]';
+
+/**
+ * Checks if `value` is classified as a `Symbol` primitive or object.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a symbol, else `false`.
+ * @example
+ *
+ * _.isSymbol(Symbol.iterator);
+ * // => true
+ *
+ * _.isSymbol('abc');
+ * // => false
+ */
+function isSymbol(value) {
+  return typeof value == 'symbol' ||
+    (isObjectLike(value) && baseGetTag(value) == symbolTag);
+}
+
+module.exports = isSymbol;
 
 
 /***/ })

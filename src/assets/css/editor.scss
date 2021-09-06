@@ -21,7 +21,7 @@
   display: flex;
   flex-direction: column;
   border: 1px solid #eee;
-  box-shadow: 0 0 12px rgba(0, 0, 0, .1);
+  box-shadow: 0 0 3px $light-box-shadow;
   height: 500px;
   border-radius: 8px;
 }
@@ -45,13 +45,13 @@
   transition: all .2s ease-in;
 }
 .editor-content-preview {
-  background: $light-preview-background;
+  background: $light-preview-bg;
   color: $light-preview-color;
-  padding: 10px!important;
+  padding: 10px !important;
 }
 
 .editor-content-edit {
-  background: $light-background;
+  background: $light-bg;
   &-block {
       display: flex;
       overflow: hidden;
@@ -59,11 +59,11 @@
   }
 
   &-input {
-      margin-left: 10px!important;
+      padding-left: 10px;
       position: relative;
       flex: 1 0 0;
       line-height: 30px;
-      background: $light-background;
+      background: $light-bg;
       min-height: 100%;
       overflow: hidden;
       div, textarea {
@@ -76,7 +76,7 @@
         box-sizing: border-box;
         font-family: inherit;
         font-size: 14px;
-        padding: 10px 0;
+        padding: 10px;
         line-height: inherit;
         display: block;
       }
@@ -85,27 +85,34 @@
         white-space: pre-wrap;
       }
       textarea {
-          position: absolute;
-          color: #2c3e50;
-          background:$light-background;
-          top: 0;
-          left: 0;
-          bottom: 0;
-          height: 100%;
-          border: none;
-          resize: none;
-          outline: none;
-          z-index: 2;
-          min-height: 100%;
+        position: absolute;
+        color: $light-color;
+        background: $light-bg;
+        top: 0;
+        bottom: 0;
+        height: 100%;
+        border: none;
+        resize: none;
+        outline: none;
+        z-index: 2;
+        min-height: 100%;
+        &::-webkit-input-placeholder {
+          color: $light-placeholder-color;
+        }
       }
   }
 }
 .dark-editor {
   .editor-content-edit {
-    background: $dark-background;
+    .editor-content-edit-input {
+      background: $dark-bg;
+    }
     textarea {
-      background: $dark-background;
+      background: $dark-bg;
       color: $dark-color;
+      &::-webkit-input-placeholder {
+        color: $dark-placeholder-color;
+      }
     }
   }
 }

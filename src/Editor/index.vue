@@ -14,7 +14,7 @@
       :mode="editMode"
       :config="config"
       :icon-length="iconLength"
-      @full-screen-change="() => {editFullScreen = !editFullScreen}"
+      @full-screen-change="handleFullScreenChange"
       @mode-change="handleModeEdit"
       @add-content="addContent"
     />
@@ -40,8 +40,8 @@
           <div class="editor-content-edit-input">
             <div ref="inputPre">{{ input.replace(/\n$/, '\n ') }}</div>
               <textarea
-                ref="mTextarea"
                 v-model="input"
+                ref="mTextarea"
                 :placeholder="placeholder"
               />
             </div>
@@ -58,8 +58,8 @@
       >
         <div
           ref="previewContent"
-          v-html="compiledMarkdown"
           class="m-editor-preview"
+          v-html="markedHtml"
         />
       </div>
     </div>
@@ -72,6 +72,10 @@ import hljs from '../assets/js/hljs'
 import '../assets/css/icon.css'
 import ToolBar from '../components/ToolBar'
 import ToolColumn from '../components/ToolColumn'
+import debounce from 'lodash/debounce'
+import throttle from 'lodash/throttle'
+
+
 marked.setOptions({
   renderer: new marked.Renderer(),
   highlight: code => {
@@ -94,24 +98,10 @@ export default {
     ToolBar,
     ToolColumn
   },
-  data() {
-    return {
-      config,
-      input: this.value,
-      editMode: this.mode,
-      editFullScreen: this.fullScreen,
-      iconLength: config.length,
-      resizeEvent: null,
-      columnLength: 1,
-      editContentWrapper: null,
-      previewContentWrapper: null,
-      scrollType: null
-    }
-  },
   props: {
     value: {
       type: String,
-      default: '### 用 markdown 写一篇文章'
+      default: ''
     },
     mode: {
       default: 'live',
@@ -121,7 +111,7 @@ export default {
       }
     },
     placeholder: {
-      default: '请输入……',
+      default: '',
       type: String
     },
     fullScreen: {
@@ -142,15 +132,41 @@ export default {
       validator: (value) => {
         return ['light', 'dark'].indexOf(value) !== -1
       }
+    },
+    debounce: {
+      type: Boolean,
+      default: false
+    },
+    debounceWait: {
+      type: Number,
+      default: 200
     }
   },
-  computed: {
-    compiledMarkdown () {
-      return marked(this.input)
-    }
+  data () {
+    return {
+      config,
+      input: this.value,
+      editMode: this.mode,
+      editFullScreen: this.fullScreen,
+      iconLength: config.length,
+      resizeEvent: null,
+      columnLength: 1,
+      editContentWrapper: null,
+      previewContentWrapper: null,
+      scrollType: null,
+      markedHtml: '',
+      debounceMarked: debounce(text => {
+        this.$emit('input', text)
+        this.$emit('on-change', {
+          content: text,
+          htmlContent: marked(text)
+        })
+        this.markedHtml = marked(text)
+      }, this.debounceWait)
+    } 
   },
   mounted () {
-    this.resizeEvent = this.throttle(this.handleResize, 150, this)
+    this.resizeEvent = throttle(this.handleResize, 150, this)
     this.editContentWrapper = this.$refs.editContentWrapper
     this.previewContentWrapper = this.$refs.previewContentWrapper
     window.addEventListener('resize', this.resizeEvent)
@@ -166,16 +182,40 @@ export default {
     this.previewContentWrapper.removeEventListener('scroll', this.handleScroll)
   },
   watch: {
-    input (val) {
-      this.$emit('input', val)
-      this.$emit('on-change', {
-        content: val,
-        htmlContent: this.compiledMarkdown
-      })
+    input: {
+      handler (val) {
+        this.handleColumnChange()
+        if (this.debounce) {
+          this.debounceMarked(val)
+        } else {
+          this.$emit('input', val)
+          this.$emit('on-change', {
+            content: val,
+            htmlContent: marked(val)
+          })
+          this.markedHtml = marked(val)
+        }
+      },
+      immediate: true
     },
-    value (val) {
-      this.input = val
-      this.handleColumnChange()
+    value: {
+      handler (val) {
+        this.input = val
+      },
+      immediate: true
+    },
+    debounceWait: {
+      handler (val) {
+        this.debounceMarked = debounce(text => {
+          this.$emit('input', text)
+          this.$emit('on-change', {
+            content: text,
+            htmlContent: marked(text)
+          })
+          this.markedHtml = marked(text)
+        }, val)
+      },
+      immediate: true
     },
     editFullScreen () {
       this.$nextTick(() => {
@@ -221,16 +261,6 @@ export default {
       }
       this.handleColumnChange()
     },
-    throttle (fun, wait, ctx) { // 节流函数
-      let previous = 0
-      return () => {
-        let now = +new Date()
-        if (now - previous > wait) {
-          fun.apply(ctx, arguments)
-          previous = now
-        }
-      }
-    },
     handleColumnChange () {
       if (this.mode === 'preview') return false
       this.$nextTick(() => {
@@ -253,11 +283,16 @@ export default {
         editContentWrapper.scrollTop = editScrollMax * (previewScroll / previewScrollMax)
       }
     },
-    handleModeEdit (mode) {
+    handleModeEdit (mode, oldMode) {
       this.editMode = mode
       setTimeout(() => { // mode 改变后有 .2s 的动画，计算行数需要添加延时
         this.handleColumnChange()
       }, 200)
+      this.$emit('on-mode-change', mode, oldMode)
+    },
+    handleFullScreenChange () {
+      this.editFullScreen = !this.editFullScreen
+      this.$emit('on-full-screen-change', this.editFullScreen)
     },
     /**
      * string 的 splice 方法

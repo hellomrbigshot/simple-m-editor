@@ -6,14 +6,14 @@
           v-if="item.showIcon && i < iconLength"
           :key="i"
         >
-          <a
+          <span
             v-if="!item.children"
             :class="['iconfont', item.icon]"
             :title="item.title"
             @click="$emit('add-content', item.content)"
           />
           <tool-tip v-else>
-            <a
+            <span
               :class="['iconfont', item.icon]"
               :title="item.title"
             />
@@ -23,11 +23,11 @@
                 :key="j"
                 style="width: 100%;"
               >
-                <a
+                <span
                   :title="_item.title"
                    :style="{ fontSize: `${_item.size}px` }"
                   @click="$emit('add-content', _item.content)"
-                >{{ _item.text }}</a>
+                >{{ _item.text }}</span>
               </div>
             </div>
           </tool-tip>
@@ -36,7 +36,7 @@
     </ul>
     <ul class="editor-toolbar-mode">
       <li>
-        <a
+        <span
           :class="['iconfont', !fullScreen && 'icon-quanping' || 'icon-huanyuanhuabu']"
           :title="!fullScreen && '全屏' || '还原'"
           @click="$emit('full-screen-change')"
@@ -46,9 +46,9 @@
         v-for="(modeItem, i) in modeConfig"
         :key="i"
       >
-        <a
+        <span
           :class="['iconfont', modeItem.icon, mode === modeItem.mode && 'muted']"
-          @click="$emit('mode-change', modeItem.mode)"
+          @click="$emit('mode-change', modeItem.mode, mode)"
         />
       </li>
     </ul>

@@ -1,0 +1,30 @@
+@import "./color.scss";
+
+.tooltip-wrapper {
+  position: relative;
+}
+.tooltip-content {
+  padding: 3px;
+  position: absolute;
+  top: 35px;
+  left: 0;
+  z-index: 100;
+  background: $light-bg;
+  width: auto;
+  font-size: 14px;
+  border-radius: 3px;
+  box-shadow: 0 0 1px 1px $light-toolbar-border;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
+.dark-editor {
+  .tooltip-content {
+    background: $dark-bg;
+    box-shadow: 0 0 0 1px $dark-toolbar-border;
+  }
+}

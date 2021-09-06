@@ -6,7 +6,7 @@
   min-height: 100%;
   text-align: center;
   list-style: none;
-  background: $light-column-background;
+  background: $light-column-bg;
   color: $light-column-color;
   font-size: 13px;
   li {
@@ -15,6 +15,6 @@
   }
 }
 .dark-editor .editor-content-edit-column {
-  background: $dark-column-background;
+  background: $dark-column-bg;
   color: $dark-column-color;
 }

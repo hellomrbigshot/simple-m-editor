@@ -23,6 +23,8 @@ npm install --save simple-m-editor
 <div>
   <m-editor
     v-model="text"
+    :debounce="true"
+    :debounce-wait="500"
     @on-change="handleChange"
   />
   <div class="m-editor-preview" v-html="markdownContent"></div>
@@ -56,23 +58,28 @@ export default {
 
 ### props
 
-| name       | type   | defautl     | description     |
+| name       | type   | default     | description     |
 | ---------- | -------| ----------- | --------------- |
 | value      | String |             | value           |
-| placeholder| String | 请输入……     | placehoder      |
+| placeholder| String | ''     | placehoder      |
 | mode       | String | live        | one of ['live', 'edit', 'preview']|
 | full-screen | Boolean| false       | full screen or not |
 | show-line-num| Boolean| true        | show side line number or not |
 | theme      | String | light       | light or dark   |
 | auto-scroll| Boolean| true        | auto sroll or not |
+| debounce | Boolean | false | debounce render html when edit |
+| debounce-wait | Number | 200 | debounce wait time |
 
 
 
 ### event
 
-| name     | params | description    |
+| event name | description | return value |
 | -------  | ------ | -----------    |
-| onChange | Object: { content, htmlContent } | change event |
+| on-change | callback when editor is changed | Object: { content, htmlContent } |
+| on-mode-change | callback when editor's mode is change | mode, one of ['live', 'edit', 'preview']; oldMode, one of ['live', 'edit', 'preview'] |
+| on-full-screen-change | callback when editor's fullscreen change | fullscreen status, true or false |
+
 
 ## Licence
 
