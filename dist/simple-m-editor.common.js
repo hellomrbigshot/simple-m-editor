@@ -14839,7 +14839,7 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"03b8b5f1-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/Editor/index.vue?vue&type=template&id=1288ed86&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"2047fc20-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/Editor/index.vue?vue&type=template&id=1288ed86&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"mEditor",class:[
     'editor',
     (_vm.theme + "-editor"),
@@ -15087,14 +15087,14 @@ Object.keys(languagesMapping).forEach(function (language) {
 // EXTERNAL MODULE: ./src/assets/css/icon.css
 var icon = __webpack_require__("d21e");
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"03b8b5f1-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/ToolBar.vue?vue&type=template&id=373d3ce5&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"2047fc20-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/ToolBar.vue?vue&type=template&id=373d3ce5&
 var ToolBarvue_type_template_id_373d3ce5_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"editor-toolbar"},[_c('ul',{ref:"editTools",staticClass:"editor-toolbar-tools"},[_vm._l((_vm.config),function(item,i){return [(item.showIcon && i < _vm.iconLength)?_c('li',{key:i},[(!item.children)?_c('span',{class:['iconfont', item.icon],attrs:{"title":item.title},on:{"click":function($event){return _vm.$emit('add-content', item.content)}}}):_c('tool-tip',[_c('span',{class:['iconfont', item.icon],attrs:{"title":item.title}}),_c('div',{attrs:{"slot":"content"},slot:"content"},_vm._l((item.children),function(_item,j){return _c('div',{key:j,staticStyle:{"width":"100%"}},[_c('span',{style:({ fontSize: ((_item.size) + "px") }),attrs:{"title":_item.title},on:{"click":function($event){return _vm.$emit('add-content', _item.content)}}},[_vm._v(_vm._s(_item.text))])])}),0)])],1):_vm._e()]})],2),_c('ul',{staticClass:"editor-toolbar-mode"},[_c('li',[_c('span',{class:['iconfont', !_vm.fullScreen && 'icon-quanping' || 'icon-huanyuanhuabu'],attrs:{"title":!_vm.fullScreen && '全屏' || '还原'},on:{"click":function($event){return _vm.$emit('full-screen-change')}}})]),_vm._l((_vm.modeConfig),function(modeItem,i){return _c('li',{key:i},[_c('span',{class:['iconfont', modeItem.icon, _vm.mode === modeItem.mode && 'muted'],on:{"click":function($event){return _vm.$emit('mode-change', modeItem.mode, _vm.mode)}}})])})],2)])}
 var ToolBarvue_type_template_id_373d3ce5_staticRenderFns = []
 
 
 // CONCATENATED MODULE: ./src/components/ToolBar.vue?vue&type=template&id=373d3ce5&
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"03b8b5f1-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/ToolTip.vue?vue&type=template&id=177e844f&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"2047fc20-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/ToolTip.vue?vue&type=template&id=177e844f&
 var ToolTipvue_type_template_id_177e844f_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"tooltip-wrapper",on:{"mouseenter":_vm.handleShowPopper,"mouseover":_vm.handleShowPopper,"mouseleave":_vm.handleClosePopper}},[_c('div',[_vm._t("default")],2),_c('transition',{attrs:{"name":"fade"}},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.visible),expression:"visible"}],ref:"popper",staticClass:"tooltip-content",on:{"mouseenter":_vm.handleShowPopper,"mouseleave":_vm.handleClosePopper}},[_c('div',[_vm._t("content",function(){return [_vm._v(_vm._s(_vm.content))]})],2)])])],1)}
 var ToolTipvue_type_template_id_177e844f_staticRenderFns = []
 
@@ -15407,7 +15407,7 @@ var ToolBar_component = normalizeComponent(
 )
 
 /* harmony default export */ var ToolBar = (ToolBar_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"03b8b5f1-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/ToolColumn.vue?vue&type=template&id=c5bca8c8&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"2047fc20-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/ToolColumn.vue?vue&type=template&id=c5bca8c8&
 var ToolColumnvue_type_template_id_c5bca8c8_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('ul',{staticClass:"editor-content-edit-column"},_vm._l((_vm.length),function(i){return _c('li',{key:i},[_vm._v(_vm._s(i))])}),0)}
 var ToolColumnvue_type_template_id_c5bca8c8_staticRenderFns = []
 
@@ -16024,4 +16024,3 @@ module.exports = isSymbol;
 /***/ })
 
 /******/ });
-//# sourceMappingURL=simple-m-editor.common.js.map
