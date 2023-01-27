@@ -14,6 +14,10 @@ jobs:
         with:
           node-version: 16
           registry-url: https://registry.npmjs.org/
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 6
+          run_install: false
       - run: pnpm i
       - run: pnpm run build
       - run: pnpm publish
@@ -31,6 +35,10 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 6
+          run_install: false
       - name: gh-pages build
         run: |
             pnpm i
