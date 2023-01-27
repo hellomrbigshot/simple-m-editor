@@ -1,17 +1,25 @@
 # simple-m-editor
 
-> A markdown editor with Vue.js
+> A markdown editor with Vue@2.7
+
+If you want to use it with the eaiser vue version, you can use simple-m-editor@0.4.6
 
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/hellomrbigshot/simple-m-editor)
 ![GitHub](https://img.shields.io/github/license/hellomrbigshot/simple-m-editor)
 
 ## Install
-```
-yarn add simple-m-editor
-```
+
 ### use npm
 ```
 npm install --save simple-m-editor
+```
+### use yarn
+```
+yarn add simple-m-editor
+```
+### use pnpm
+```
+pnpm i simple-m-editor
 ```
 
 ## Usage with Vue.js
@@ -19,35 +27,26 @@ npm install --save simple-m-editor
 ```
 // you can add class "m-editor-preview" to your element to
 // use the same style as the editor shows
-<template>
-<div>
-  <m-editor
-    v-model="text"
-    :debounce="true"
-    :debounce-wait="500"
-    @on-change="handleChange"
-  />
-  <div class="m-editor-preview" v-html="markdownContent"></div>
-</div>
-</template>
+<script setup>
 import mEditor from 'simple-m-editor'
 import 'simple-m-editor/dist/simple-m-editor.css'
-export default {
-  component: {
-    mEditor
-  },
-  data () {
-    return {
-      text: '',
-      markdownContent: ''
-    }
-  },
-  methods: {
-    handleChange(data) {
-      this.markdownContent = data.htmlContent
-    }
-  }
+const text = ref('')
+const markdownContent = ref('')
+const handleChange = (data) => {
+  markdownContent.value = data.htmlContent
 }
+</script>
+<template>
+  <div>
+    <m-editor
+      v-model="text"
+      :debounce-render="true"
+      :debounce-render-wait="500"
+      @on-change="handleChange"
+    />
+    <div class="m-editor-preview" v-html="markdownContent"></div>
+  </div>
+</template>
 ```
 
 ## Preview
@@ -67,8 +66,8 @@ export default {
 | show-line-num| Boolean| true        | show side line number or not |
 | theme      | String | light       | light or dark   |
 | auto-scroll| Boolean| true        | auto sroll or not |
-| debounce | Boolean | false | debounce render html when edit |
-| debounce-wait | Number | 200 | debounce wait time |
+| debounce-render | Boolean | false | debounce render html when edit |
+| debounce-render-wait | Number | 200 | debounce wait time |
 
 
 

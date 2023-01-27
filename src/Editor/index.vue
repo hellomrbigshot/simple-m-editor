@@ -70,8 +70,8 @@ import marked from 'marked'
 import { config } from '../assets/js/config'
 import hljs from '../assets/js/hljs'
 import '../assets/css/icon.css'
-import ToolBar from '../components/ToolBar'
-import ToolColumn from '../components/ToolColumn'
+import ToolBar from '../components/ToolBar.vue'
+import ToolColumn from '../components/ToolColumn.vue'
 import debounce from 'lodash/debounce'
 import throttle from 'lodash/throttle'
 
@@ -133,11 +133,11 @@ export default {
         return ['light', 'dark'].indexOf(value) !== -1
       }
     },
-    debounce: {
+    debounceRender: {
       type: Boolean,
       default: false
     },
-    debounceWait: {
+    debounceRenderWait: {
       type: Number,
       default: 200
     }
@@ -162,7 +162,7 @@ export default {
           htmlContent: marked(text)
         })
         this.markedHtml = marked(text)
-      }, this.debounceWait)
+      }, this.debounceRenderWait)
     } 
   },
   mounted () {
@@ -185,7 +185,7 @@ export default {
     input: {
       handler (val) {
         this.handleColumnChange()
-        if (this.debounce) {
+        if (this.debounceRender) {
           this.debounceMarked(val)
         } else {
           this.$emit('input', val)
