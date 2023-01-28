@@ -55,7 +55,7 @@
   </div>
 </template>
 <script>
-import ToolTip from './ToolTip'
+import ToolTip from './ToolTip.vue'
 const modeConfig = [
   {
     mode: 'edit',

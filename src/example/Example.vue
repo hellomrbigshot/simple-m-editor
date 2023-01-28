@@ -1,5 +1,25 @@
+<script setup>
+import { ref } from 'vue'
+import text from './example.md?raw'
+import { version } from '../../package.json'
+import Editor from '../Editor/index.vue'
+const theme = ref('light')
+const change = (answer) => {
+  console.log(answer)
+}
+const handleFullScreenChange = (fullScreen) => {
+  console.log('fullScreen', fullScreen)
+}
+const handleModeChange = (mode, oldMode) => {
+  console.log('mode', mode, 'oldMode', oldMode)
+}
+const handleThemeChange = () => {
+  theme.value = theme.value === 'light' ? 'dark' : 'light'
+}
+</script>
 <template>
-  <div class="hello">
+  <div class="wrapper">
+    <div class="comp-name">simple-m-editor@{{ version }}</div>
     <div class="button" @click="handleThemeChange">{{ theme === 'light' ? '暗黑模式' : '普通模式' }}</div>
     <editor
       v-model="text"
@@ -13,41 +33,6 @@
     />
   </div>
 </template>
-
-<script>
-import text from './example.md'
-export default {
-  name: 'Example',
-  components: {
-    editor: () => import('../Editor/index')
-  },
-  data () {
-    return {
-      text,
-      theme: 'light'
-    }
-  },
-  mounted () {
-    setTimeout(() => {
-      this.text = text
-    }, 1000)
-  },
-  methods: {
-    change (answer) {
-      console.log(answer)
-    },
-    handleFullScreenChange (fullScreen) {
-      console.log('fullScreen', fullScreen)
-    },
-    handleModeChange (mode, oldMode) {
-      console.log('mode', mode, 'oldMode', oldMode)
-    },
-    handleThemeChange () {
-      this.theme = this.theme === 'light' ? 'dark' : 'light'
-    }
-  }
-}
-</script>
 <style scoped>
 h3 {
   margin: 40px 0 0;
@@ -63,7 +48,7 @@ li {
 a {
   color: #42b983;
 }
-.hello {
+.wrapper {
   width: 80%;
   margin: 0 auto;
 }
@@ -78,5 +63,10 @@ a {
   border-radius: 3px;
   line-height: 30px;
   margin: 0 auto 10px;
+}
+.comp-name {
+  margin-bottom: 20px;
+  font-weight: 500;
+  color: #64b587;
 }
 </style>

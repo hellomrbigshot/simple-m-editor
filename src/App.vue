@@ -1,18 +1,13 @@
+<script setup>
+import Example from './example/Example.vue'
+import Logo from './assets/logo.png'
+</script>
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" width="100px">
+    <img alt="Vue logo" :src="Logo" width="100px">
      <Example msg="Welcome to Your Vue.js App"/>
   </div>
 </template>
-
-<script>
-export default {
-  name: 'app',
-  components: {
-    Example: () => import('./example/Example')
-  }
-}
-</script>
 
 <style>
 #app {

@@ -1,4 +1,4 @@
-import markdownEditor from './Editor/index'
+import markdownEditor from './Editor/index.vue'
 
 // import 方式引入
 export default markdownEditor
