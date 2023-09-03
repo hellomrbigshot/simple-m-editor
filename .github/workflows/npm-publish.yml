@@ -31,9 +31,13 @@ jobs:
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
+      
+      - name: Node Version Change ➕
         uses: actions/setup-node@v3
         with:
           node-version: 16
+      
+      - name: Install PNPM ➕
         uses: pnpm/action-setup@v2
         with:
           version: 6
