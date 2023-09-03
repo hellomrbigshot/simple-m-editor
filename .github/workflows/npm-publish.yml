@@ -1,50 +1,52 @@
-name: Node.js Package & gh-pages Build
+name: Build and Deploy
 
 on:
   pull_request:
-    branches:
-    - main
+    branches: [2.x]
+  push:
+    branches: [2.x]
 
 jobs:
-  publish-npm:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
-          registry-url: https://registry.npmjs.org/
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 6
-          run_install: false
-      - run: pnpm i
-      - run: pnpm run build
-      - run: pnpm publish
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+  # publish-npm:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 16
+  #         registry-url: https://registry.npmjs.org/
+  #     - uses: pnpm/action-setup@v2
+  #       with:
+  #         version: 6
+  #         run_install: false
+  #     - run: pnpm i
+  #     - run: pnpm run build
+  #     - run: pnpm publish
+  #       env:
+  #         NODE_AUTH_TOKEN: ${{secrets.npm_token}}
 
-  create-githubpage:
+  build-and-deploy:
     # needs: publish-npm
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
+        uses: actions/setup-node@v3
         with:
           node-version: 16
-      - uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v2
         with:
           version: 6
           run_install: false
-      - name: gh-pages build
+      - name: Install and Build 🔧
         run: |
             pnpm i
             pnpm run gh-pages
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          personal_token: ${{ secrets.PERSONAL_TOKEN }}
-          publish_dir: ./dist
+          branch: gh-pages
+          token: ${{ secrets.PERSONAL_TOKEN }}
+          folder: dist
+          target-folder: v2

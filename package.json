@@ -1,6 +1,6 @@
 {
   "name": "simple-m-editor",
-  "version": "1.0.0-beta.2",
+  "version": "2.7.0",
   "private": false,
   "type": "module",
   "main": "./dist/simple-m-editor.umd.cjs",
