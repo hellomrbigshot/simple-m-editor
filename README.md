@@ -51,7 +51,7 @@ const handleChange = (data) => {
 
 ## Preview
 
-[address](https://hellomrbigshot.github.io/simple-m-editor/index.html)
+[address](https://hellomrbigshot.github.io/simple-m-editor/v2/index.html)
 
 ## Api
 

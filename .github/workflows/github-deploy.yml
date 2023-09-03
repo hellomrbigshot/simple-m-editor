@@ -1,4 +1,4 @@
-name: Build and Publish
+name: Build and Deploy
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
     branches: [2.x]
 
 jobs:
-  build-and-publish:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️
@@ -17,20 +17,22 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-          registry-url: https://registry.npmjs.org/
       
       - name: Use Pnpm ➕
         uses: pnpm/action-setup@v2
         with:
           version: 6
           run_install: false
-      
-      - name: Install and Build 🔧
-        run: | 
-            pnpm i
-            pnpm run build
 
-      - name: Publish 🚀
-        run: pnpm publish
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+      - name: Install and Build 🔧
+        run: |
+            pnpm i
+            pnpm run gh-pages
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          token: ${{ secrets.PERSONAL_TOKEN }}
+          folder: dist
+          target-folder: v2
