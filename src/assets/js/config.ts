@@ -1,4 +1,18 @@
-const config = [
+
+export interface configChildrenItem {
+  text: string,
+  size: number | string,
+  title: string,
+  content: string
+}
+export interface configItem {
+  icon: string,
+  title: string,
+  showIcon: boolean,
+  content?: string,
+  children?: configChildrenItem[]
+}
+export const config: configItem[] = [
   {
     icon: 'icon-zitibiaoti',
     title: '标题',
@@ -8,25 +22,25 @@ const config = [
         text: 'H1',
         size: 32,
         title: '一级标题',
-        content: '# h1'
+        content: '\n# h1'
       },
       {
         text: 'H2',
         size: 24,
         title: '二级标题',
-        content: '## h2'
+        content: '\n## h2'
       },
       {
         text: 'H3',
         size: 18,
         title: '三级标题',
-        content: '### h3'
+        content: '\n### h3'
       },
       {
         text: 'H4',
         size: 16,
         title: '四级标题',
-        content: '#### h4'
+        content: '\n#### h4'
       }
     ]
   },
@@ -57,7 +71,7 @@ const config = [
   {
     icon: 'icon-charulianjie',
     title: '链接',
-    content: '[世说新语](https://hellomrbigbigshot.xyz)',
+    content: '[世说新语](https://react.hellomrbigbigshot.xyz)',
     showIcon: true
   },
   {
@@ -75,13 +89,13 @@ const config = [
   {
     icon: 'icon-charutupian',
     title: '图片',
-    content: '\n![这是一张图片](https://hellomrbigbigshot.xyz/api/file/avatar?filename=1534775389648.png)\n',
+    content: '![这是一张图片](https://hellomrbigbigshot.xyz/api/file/avatar?filename=1534775389648.png)',
     showIcon: true
   },
   {
     icon: 'icon-youxupailie',
     title: '有序列表',
-    content: '\n\n1. 列表1 \n2. 列表2 \n3. 列表3',
+    content: '\n1. 列表1 \n2. 列表2 \n3. 列表3',
     showIcon: true
   },
   {
@@ -99,7 +113,7 @@ const config = [
   {
     icon: 'icon-biaodanzujian-biaoge',
     title: '表格',
-    content: '\n\n标题1 | 标题2 \n---  |---\n第一行第一列 | 第一行第二列\n第二行第一列 | 第二行第二列\n',
+    content: '\n标题1 | 标题2 \n---  |---\n第一行第一列 | 第一行第二列\n第二行第一列 | 第二行第二列\n',
     showIcon: true
   },
   {
@@ -119,9 +133,5 @@ const config = [
     title: '右对齐',
     content: '\n<p align="right">右对齐</p>\n',
     showIcon: true
-  },
-  
+  }
 ]
-export {
-  config
-}

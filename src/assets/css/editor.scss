@@ -1,7 +1,7 @@
 @import './color.scss';
 
-.editor, .editor-preview {
-  span, code, a, input, em, s, strong, small, cite, q, abbr, dfn, data, time, var, samp, sub, sup, 
+.editor {
+  span, code, a, input, em, s, strong, small, cite, q, abbr, dfn, data, time, var, samp, sub, sup,
   kbd, i, b, u, mark, ruby, rt, rb, bdi, bdo, br, wbr, ins, del,
   footer, address, main, article, nav, body, section, aside, header, h1, h2, h3, h4, h5, h6,
   div, p, pre, hr, blockquote, ol, li, ul, dl, dt, dd, figure, figcaption,
@@ -20,8 +20,7 @@
 .editor {
   display: flex;
   flex-direction: column;
-  border: 1px solid #eee;
-  box-shadow: 0 0 3px $light-box-shadow;
+  box-shadow: 0 0 5px 0 $light-box-shadow;
   height: 500px;
   border-radius: 8px;
 }
@@ -41,27 +40,15 @@
   }
   &.inactive {
     flex: 0 0 0;
+    opacity: 0;
   }
-  transition: flex .2s ease-in;
-  scrollbar-width: thin; // 兼容 firefox
-  scrollbar-color: $light-scrollbar-color; // 兼容 firefox
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-  &::-webkit-scrollbar-track {
-    border-radius: 10px;
-  }
-  &::-webkit-scrollbar-thumb {
-    background-color: $light-scrollbar-color;
-    border-radius: 10px;
-  }
+  transition: all .2s ease-in;
 }
 .editor-content-preview {
-  background: $light-preview-bg;
+  background: $light-preview-background;
   color: $light-preview-color;
-  padding: 10px !important;
+  padding: 10px!important;
 }
-
 .editor-content-edit {
   background: $light-bg;
   &-block {
@@ -69,11 +56,9 @@
       overflow: hidden;
       min-height: 100%;
   }
-
   &-input {
-      padding-left: 10px;
       position: relative;
-      flex: 1 0 0;
+      flex: 1 1 0;
       line-height: 30px;
       background: $light-bg;
       min-height: 100%;
@@ -85,55 +70,45 @@
         box-sizing: border-box;
         text-align: left;
         width: 100%;
-        box-sizing: border-box;
         font-family: inherit;
         font-size: 14px;
         padding: 10px;
-        line-height: inherit;
         display: block;
+        line-height: inherit;
       }
       div {
-        visibility: hidden;
         white-space: pre-wrap;
+        visibility: hidden;
       }
       textarea {
-        position: absolute;
-        color: $light-color;
-        background: $light-bg;
-        top: 0;
-        bottom: 0;
-        height: 100%;
-        border: none;
-        resize: none;
-        outline: none;
-        z-index: 2;
-        min-height: 100%;
-        &::-webkit-input-placeholder {
-          color: $light-placeholder-color;
-        }
+          position: absolute;
+          color: $light-color;
+          background: $light-bg;
+          top: 0;
+          bottom: 0;
+          overflow: hidden;
+          border: none;
+          resize: none;
+          outline: none;
+          z-index: 2;
+          height: 100%;
       }
   }
 }
 .dark-editor {
+  box-shadow: 0 0 2px 2px $dark-box-shadow;
   .editor-content-edit {
     background: $dark-bg;
-    scrollbar-color: $dark-scrollbar-color; // 兼容 firefox
-    &::-webkit-scrollbar-thumb {
-      background-color: $dark-scrollbar-color;
-    }
     &-input {
       background: $dark-bg;
     }
     textarea {
       background: $dark-bg;
       color: $dark-color;
-      &::-webkit-input-placeholder {
-        color: $dark-placeholder-color;
-      }
     }
   }
 }
-.editor-editFullScreen {
+.editor-fullscreen {
   position: fixed;
   top: 0;
   left: 0;
