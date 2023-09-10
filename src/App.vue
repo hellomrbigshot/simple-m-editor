@@ -1,11 +1,11 @@
-<script setup>
-import Example from './example/Example.vue'
+<script lang="ts" setup>
+import Example from './example/example'
 import Logo from './assets/logo.png'
 </script>
 <template>
   <div id="app">
     <img alt="Vue logo" :src="Logo" width="100px">
-     <Example msg="Welcome to Your Vue.js App"/>
+    <Example msg="Welcome to Your Vue.js App"/>
   </div>
 </template>
 

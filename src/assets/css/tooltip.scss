@@ -1,25 +1,32 @@
-@import "./color.scss";
-
+@import './color.scss';
 .tooltip-wrapper {
   position: relative;
 }
 .tooltip-content {
-  padding: 3px;
   position: absolute;
-  top: 35px;
   left: 0;
-  z-index: 100;
+  margin-top: 5px!important;
+  padding: 5px 3px;
   background: $light-bg;
-  width: auto;
-  font-size: 14px;
-  border-radius: 3px;
-  box-shadow: 0 0 1px 1px $light-toolbar-border;
-}
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
-}
-.fade-enter, .fade-leave-to {
+  height: 0;
   opacity: 0;
+  z-index: 10;
+  box-shadow: 0 0 0 1px $light-toolbar-border;
+  border-radius: 3px;
+  overflow: hidden;
+  li {
+    span {
+      box-sizing: content-box;
+      padding: 3px;
+      text-align: center;
+      display: block;
+    }
+  }
+  &.mouse-in {
+    height: auto;
+    opacity: 1;
+  }
+  transition: all .5s ease-in-out;
 }
 
 .dark-editor {

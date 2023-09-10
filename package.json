@@ -1,42 +1,51 @@
 {
   "name": "simple-m-editor",
-  "version": "1.0.0-beta.2",
-  "private": false,
-  "type": "module",
-  "main": "./dist/simple-m-editor.umd.cjs",
-  "module": "./dist/simple-m-editor.js",
-  "exports": {
-    ".": {
-      "import": "./dist/simple-m-editor.js",
-      "require": "./dist/simple-m-editor.umd.cjs"
-    }
+  "version": "3.0.0-beta.0",
+  "main": "dist/vue-next-m-editor.umd.js",
+  "module": "vue-next-m-editor.mjs",
+  "unpkg": "dist/vue-next-m-editor.umd.js",
+  "browser": {
+    "./sfc": "src/components/index.tsx"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/hellomrbigshot/simple-m-editor.git"
-  },
+  "types": "dist/src/index.d.ts",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "gh-pages": "vite build --mode gh-pages",
     "preview": "vite preview"
   },
+  "files": [
+    "dist"
+  ],
   "dependencies": {
-    "highlight.js": "^11.1.0",
-    "lodash": "^4.17.21",
-    "marked": "^2.1.3",
-    "sass": "^1.57.1"
+    "@vitejs/plugin-vue": "^4.3.4",
+    "highlight.js": "^11.7.0",
+    "lodash-es": "^4.17.21",
+    "marked": "^7.0.5",
+    "marked-highlight": "^2.0.5"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue2": "^2.2.0",
-    "vite": "^4.0.4",
-    "vue": "^2.7.0"
+    "@rollup/plugin-typescript": "^11.1.3",
+    "@rushstack/eslint-patch": "^1.3.3",
+    "@types/highlightjs": "^9.12.2",
+    "@types/lodash-es": "^4.17.5",
+    "@types/marked": "^5.0.1",
+    "@types/node": "^18.11.18",
+    "@vitejs/plugin-vue-jsx": "^3.0.2",
+    "@vue/eslint-config-typescript": "^11.0.3",
+    "eslint": "^8.49.0",
+    "eslint-plugin-vue": "^9.17.0",
+    "sass": "^1.42.1",
+    "tslib": "^2.3.0",
+    "typescript": "^4.4.3",
+    "vite": "^4.1.1",
+    "vue": "^3.3.4"
   },
   "peerDependencies": {
-    "vue": "^2.7.0"
+    "vue": "^3.0.0"
   },
   "engines": {
     "node": ">=16",
-    "pnpm": ">=6.10"
+    "npm": ">=6"
   }
 }
