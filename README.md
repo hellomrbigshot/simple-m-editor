@@ -1,8 +1,9 @@
 # simple-m-editor
 
-> A markdown editor with Vue@2.7
+> A markdown editor with Vue@3
 
-If you want to use it with the eaiser vue version, you can use simple-m-editor@0.4.6
+If you want to use it with vue@2.7, you can use simple-m-editor@2.x.
+If you want to use it with vue@2.6 or older version, you can use simple-m-editor@0.4.
 
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/hellomrbigshot/simple-m-editor)
 ![GitHub](https://img.shields.io/github/license/hellomrbigshot/simple-m-editor)
@@ -28,8 +29,8 @@ pnpm i simple-m-editor
 // you can add class "m-editor-preview" to your element to
 // use the same style as the editor shows
 <script setup>
-import mEditor from 'simple-m-editor'
-import 'simple-m-editor/dist/simple-m-editor.css'
+import { MEditor, marked } from 'simple-m-editor'
+import 'simple-m-editor/dist/style.css'
 const text = ref('')
 const markdownContent = ref('')
 const handleChange = (data) => {

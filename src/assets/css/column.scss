@@ -1,6 +1,6 @@
-@import "./color.scss";
+@import './color.scss';
 
-.editor-content-edit-column {
+.editor-content-edit-line-num {
   min-width: 30px;
   padding: 10px 0 100px!important;
   min-height: 100%;
@@ -8,13 +8,18 @@
   list-style: none;
   background: $light-column-bg;
   color: $light-column-color;
-  font-size: 13px;
+  font-size: 12px;
   li {
-    list-style: none;
-    line-height: 30px;
+      list-style: none;
+      line-height: 30px;
+      display: block;
+  }
+  .scale-li {
+    transform: scale(.8);
+    transform-origin: center;
   }
 }
-.dark-editor .editor-content-edit-column {
+.dark-editor .editor-content-edit-line-num {
   background: $dark-column-bg;
   color: $dark-column-color;
 }

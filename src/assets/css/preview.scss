@@ -1,11 +1,6 @@
-@import '../assets/css/tomorrow.css';
 .m-editor-preview {
   text-align: left;
   line-height: 2;
-  div, p, a, ol, li, h1, h2, h3, h4, h5, h6 {
-    word-break: break-all;
-  }
-  
   ul, ol {
     margin: 1.5em 0;
     padding: 0 2em;
@@ -25,29 +20,21 @@
   }
   blockquote {
     border-left: 2px solid #009a61;
-    color: #555;
+    color: #333;
     font-size: 1em;
     padding: 0.5em 1em;
     margin: 1.5em 0;
+    background: #f8f8f8;
+    border-radius: 3px;
   }
   code {
-    background: #f0f0f0;
-    padding: 5px;
-    border-radius: 4px;
-    font-family: Consolas, Monaco, monospace;
+    font-size: 14px;
+    border-radius: 3px;
   }
   pre {
-    background: #f0f0f0;
-    margin: 1em 0;
-    padding: 1em;
-    overflow-x: auto;
     width: 100%;
-    code {
-      // padding: 0.5em;
-      font-family: Consolas, Monaco, monospace;
-      padding: 0;
-      border-radius: 0;
-    }
+    margin: 1em 0;
+    overflow-x: auto;
   }
   table {
     width: 100%;
@@ -77,6 +64,5 @@
   }
   img {
     max-width: 100%;
-    padding: 1em;
   }
 }

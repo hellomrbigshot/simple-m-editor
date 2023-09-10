@@ -1,0 +1,35 @@
+h3 {
+  margin: 40px 0 0;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  /* display: inline-block; */
+  margin: 0 10px;
+}
+a {
+  color: #42b983;
+}
+.wrapper {
+  width: 80%;
+  margin: 0 auto;
+}
+.button:hover {
+  cursor: pointer;
+}
+.button {
+  width: 100px;
+  height: 30px;
+  text-align: center;
+  box-shadow: 0 0 2px #666;
+  border-radius: 3px;
+  line-height: 30px;
+  margin: 0 auto 10px;
+}
+.comp-name {
+  margin-bottom: 20px;
+  font-weight: 500;
+  color: #64b587;
+}

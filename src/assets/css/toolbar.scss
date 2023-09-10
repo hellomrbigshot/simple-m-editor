@@ -1,72 +1,42 @@
-@import "./color.scss";
-
+@import './color.scss';
 .editor-toolbar {
   border-radius: 8px 8px 0 0;
   height: 40px;
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid $light-toolbar-border;
+  border-bottom: 1px solid #efefef;
   &-tools, &-mode {
     list-style: none;
     display: flex;
     li {
       width: 30px;
       margin: 5px 3px 5px 3px!important;
-      span {
-        line-height: 20px;
-        font-size: 15px;
-        padding: 5px!important;
-        display: block;
-        color: $light-color;
-        text-align: center;
-        border-radius: 5px;
+    }
+    span {
+      line-height: 20px;
+      font-size: 15px;
+      padding: 5px!important;
+      display: block;
+      color: $light-color;
+      text-align: center;
+      border-radius: 5px;
+      &:hover {
+        color: $light-toolbar-hover-color;
+        background: $light-toolbar-hover-bg;
+        cursor: pointer;
+      }
+      &.muted {
+        background: $light-toolbar-muted-bg;
+        color: $light-toolbar-muted-color;
         &:hover {
-          color: $light-toolbar-hover-color;
-          background: $light-toolbar-hover-bg;
-          cursor: pointer;
-        }
-        &.muted {
-          background: $light-toolbar-muted-bg;
+          cursor: default;
           color: $light-toolbar-muted-color;
-          &:hover {
-            cursor: default;
-            color: $light-toolbar-muted-color;
-          }
         }
       }
     }
   }
   &-tools {
     padding-left: 10px!important;
-  }
-}
-.dark-editor {
-  .editor-toolbar {
-    background: $dark-bg;
-    border-color: $dark-toolbar-border;
-    &-tools, &-mode {
-      span {
-        line-height: 20px;
-        font-size: 15px;
-        padding: 5px!important;
-        display: block;
-        color: $light-color;
-        text-align: center;
-        border-radius: 5px;
-        &:hover {
-          color: $dark-toolbar-hover-color;
-          background: $dark-toolbar-hover-bg;
-        }
-        &.muted {
-          background: $dark-toolbar-muted-bg;
-          color: $dark-toolbar-muted-color;
-          &:hover {
-            cursor: default;
-            color: $dark-toolbar-muted-color;
-          }
-        }
-      }
-    }
   }
 }
 .dark-editor {
