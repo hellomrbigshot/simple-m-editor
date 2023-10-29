@@ -3,12 +3,11 @@ import Example from './example/example'
 import Logo from './assets/logo.png'
 </script>
 <template>
-  <div id="app">
-    <img alt="Vue logo" :src="Logo" width="100px">
+  <div>
+    <img alt="Vue logo" :src="Logo" width="100">
     <Example msg="Welcome to Your Vue.js App"/>
   </div>
 </template>
-
 <style>
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
