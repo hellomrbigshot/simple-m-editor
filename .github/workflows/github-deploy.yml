@@ -35,3 +35,8 @@ jobs:
           branch: gh-pages
           token: ${{ secrets.PERSONAL_TOKEN }}
           folder: dist
+          single-commit: true
+          clean: true
+          clean-exclude: |
+            v2/*
+            v2/**/*
