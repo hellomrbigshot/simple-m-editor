@@ -36,3 +36,5 @@ jobs:
           token: ${{ secrets.PERSONAL_TOKEN }}
           folder: dist
           target-folder: v2
+          single-commit: true
+          clean: true
