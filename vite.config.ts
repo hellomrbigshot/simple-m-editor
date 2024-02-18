@@ -5,7 +5,7 @@ import { resolve } from 'path'
 import typescript from '@rollup/plugin-typescript'
 
 // https://vitejs.dev/config/
-export default defineConfig(({ command, mode, ssrBuild }) => {
+export default defineConfig(({ mode }) => {
   const config = {
     base: './',
     plugins: [
@@ -13,7 +13,6 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
       vueJsx()
     ]
   }
-  console.log('mode', mode)
   if (mode === 'gh-pages') {
     return config
   } else {
