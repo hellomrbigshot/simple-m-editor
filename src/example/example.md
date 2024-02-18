@@ -12,6 +12,13 @@ for (let i in 10) {
 }
 ```
 
+### code with diff
+
+```diff
++ const a = 1
+- const a = 2
+```
+
 ### list
 
 + item1
@@ -34,7 +41,7 @@ for (let i in 10) {
 ![image](https://avatars.githubusercontent.com/u/16463481)
 
 ### link
-[blog](https://hellomrbigbigshot.xyz)
+[Google](https://google.com)
 
 ### blockquote
 > test
