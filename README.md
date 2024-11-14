@@ -1,5 +1,7 @@
 # simple-m-editor
 
+This project is to be archived. It will no longer be actively developed or maintained. you can use [```@simple-m-editor/vue```](https://github.com/hellomrbigshot/m-editor/tree/main/packages/vue) as a replacement.
+
 > A markdown editor with Vue@3
 
 If you want to use it with vue@2.7, you can use simple-m-editor@2.x.
